@@ -1,0 +1,79 @@
+\documentclass{llncs}
+%Packages 
+%\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{float}
+%\usepackage{caption}
+%\usepackage{graphicx}
+%\usepackage{placeins}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage[titletoc]{appendix}
+
+%Settings 
+\restylefloat{table,figure}
+\graphicspath{{images/}}
+\pagestyle{headings}
+\pagenumbering{arabic}
+\bibliographystyle{abbrv}
+% Listing settings start
+\renewcommand{\lstlistingname}{Code Sample}
+\lstset {
+    basicstyle = \footnotestyle\ttfamily,
+    captionpos = b,
+    breaklines = true
+}
+% Listing settings end
+
+%Fix TOC
+% make a proper TOC despite llncs
+\setcounter{tocdepth}{2}
+\makeatletter
+\renewcommand*\l@author[2]{}
+\renewcommand*\l@title[2]{}
+\makeatletter
+%End fix TOC
+
+%Meta
+\title{CUDA GPGPU programming using F\# Alea.cuBase and Actulus CalcSpech for parallelized pension reserve estimation}
+\author{Nicolai Skovvart \email{nbsk@itu.dk}\\Superviser: Peter Sestoft}
+\date{\today}
+\institute{IT University of Copenhagen}
+
+%Document 
+\begin{document}
+	
+	\includepdf[pages={1}]{sections/FrontPage.pdf}
+	\setcounter{page}{1}
+	
+	\maketitle
+
+	\input{sections/Abstract}
+
+	\tableofcontents
+	\listoffigures
+
+	\clearpage	
+
+	\input{sections/Introduction}
+	\input{sections/Background}
+
+	\section{Solutions}
+	\input{sections/InitialSolution}
+	\input{sections/CUDASolution}
+	\input{sections/F-SharpSolution}
+
+	\input{sections/Generation}
+	\input{sections/Optimization}
+	\input{sections/RelatedWork}
+	\input{sections/Conclusion}
+	
+	
+	\bibliography{sections/Bibliography}
+    \clearpage
+	\appendix
+	\addappheadtotoc
+	\input{sections/Appendix}
+\end{document}

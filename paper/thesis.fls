@@ -1,0 +1,165 @@
+PWD C:/Users/Skovvart/Desktop/Thesis/paper
+INPUT C:/Users/Skovvart/AppData/Local/MiKTeX/2.9/miktex/data/le/pdftex/pdflatex.fmt
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.tex
+OUTPUT thesis.log
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/llncs.cls
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/llncs.cls
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/article.cls
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/article.cls
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/size10.clo
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/size10.clo
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/tools/multicol.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/tools/multicol.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/aliascnt.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/aliascnt.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/carlisle/remreset.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/carlisle/remreset.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/fancyhdr/fancyhdr.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/fancyhdr/fancyhdr.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/float/float.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/float/float.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pdfpages/pdfpages.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pdfpages/pdfpages.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/ifthen.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/ifthen.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/tools/calc.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/tools/calc.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/eso-pic/eso-pic.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/eso-pic/eso-pic.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/atbegshi.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/atbegshi.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/infwarerr.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/infwarerr.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/ltxcmds.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/ltxcmds.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/ifpdf.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/ifpdf.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/xcolor/xcolor.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/xcolor/xcolor.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/xcolor/xcolor.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/00miktex/color.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/00miktex/color.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pdftex-def/pdftex.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pdftex-def/pdftex.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/graphicx.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/graphicx.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/graphics.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/graphics.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/trig.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/trig.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/00miktex/graphics.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/00miktex/graphics.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pdfpages/pppdftex.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pdfpages/pppdftex.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ltxmisc/url.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ltxmisc/url.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/hyperref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/hobsub-hyperref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/hobsub-generic.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/hobsub-generic.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/ifxetex/ifxetex.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/ifxetex/ifxetex.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/kvoptions.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/kvoptions.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/pd1enc.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/pd1enc.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/00miktex/hyperref.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/00miktex/hyperref.cfg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/hpdftex.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/hpdftex.def
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/appendix/appendix.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/appendix/appendix.sty
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.aux
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.aux
+OUTPUT thesis.aux
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
+OUTPUT thesis.pdf
+OUTPUT thesis.out
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmtt10.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr9.tfm
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Abstract.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Abstract.tex
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx9.tfm
+INPUT C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.toc
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.toc
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
+OUTPUT thesis.toc
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.lof
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.lof
+OUTPUT thesis.lof
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Introduction.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Introduction.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Background.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Background.tex
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/InitialSolution.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/InitialSolution.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/CUDASolution.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/CUDASolution.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/F-SharpSolution.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/F-SharpSolution.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Generation.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Generation.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Optimization.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Optimization.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/RelatedWork.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/RelatedWork.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Conclusion.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Conclusion.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.bbl
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.bbl
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmtt9.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr6.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmmi9.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmmi6.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmsy9.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmsy6.tfm
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Appendix.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Appendix.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/appendix/Example.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/appendix/Example.tex
+INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.aux
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb
