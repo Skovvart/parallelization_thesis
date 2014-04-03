@@ -1,0 +1,11 @@
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\Actulus_cuBase.exe.config
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\Actulus_cuBase.XML
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\Actulus_cuBase.exe
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\Actulus_cuBase.pdb
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\Alea.CUDA.dll
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\FSharp.Core.dll
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\Alea.CUDA.xml
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\bin\Debug\FSharp.Core.xml
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\obj\Debug\Actulus cuBase.fsprojResolveAssemblyReference.cache
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\obj\Debug\Actulus_cuBase.exe
+c:\users\nicolai skovvart\documents\visual studio 2012\Projects\Actulus cuBase\Actulus cuBase\obj\Debug\Actulus_cuBase.pdb

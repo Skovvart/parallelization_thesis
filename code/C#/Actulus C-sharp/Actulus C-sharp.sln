@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actulus C-sharp double", "Actulus C-sharp double\Actulus C-sharp double.csproj", "{B4C463C7-4095-444E-AD28-8ACAEE0AD267}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actulus C-sharp float", "Actulus C-sharp float\Actulus C-sharp float.csproj", "{04EBC691-84E6-4E55-81A2-ED2AF2867C7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4C463C7-4095-444E-AD28-8ACAEE0AD267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4C463C7-4095-444E-AD28-8ACAEE0AD267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4C463C7-4095-444E-AD28-8ACAEE0AD267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4C463C7-4095-444E-AD28-8ACAEE0AD267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04EBC691-84E6-4E55-81A2-ED2AF2867C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04EBC691-84E6-4E55-81A2-ED2AF2867C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04EBC691-84E6-4E55-81A2-ED2AF2867C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04EBC691-84E6-4E55-81A2-ED2AF2867C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

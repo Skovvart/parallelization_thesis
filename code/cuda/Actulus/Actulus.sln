@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Multi kernel", "Actulus\Actulus.vcxproj", "{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Single kernel", "Single kernel\Single kernel.vcxproj", "{F68875FD-8673-4FD3-A172-04E9D55964B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Debug|Win32.Build.0 = Debug|Win32
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Debug|x64.ActiveCfg = Debug|x64
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Debug|x64.Build.0 = Debug|x64
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Release|Win32.ActiveCfg = Release|Win32
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Release|Win32.Build.0 = Release|Win32
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Release|x64.ActiveCfg = Release|x64
+		{AC9DF1B0-A3E0-4710-AF66-D271A5849FC2}.Release|x64.Build.0 = Release|x64
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Debug|Win32.Build.0 = Debug|Win32
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Debug|x64.ActiveCfg = Debug|x64
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Debug|x64.Build.0 = Debug|x64
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Release|Win32.ActiveCfg = Release|Win32
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Release|Win32.Build.0 = Release|Win32
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Release|x64.ActiveCfg = Release|x64
+		{F68875FD-8673-4FD3-A172-04E9D55964B6}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
