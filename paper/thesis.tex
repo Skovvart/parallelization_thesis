@@ -25,6 +25,21 @@
     captionpos = b,
     breaklines = true
 }
+\lstdefinelanguage{calcspec}{
+  morekeywords={calculation,name,equations,algorithm,type,parameters,stepsize,%
+    boundaryvalues,expressions,range,from,to,r_j,b_j,mu_jk,b_jk},
+  sensitive=true,
+  morestring=[b]'
+}
+\lstset{frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  keywordstyle=\bf
+}
 % Listing settings end
 
 %Fix TOC
@@ -37,7 +52,7 @@
 %End fix TOC
 
 %Meta
-\title{CUDA GPGPU programming using F\# Alea.cuBase and Actulus CalcSpech for parallelized pension reserve estimation}
+\title{CUDA GPGPU programming using F\# Alea.cuBase and Actulus CalcSpec for parallelized pension reserve estimation}
 \author{Nicolai Skovvart \email{nbsk@itu.dk}\\Superviser: Peter Sestoft}
 \date{\today}
 \institute{IT University of Copenhagen}
