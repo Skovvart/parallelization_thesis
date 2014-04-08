@@ -1,9 +1,9 @@
-PWD C:/Users/Skovvart/Desktop/Thesis/paper
+PWD C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper
 INPUT C:/Users/Skovvart/AppData/Local/MiKTeX/2.9/miktex/data/le/pdftex/pdflatex.fmt
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.tex
 OUTPUT thesis.log
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/llncs.cls
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/llncs.cls
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/llncs.cls
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/llncs.cls
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/article.cls
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/article.cls
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/size10.clo
@@ -14,14 +14,28 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/aliascnt.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/aliascnt.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/carlisle/remreset.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/carlisle/remreset.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsmath.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsmath.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amstext.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amstext.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsgen.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsgen.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsbsy.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsbsy.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsopn.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/ams/math/amsopn.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/fancyhdr/fancyhdr.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/fancyhdr/fancyhdr.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/float/float.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/float/float.sty
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.sty
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/caption/caption.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/caption/caption.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/caption/caption3.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/caption/caption3.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/keyval.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/graphics/keyval.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/listings.cfg
@@ -82,8 +96,8 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/oberdiek/rerunfilecheck.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/appendix/appendix.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/appendix/appendix.sty
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.aux
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.aux
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.aux
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.aux
 OUTPUT thesis.aux
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/context/base/supp-pdf.mkii
@@ -91,75 +105,83 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/hyperref/nameref.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/generic/oberdiek/gettitlestring.sty
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.out
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.out
 OUTPUT thesis.pdf
 OUTPUT thesis.out
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmtt10.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr9.tfm
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Abstract.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Abstract.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Abstract.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Abstract.tex
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx9.tfm
 INPUT C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.toc
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.toc
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT thesis.toc
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.lof
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.lof
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 OUTPUT thesis.lof
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Introduction.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Introduction.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Background.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Background.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/InitialSolution.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/InitialSolution.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/CUDASolution.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/CUDASolution.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/F-SharpSolution.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/F-SharpSolution.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Generation.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Generation.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Optimization.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Optimization.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/RelatedWork.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/RelatedWork.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Conclusion.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Conclusion.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.bbl
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.bbl
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstmisc.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmtt9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr6.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmmi9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmmi6.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmsy9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmsy6.tfm
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Appendix.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/Appendix.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/appendix/Example.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/sections/appendix/Example.tex
-INPUT C:/Users/Skovvart/Desktop/Thesis/paper/thesis.aux
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmitt10.tfm
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/InitialSolution.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/InitialSolution.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/CUDASolution.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/CUDASolution.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/F-SharpSolution.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/F-SharpSolution.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Generation.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Generation.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Optimization.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Optimization.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/RelatedWork.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/RelatedWork.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Conclusion.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Conclusion.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.bbl
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.bbl
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Appendix.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Appendix.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Example.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Example.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.aux
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmitt10.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb

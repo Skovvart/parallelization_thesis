@@ -1,10 +1,118 @@
+% !TeX root = ../thesis.tex
 \section{Background}
-Background introduction
+The background section will cover four topics. First the mathematics employed in this project will be covered,  mainly consisting of Thiele's differential equation which is solved by the fourth-order Runge-Kutta method.
+Parallelization and in relation the suitability of the GPU will then be covered, followed by how it is utilized by CUDA C and F\# with Alea.cuBase.
+
+
+\subsection{Thiele's differential equation and the Runge-Kutta Method}
+The goal of the computations done in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given insurance plan.
+Thiele's differential equation\cite{thiele} called ''the fundament of modern life insurance mathematics''\cite{thiele:quote} is a basic tool for determining conditional expected values in intensity-driven Markov processes. It can be used to express a variety of life insurance products described by multi-state Markov processes.
+The equation is expressed below in equation \ref{eq:thiele}. It consists of the following parts:
+
+\begin{itemize}
+\item $V_t$ is the reserve at time $t$
+\item $\pi_t$ is the premium paid at time $t$
+\item $b_t$ is the benefit paid by the insurer at time $t$
+\item $\mu_{x+t}$ is the mortality intensity at time $t$ with a person of age age $x$ at the time of signing the contract
+\item $r_t$ is interest-rate at time $t$
+\end{itemize}
+
+\begin{equation}\label{eq:thiele}
+\frac{d}{dt}V_t = \pi_t - b_t \mu_{x+t} + (r_t + \mu_{x+t}) V_t
+\end{equation}
+
+With a differential equation such as this, we need a way to solve it. 
+The Runge-Kutta method\cite{runge-kutta} is a method for integrating ordinary differential equations by using a trial step at the midpoint of an interval to cancel out lower-order error terms.
+The equation can be seen below in equation \ref{eq:rk4}.
+
+\begin{equation}\begin{aligned}\label{eq:rk4}
+&k_1 = h f(x_n, y_n)\\
+&k_2 = h f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}k_1)\\
+&k_3 = h f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}k_2)\\
+&k_4 = h f(x_n + h, y_n + k_3)\\
+&y_{n+1} = y_n + \frac{1}{6}k_1 + \frac{1}{3}k_2 + \frac{1}{3}k_3 + \frac{1}{6}k_4 + O(h^5)
+\end{aligned}\end{equation}
+
 \subsection{Parallelization and the GPU}
-Talk about GPU vs CPU and parallelization in general
-\subsection{Runge-Kutta and Thiele's differential equation}
-Runge-Kutta 4 solvers and Thiele's differential equation section\cite{actulus}
-\subsection{CUDA}
-CUDA section
-\subsection{F\# Alea.cuBase}
-F\# Alea.cuBase section
+Parallelization is the act of taking one large task and splitting it into many smaller tasks that run concurrently (''in parallel''). This can be done both on multi-core CPU's, but can especially be utilized by GPUs that were designed specifically to run operations in parallel for graphic processing.
+Talk about streaming multi-processors. Talk about blocks and threads (+dimensions).
+Talk about memory types (shared, global, local, host, etc.)
+
+%http://docs.nvidia.com/cuda/pdf/CUDA_C_Programming_Guide.pdf
+%highly parallel, multithreaded, manycore processor with tremendous computational horsepower and very high memory bandwidth
+%The reason behind the discrepancy in floating-point capability between the CPU and the GPU is that the GPU is specialized for compute-intensive, highly parallel computation - exactly what graphics rendering is about - and therefore designed such that more transistors are devoted to data processing rather than data caching and flow control
+%Talk about GPU vs CPU and parallelization in general
+
+\subsection{CUDA and CUDA C}
+CUDA is NVIDIAs parallel computing platform and programming model for harnessing the power of the GPU.
+The CUDA platform consists of the CUDA C and C++ languages (referred to as CUDA C from this point), based on C and C++ with some extension and limitations. It also includes parallel computing extensions for other languages such as Fortran and Python. It also includes the CUDA Toolkit which includes a compiler, math libraries and tools for debugging and optimizing performance as well as guides, user manuals, API references and other documentation.
+
+CUDA C is mostly C with added declaration specifiers for methods and variables. The most essential declaration specifier is the \textbf{\_\_global\_\_} specifier which declares a method to be a \textbf{kernel}. Kernels are void-methods that will be executed on the GPU. Code sample \ref{cuda_add} show a simple kernel performing vector addition of the vectors of size $N$.
+
+\begin{lstlisting}[language=C++, caption=CUDA C addition kernel, label=cuda_add]
+__global__ void Add(float* a, float* b, float* result){
+	//unique thread id within the kernel
+	int i = threadIdx.x;
+	//+ blockIdx.x * blockDim.x (always 1 in this example)
+	result[i] = a[i] + b[i];
+}
+
+int main(){
+	...
+	//Invoke kernel to run on 1 block with N threads per block
+	//(more on that later)
+	Add<<<1, N>>>(a, b, result);
+	...
+}
+\end{lstlisting}
+
+Another thing to note is the launch-parameters of the kernel which specify the amount of blocks and the amount of threads per block. A block can be organized into either one-dimensional, two-dimensional or three-dimensional grids. This is convenient in the case of working with for example matrices, but is not utilized in this thesis and will not be covered in further detail.
+
+CUDA C also has other declaration specifiers. \textbf{\_\_device\_\_} specifies that a method will only be compiled for the GPU (which can be used by kernels), \textbf{\_\_host\_\_} specifies that a method will be available for the CPU. These two specifiers can also be used together for compilation to both platforms.
+Variables have the \textbf{\_\_device\_\_} qualifier as well as \textbf{\_\_constant\_\_} to indicate it should be stored in constant memory or \textbf{\_\_shared\_\_} for shared memory.
+
+As it is based on C, dynamic memory must be allocated using malloc and subsequently de-allocated by free.
+This operation also has to be done for the device using the equivalent cudaMalloc and cudaFree.
+The tediousness of this is one of the many benefits from using a more modern language, but you do lose some control that could potentially lead to loss in performance.
+
+\subsection{F\# and Alea.cuBase}
+F\#\cite{fsharp} is an open source, cross-platform function programming language originated from Microsoft that runs on the .NET platform.
+Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language integrated compiler that allows for CUDA development on the F\# platform and in extension all .NET languages.
+Other than allowing for rapid development in a modern language, it features dynamic kernel compilation.
+
+It utilizes F\#'s Quotation Expressions\cite{ms:quotations} and is based around CUDA program templates.
+
+\begin{lstlisting}[caption=Alea.cuBase addition kernel, label=cubase_add]
+let Add = cuda {
+  let! kernel =
+    <@ fun (a:deviceptr<float>) (b:deviceptr<float>) (result:deviceptr<float>) ->
+      let i = blockIdx.x * blockDim.x + threadIdx.x
+      result.[i] <- a.[i] + b.[i]
+    @>
+    // Use a workflow statement to define this kernel
+    |> Compiler.DefineKernel
+
+  // Define the entry point.
+  return Entry(fun program ->
+    let worker = program.Worker
+    let kernel = program.Apply kernel
+
+    fun (a:float[]) (b:float[]) ->
+      use a = worker.Malloc(a)
+      use b = worker.Malloc(b)
+      use result = worker.Malloc(Array.zeroCreate a.Length)
+      let lp = LaunchParam(1, a.Length)
+      kernel.Launch lp a.Ptr b.Ptr result.Ptr
+      let result = result.Gather()
+      result //return result
+  )
+}
+
+[<EntryPoint>]
+let main argv = 
+  let a = [| for i in 1.0 .. 10.0 -> i |]
+  let b = [| for i in 21.0 .. 30.0 -> i |]
+  use program = Add |> Compiler.load Worker.Default
+  program.Run a b |> Array.iter (fun e -> printfn "%f" e)
+  0
+\end{lstlisting}
