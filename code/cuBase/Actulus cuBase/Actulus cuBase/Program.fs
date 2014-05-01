@@ -31,7 +31,7 @@ let runTest dV bj_ii a b states =
     program.Run a b steps
 
 let runPureEndowment =
-    runTest pe_dV pe_bj_ii 40 0  1
+    runTest pe_dV pe_bj_ii 40 0 1
 
 let runDeferredTemporaryLifeAnnuity =
     runTest dtla_dV dtla_bj_ii 50 0 1

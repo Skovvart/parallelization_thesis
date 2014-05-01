@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Actulus cuBase double", "Actulus cuBase\Actulus cuBase double.fsproj", "{52EA9C49-1724-44DB-B9D2-3E54AC85D8DC}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Actulus cuBase double single", "Actulus cuBase\Actulus cuBase double single.fsproj", "{52EA9C49-1724-44DB-B9D2-3E54AC85D8DC}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Actulus cuBase float", "Actulus cuBase float\Actulus cuBase float.fsproj", "{5F75CF22-A979-4DC0-936B-B794D3604C6C}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Actulus cuBase float single", "Actulus cuBase float\Actulus cuBase float single.fsproj", "{5F75CF22-A979-4DC0-936B-B794D3604C6C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Actulus cuBase multi", "Actulus cuBase float multi\Actulus cuBase multi.fsproj", "{E1BA98A4-04D6-433E-9086-27106C626C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +21,10 @@ Global
 		{5F75CF22-A979-4DC0-936B-B794D3604C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F75CF22-A979-4DC0-936B-B794D3604C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F75CF22-A979-4DC0-936B-B794D3604C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1BA98A4-04D6-433E-9086-27106C626C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1BA98A4-04D6-433E-9086-27106C626C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1BA98A4-04D6-433E-9086-27106C626C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1BA98A4-04D6-433E-9086-27106C626C64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

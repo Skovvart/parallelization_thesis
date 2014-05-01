@@ -74,7 +74,7 @@ void runKernel(void (*plan)(int a, int b, int steps, float *Va, float *result), 
 	timerstart();
 	plan<<<blocks, threads>>>(years, 0, steps, d_Va, d_result);
 	kernelTime += timerstop();
-	HANDLE_ERROR(cudaGetLastError());
+	HANDLE_ERROR(cudaPeekAtLastError());
 
 	// Copy the results to main memory
 	HANDLE_ERROR(cudaMemcpy(result, d_result, resultSize, cudaMemcpyDeviceToHost));
@@ -95,20 +95,20 @@ void runKernels(bool printresult){
 	int threads = 1;
 
 	
-	runKernel(&PureEndowment, 1, 40, steps, blocks, threads, printresult);
-	runKernel(&DeferredTemporaryLifeAnnuity, 1, 50, steps, blocks, threads, printresult);
-	runKernel(&TemporaryLifeAnnuityPremium, 1, 50, steps, blocks, threads, printresult);
-	runKernel(&TermInsurance, 1, 50, steps, blocks, threads, printresult);
-	runKernel(&DisabilityAnnuity, 2, 50, steps, blocks, threads, printresult);
-	runKernel(&DisabilityTermInsurance, 2, 50, steps, blocks, threads, printresult);
+	runKernel(&PureEndowment,					1, 40, steps, blocks, threads, printresult);
+	runKernel(&DeferredTemporaryLifeAnnuity,	1, 50, steps, blocks, threads, printresult);
+	runKernel(&TemporaryLifeAnnuityPremium,		1, 50, steps, blocks, threads, printresult);
+	runKernel(&TermInsurance,					1, 50, steps, blocks, threads, printresult);
+	runKernel(&DisabilityAnnuity,				2, 50, steps, blocks, threads, printresult);
+	runKernel(&DisabilityTermInsurance,			2, 50, steps, blocks, threads, printresult);
 
 }
 
 int main(int argc, const char* argv[]){
 	cudainit();
-	int iterations = 1;
+	int iterations = 10;
 	for (int i = 0; i < iterations; i++)
-		runKernels(true);
+		runKernels(i==0);
 	printf("Total kernel-time %fms\n", kernelTime/iterations);
 	return 0;
 }
