@@ -84,18 +84,19 @@ CUDA C also has other declaration specifiers. \textbf{\_\_device\_\_} specifies 
 Variables have the \textbf{\_\_device\_\_} qualifier as well as \textbf{\_\_constant\_\_} to indicate it should be stored in constant memory or \textbf{\_\_shared\_\_} for shared memory.
 
 As it is based on C, dynamic memory must be allocated using malloc and subsequently de-allocated by free.
-This operation also has to be done for the device using the equivalent cudaMalloc and cudaFree.
-The tediousness of this is one of the many benefits from using a more modern language, but you do lose some control that could potentially lead to loss in performance.
+This operation also has to be done for the device memory using the equivalent cudaMalloc and cudaFree.
+The tediousness of this is one of the many benefits from using a more modern language, but at the cost of control that could potentially decrease performance.
 
 \subsection{F\# and Alea.cuBase}
-F\#\cite{fsharp} is an open source, cross-platform function programming language originated from Microsoft that runs on the .NET platform.
-Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language integrated compiler that allows for CUDA development on the F\# platform and in extension all .NET languages.
-Other than allowing for rapid development in a modern language, it features dynamic kernel compilation.
+F\#\cite{fsharp} is an open source, cross-platform functional programming language originating from Microsoft that runs on the .NET platform.
+Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language integrated compiler for F\# that allows for CUDA development on the .NET platform.
+By relying on run-time code-generation it allows for extremely extensible kernels to an extend not easily possible in CUDA C.
 
-It utilizes F\#'s meta-programming support Quotation Expressions\cite{ms:quotations} and is based around CUDA program templates.
+It utilizes F\#'s meta-programming support Code Quotation\cite{ms:quotations} for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
+Code sample \ref{cubase_add} shows what a simple squaring-kernel could look like in Alea.cuBase F\#. 
 
 \begin{lstlisting}[caption=Alea.cuBase square kernel, label=cubase_add]
-let Square = cuda {
+let Square = cuda { //use the Alea.cuBase cuda workflow
   let! kernel = <@ fun (a:deviceptr<int>) (result:deviceptr<int>) ->
       let i = blockIdx.x * blockDim.x + threadIdx.x
       result.[i] <- a.[i] * a.[i] @> |> Compiler.DefineKernel
@@ -117,3 +118,8 @@ let main argv =
   program.Run a |> Array.iter (fun e -> printfn "%d" e)
   0
 \end{lstlisting}
+
+The cuda workflow/computation expression (or "monad" for the so inclined) contains the kernel defined with Code Quotations and compiled to an actual kernel and returns a host-side execution method that will handle allocation and deallocation of device-side memory. 
+As we are using F\#, the deallocation can be handled automatically by using the use-keyword. 
+The program is then loaded to a worker (a CUDA context and background-thread) in the main method compiling the PTX to NVidia internal ISA.
+The program is the run using the parameters defined in the run-time method of the cuda workflow (in this case, it just takes an integer array) and the result can be processed on the GPU (in this example, the result is simply printed).
