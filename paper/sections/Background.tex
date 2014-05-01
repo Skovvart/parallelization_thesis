@@ -1,12 +1,15 @@
 % !TeX root = ../thesis.tex
 \section{Background}
-The background section will cover four topics. First the mathematics employed in this project will be covered,  mainly consisting of Thiele's differential equation which is solved by the fourth-order Runge-Kutta method.
-Parallelization and in relation the suitability of the GPU will then be covered, followed by how it is utilized by CUDA C and F\# with Alea.cuBase.
+The background section will cover four topics.
+First the mathematics employed in this project will be covered. This consists of Thiele's differential equation and the fourth-order Runge-Kutta method for solving differential equations.
+This is followed by general information on parallelization and why the GPU is particularly effective at it.
+After this the CUDA platform, CUDA C and F\# with Alea.cuBase will be discussed.
 
 
 \subsection{Thiele's differential equation and the Runge-Kutta Method}
 The goal of the computations done in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given insurance plan.
-Thiele's differential equation\cite{thiele} called ''the fundament of modern life insurance mathematics''\cite{thiele:quote} is a basic tool for determining conditional expected values in intensity-driven Markov processes. It can be used to express a variety of life insurance products described by multi-state Markov processes.
+Thiele's differential equation\cite{thiele} called ''the fundament of modern life insurance mathematics''\cite{thiele:quote} is a basic tool for determining conditional expected values in intensity-driven Markov processes.
+It can be used to express a variety of life insurance products described by multi-state Markov processes.
 The equation is expressed below in equation \ref{eq:thiele}. It consists of the following parts:
 
 \begin{itemize}
@@ -34,7 +37,18 @@ The equation can be seen below in equation \ref{eq:rk4}.
 \end{aligned}\end{equation}
 
 \subsection{Parallelization and the GPU}
-Parallelization is the act of taking one large task and splitting it into many smaller tasks that run concurrently (''in parallel''). This can be done both on multi-core CPU's, but can especially be utilized by GPUs that were designed specifically to run operations in parallel for graphic processing.
+Parallelization is the act of taking one task and splitting it into smaller tasks that run concurrently (''in parallel''). This could for example be an algorithm that initially loops $t$ times, but is then altered to instead utilize $t$ tasks that each execute one iteration's work.
+This can be done on multi-core CPU's utilizing constructs such as processes and threads, but it can especially be utilized by GPU's that were designed to run operations in parallel for graphics processing.
+
+This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated by figure \ref{cpugpu}.
+
+\begin{figure}[h!]
+\includegraphics{cpugpu.jpg}
+\caption{The GPU devotes more transistors to data processing\cite{cuda_c_programming_guide}\label{cpugpu}}
+\end{figure}
+
+
+
 Talk about streaming multi-processors. Talk about blocks and threads (+dimensions).
 Talk about memory types (shared, global, local, host, etc.)
 
@@ -52,17 +66,15 @@ CUDA C is mostly C with added declaration specifiers for methods and variables. 
 \begin{lstlisting}[language=C++, caption=CUDA C addition kernel, label=cuda_add]
 __global__ void Add(float* a, float* b, float* result){
 	//unique thread id within the kernel
-	int i = threadIdx.x;
-	//+ blockIdx.x * blockDim.x (always 1 in this example)
+	int i = threadIdx.x + blockIdx.x * blockDim.x;
+	// (blockIdx always 0 in this example)
 	result[i] = a[i] + b[i];
 }
 
 int main(){
-	...
-	//Invoke kernel to run on 1 block with N threads per block
-	//(more on that later)
+	...//Initiate memory on host and device
 	Add<<<1, N>>>(a, b, result);
-	...
+	...//Copy back results, free memory as appropriate
 }
 \end{lstlisting}
 
@@ -80,39 +92,28 @@ F\#\cite{fsharp} is an open source, cross-platform function programming language
 Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language integrated compiler that allows for CUDA development on the F\# platform and in extension all .NET languages.
 Other than allowing for rapid development in a modern language, it features dynamic kernel compilation.
 
-It utilizes F\#'s Quotation Expressions\cite{ms:quotations} and is based around CUDA program templates.
+It utilizes F\#'s meta-programming support Quotation Expressions\cite{ms:quotations} and is based around CUDA program templates.
 
-\begin{lstlisting}[caption=Alea.cuBase addition kernel, label=cubase_add]
-let Add = cuda {
-  let! kernel =
-    <@ fun (a:deviceptr<float>) (b:deviceptr<float>) (result:deviceptr<float>) ->
+\begin{lstlisting}[caption=Alea.cuBase square kernel, label=cubase_add]
+let Square = cuda {
+  let! kernel = <@ fun (a:deviceptr<int>) (result:deviceptr<int>) ->
       let i = blockIdx.x * blockDim.x + threadIdx.x
-      result.[i] <- a.[i] + b.[i]
-    @>
-    // Use a workflow statement to define this kernel
-    |> Compiler.DefineKernel
-
-  // Define the entry point.
+      result.[i] <- a.[i] * a.[i] @> |> Compiler.DefineKernel
   return Entry(fun program ->
     let worker = program.Worker
     let kernel = program.Apply kernel
-
-    fun (a:float[]) (b:float[]) ->
+    //return host-execution method
+    fun (a:int[]) ->
       use a = worker.Malloc(a)
-      use b = worker.Malloc(b)
       use result = worker.Malloc(Array.zeroCreate a.Length)
-      let lp = LaunchParam(1, a.Length)
-      kernel.Launch lp a.Ptr b.Ptr result.Ptr
-      let result = result.Gather()
-      result //return result
-  )
+      kernel.Launch (LaunchParam(1, a.Length)) a.Ptr result.Ptr
+      result.Gather()) //return result
 }
 
 [<EntryPoint>]
 let main argv = 
-  let a = [| for i in 1.0 .. 10.0 -> i |]
-  let b = [| for i in 21.0 .. 30.0 -> i |]
-  use program = Add |> Compiler.load Worker.Default
-  program.Run a b |> Array.iter (fun e -> printfn "%f" e)
+  let a = [| for i in 1 .. 10 -> i |]
+  use program = Square |> Compiler.load Worker.Default
+  program.Run a |> Array.iter (fun e -> printfn "%d" e)
   0
 \end{lstlisting}

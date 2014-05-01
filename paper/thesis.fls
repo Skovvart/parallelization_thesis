@@ -138,12 +138,15 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
 OUTPUT thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty

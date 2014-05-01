@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex thesis"] 1396958958 "thesis.aux" "thesis.bbl" "thesis" 1396959000
+["bibtex thesis"] 1398277325 "thesis.aux" "thesis.bbl" "thesis" 1398277326
   "C:/Program Files (x86)/MiKTeX 2.9/bibtex/bst/base/abbrv.bst" 711639242 20285 80a4cd697aa25f551be22e1a27ee1109 ""
   "sections/Bibliography.bib" 1396707414 621 dfe6c7327fabce38be583bd8c1e972e9 ""
-  "thesis.aux" 1396959000 3550 a1453b92b7270b73edb802296830977c ""
+  "thesis.aux" 1398277326 4055 bd3c8b11db98f11869f6cc735859ef8e ""
   "thesis.bcf" 0 -1 0 ""
   (generated)
   "thesis.blg"
   "thesis.bbl"
-["pdflatex"] 1396959000 "thesis.tex" "thesis.pdf" "thesis" 1396959000
+["pdflatex"] 1398277325 "thesis.tex" "thesis.pdf" "thesis" 1398277326
   "C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233930248 1004 54797486969f23fa377b128694d548df ""
   "C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
@@ -80,10 +80,11 @@
   "C:/Program Files (x86)/MiKTeX 2.9/tex/latex/xcolor/xcolor.sty" 1172316092 56673 a43bab84e0ac5e6efcaf9a98bde73a94 ""
   "C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map" 1396947707 106047 b462c15842a400c1745c4a4d891fcb40 ""
   "C:/Users/Skovvart/AppData/Local/MiKTeX/2.9/miktex/data/le/pdftex/pdflatex.fmt" 1374005081 3615598 b1556713d2946a3b302752387f3b00a5 ""
+  "images/cpugpu.jpg" 1398273189 21865 00cb8734ae609d1fbb1a9dfeb6028f9f ""
   "llncs.cls" 1369338812 42776 97bcbe449bc5a3754333b27580080c65 ""
   "sections/Abstract.tex" 1396895057 1741 1a8c64872df52826b5aec9da5f0de713 ""
   "sections/Appendix.tex" 1396895066 101 c6dc1378e8ba9dff86bd032b8a18f2a4 ""
-  "sections/Background.tex" 1396958925 7647 2e4d52d9d71877f1699002db93176463 ""
+  "sections/Background.tex" 1398277323 7892 856d78991d39e0843102bb4c48539f5d ""
   "sections/CUDASolution.tex" 1396895082 93 d0ae70b44bcdb380dd2763776d891e7e ""
   "sections/Conclusion.tex" 1396895077 59 9361ea4daf45addb87f4df59c2a48081 ""
   "sections/F-SharpSolution.tex" 1396895088 332 d9ec35c730006329d26f3f558d4eebdc ""
@@ -94,12 +95,12 @@
   "sections/Optimization.tex" 1396895109 164 d8ea7f49439ea89d7aa9b0df24220bb6 ""
   "sections/RelatedWork.tex" 1396895114 99 672081b711ea81a2b06f956ada13664d ""
   "sections/appendix/Example.tex" 1394493777 18 611b4f7e6207eed07cff3a0f74646d0a ""
-  "thesis.aux" 1396959000 3550 a1453b92b7270b73edb802296830977c ""
-  "thesis.bbl" 1396958958 52 0eba253fc001332e731e8aba3f23127b "bibtex thesis"
-  "thesis.lof" 1396959000 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "thesis.out" 1396959000 1420 a84ecc31cd9d10499d2ba4c0a1bbb680 ""
+  "thesis.aux" 1398277326 4055 bd3c8b11db98f11869f6cc735859ef8e ""
+  "thesis.bbl" 1398277325 52 0eba253fc001332e731e8aba3f23127b "bibtex thesis"
+  "thesis.lof" 1398277326 168 a80908903b82ebb68b5f98e584c96d56 ""
+  "thesis.out" 1398277326 1420 692fbad9bdb110ad18a9744270caec49 ""
   "thesis.tex" 1396958994 2130 640ac32cd4a3fc25104f024d40233901 ""
-  "thesis.toc" 1396959000 1765 2f77368ab25e8e4e1408a0a8c538a5fa ""
+  "thesis.toc" 1398277326 1765 c199936daa1145c34a507afbd694b60b ""
   (generated)
   "thesis.log"
   "thesis.toc"
