@@ -65,7 +65,7 @@ CUDA C is mostly C with added declaration specifiers for methods and variables. 
 
 \begin{lstlisting}[language=C++, caption=CUDA C addition kernel, label=cuda_add]
 __global__ void Add(float* a, float* b, float* result){
-	//unique thread id within the kernel
+	//unique id within the kernel
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	// (blockIdx always 0 in this example)
 	result[i] = a[i] + b[i];
