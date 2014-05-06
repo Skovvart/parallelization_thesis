@@ -4,12 +4,12 @@ As Central Processing Unit (CPU) clock-rate growth have mostly stagnated in the 
 
 While parallelization can be utilized by multi-core CPUs, General Purpose Graphics Processing Units (GPGPU's) in particular are used when computations on large amounts of data is needed, despite originating from the Graphics Processing Unit (GPU) designed for performing calculations in relation to computer graphics.
 
-Parallelization is especially useful for large amounts of independent calculations that can be found in financial fields such as banking or pension.
+Parallelization is especially useful for large amounts of independent calculations that can be found in financial fields such as banking or insurance.
 
 GPGPU programming is often done on the Compute Unified Device Architecture (CUDA) platform by NVIDIA \cite{NVIDIA}. 
 The CUDA platform supports multiple languages, for example as Python and Fortran, it is primarily used by NVIDIA's CUDA C (\textbf{QUOTE}) which is based on the somewhat archaic C/C++ languages.
 
-In this thesis a single-threaded C\# pension reserve estimator will be be translated to the CUDA platform and parallelized and performance gains will be explored and analyzed.
+In this thesis a single-threaded C\# insurance reserve estimator will be be translated to the CUDA platform and parallelized and performance gains will be explored and analyzed.
 First a base-line implementation will be done in CUDA C and later a solution will be implemented on the more modern .NET platform in the F\# language using the language-integrated compiler Alea.cuBase.
 This is to allow for more rapid development utilizing GPGPU parallelization as well as allowing it to be incorporated in a .NET work-flow.
 
@@ -25,7 +25,7 @@ The first chapter will introduce the thesis, including the motivation, the scope
 
 The second chapter will cover a lot of the background knowledge including the math used, parallelization in general and how the GPU facilitates it, the CUDA platform and the CUDA C language, the F\# language and the language integrated compiler Alea.cuBase.
 
-The third chapter will cover descriptions of the various implemented solutions, starting with the initial single-threaded C\# solution, followed by the ''native'' CUDA C implementation and finally the solution in F\#/Alea.cuBase.
+The third chapter will cover descriptions of the various implemented solutions, starting with the initial single-threaded C\# solution, followed by the ``native'' CUDA C implementation and finally the solution in F\#/Alea.cuBase.
 
 The fourth chapter will describe how pension plans written in Actulus CalcSpec are parsed and transformed to F\#/Alea.cuBase kernels and the performance ramifications of this.
 
