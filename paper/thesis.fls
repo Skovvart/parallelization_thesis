@@ -138,10 +138,10 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
 OUTPUT thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
@@ -178,6 +178,7 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/C
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Conclusion.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.bbl
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.bbl
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmti9.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Appendix.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Appendix.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Example.tex
@@ -193,5 +194,6 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti9.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb

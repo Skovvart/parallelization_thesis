@@ -1,16 +1,22 @@
 % !TeX root = ../thesis.tex
 \section{Background}
-The background section will cover four topics.
+The background section will cover seven topics.
 First the mathematics employed in this project will be covered. 
 This consists of Thiele's differential equation and the fourth-order Runge-Kutta method for solving differential equations.
-This is followed by general information on parallelization and the potential benefits of using the GPU compared to the CPU.
-After this the CUDA platform, CUDA C and F\# with Alea.cuBase will be presented.
+
+After the mathematics is covered, the technologies utilized will be presented.
+First general information on parallelization and the potential benefits of using the GPU compared to the CPU will be explained.
+The CUDA platform and CUDA C will then be presented.
+This is followed by an introduction of F\#'s meta-programming model Code Quotations which is used by Alea.cuBase to generate GPU code.
+The syntax of the Actulus Calculation Specification (CalcSpec) language will then briefly be explained.
+
+Finally, the hardware the project has been tested on will be presented.
 
 
 \subsection{Thiele's differential equation and the Runge-Kutta Method}
-The goal of the computations done in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given insurance plan.
-Thiele's differential equation\cite{thiele} called ``the fundament of modern life insurance mathematics''\cite{thiele:quote} is a tool for determining conditional expected values in intensity-driven Markov processes.
-It can be used to express a variety of life insurance products as long as they can be described by multi-state Markov processes.
+The goal of the computations performed in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given insurance plan.
+Thiele's differential equation\cite{thiele} called ``the foundation of modern life insurance mathematics''\cite{bergermathematik} is a tool for determining conditional expected values in intensity-driven Markov processes. %Explain D:
+It can be used to express a variety of life insurance policies as long as they can be described by multi-state Markov processes. %D:::
 The equation is expressed below in equation \ref{eq:thiele}. It consists of the following parts:
 
 \begin{itemize}
@@ -39,19 +45,19 @@ The fourth-order version of the method can be seen below in equation \ref{eq:rk4
 
 \subsection{Parallelization and the GPU}
 Parallelization is the act of taking one large task and splitting it into smaller tasks that run concurrently (''in parallel'').
-This could for example be an algorithm that initially does some computation that loops $n$ times where each iteration is independent and takes $w$ time to complete, but is altered to instead utilize $n$ tasks that each execute one iteration's worth of work.
-Instead of taking $w \cdot n$ time time, it can now be done in just $w$ time plus whatever overhead is associated with creating the tasks and dividing the work.
-This is reliant on each iteration being independent, as if the iterations are dependent on each-other then it can not be executed before the previous iteration completes.
+This could for example be an algorithm that initially does some computation that loops $n$ times where each iteration is independent and takes $w$ time to complete, but is altered to instead utilize $n$ tasks that each execute one iterations worth of work.
+Instead of taking $w \cdot n$ time to complete, it can now be done in just $w$ time plus whatever overhead is associated with creating the tasks and dividing the work.
+This is reliant on each iteration being independent, as if the iterations are dependent on each other then it can not be executed before the previous iteration completes.
 Loops isn't the only way to utilize parallelization and all independent tasks can in theory be parallelized. 
 Utilizing various synchronization techniques, partially dependent calculations can also harness the power of parallelization, though at the risk of increased complexity and deadlocks.
 As only independent computation parallelization is utilized, other forms will not be discussed further.
 
 Parallelization can be performed on multi-core CPUs utilizing constructs such as processes and threads, but can especially be utilized by GPUs that were designed for compute-intensive and highly parallel computations, precisely what graphics rendering is about.
-This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated by figure \ref{cpugpu}. \textbf{TODO - image by CUDA C Programming guide - credit or remake}
+This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange) such as a cache and dynamic random-access memory (DRAM).
 
 \begin{figure}[h!]
 \includegraphics{cpugpu.jpg}
-\caption{The GPU devotes more transistors to data processing\cite{cuda_c_programming_guide}\label{cpugpu}}
+\caption{The GPU devotes more transistors to data processing. From the CUDA C Programming Guide \cite{nvidia2014programming}\label{cpugpu}}
 \end{figure}
 
 %http://docs.nvidia.com/cuda/pdf/CUDA_C_Programming_Guide.pdf
@@ -59,11 +65,11 @@ This is because unlike the CPU which is specialized for data-caching and flow co
 %The reason behind the discrepancy in floating-point capability between the CPU and the GPU is that the GPU is specialized for compute-intensive, highly parallel computation - exactly what graphics rendering is about - and therefore designed such that more transistors are devoted to data processing rather than data caching and flow control
 %Talk about GPU vs CPU and parallelization in general
 
-\subsection{CUDA and CUDA C}
+\subsection{The CUDA platform and CUDA C}
 CUDA is NVIDIAs parallel computing platform and programming model for harnessing the power of the GPU.
-The CUDA platform consists of the CUDA C and C++ language (referred to as CUDA C from this point), based on C and C++ but with some alterations.
+The CUDA platform consists of the CUDA C and C++ language (referred to as CUDA C from this point), based on the C and C++ languages but with some alterations.
 It also has parallel computing extensions for other languages such as Fortran and Python.
-The CUDA Toolkit is also a part of the platform, which consists of a compiler, math libraries and tools for debugging and optimizing performance as well as guides, user manuals, API references and other documentation.
+The CUDA Toolkit is also a part of the platform, consisting of a compiler, math libraries and tools for debugging and optimizing performance as well as guides, user manuals, API references and other documentation.
 
 \subsubsection{CUDA Architecture}
 The CUDA model is build around a hierarichal architecture of the GPU. 
@@ -73,9 +79,9 @@ Each SM executes one group of threads that have access to a shared memory-space.
 As each SM executes a block at a time, more SMs available to the GPU will speed up the execution of the total amount of blocks. 
 This also means that the amount of blocks should be a multiple of the amount of multiprocessors for maximum efficiency. %confirm
 
-\subsubsection{Memory}
-A thread has access to memory only available to itself using registers as long as they're available and falling back on local memory otherwise.
-Beyond that it has access to shared memory that is available to all threads in the same block as well as global memory accessible to all threads in all blocks.
+\subsubsection{Memory model}
+A thread has access to memory only available to itself. This is done using registers, that are fast, as long as they're available and falling back on local memory otherwise, which is slow.
+Beyond that it has access to shared memory that is available to all threads in the same block, which is fast, as well as global memory accessible to all threads in all blocks, which is slow.
 There is also constant memory and texture memory both of which are fast but immutable. 
 There is also a L1 and L2 cache \textbf{todo.. used for global/local memory I suppose?}.
 The properties of the various memory types can be seen in table \ref{table:memorytypes}.
@@ -116,29 +122,53 @@ int main(){
 }
 \end{lstlisting}
 
-Another thing to note is the launch-parameters of the kernel which specify the amount of blocks and the amount of threads per block. A block can be organized into either one-dimensional, two-dimensional or three-dimensional grids. This is convenient in the case of working with for example matrices, but is not utilized in this thesis and will not be covered in further detail.
+Another thing to note is the launch-parameters of the Add-kernel which specify the amount of blocks and the amount of threads per block. A block can be organized into either one-dimensional, two-dimensional or three-dimensional grids. This can be convenient in the case of working with for example matrices, but is not utilized in this thesis and will not be covered in further detail.
 
 CUDA C also has other declaration specifiers. \textbf{\_\_device\_\_} specifies that a method will only be compiled for the GPU (which can be referenced by kernels), \textbf{\_\_host\_\_} specifies that a method will be available for the CPU. These two specifiers can also be used together for compilation to both platforms.
 Variables have the \textbf{\_\_device\_\_} qualifier, as well as \textbf{\_\_constant\_\_} to indicate it should be stored in constant memory or \textbf{\_\_shared\_\_} for shared memory.
 
 As it is based on C, dynamic memory must be allocated using $malloc$ and subsequently de-allocated by $free$.
 This operation also has to be done for the device memory using the equivalent $cudaMalloc$ and $cudaFree$.
-The tediousness of this is one of the many benefits from using a more modern language, but at the cost of control that could potentially decrease performance.
+The tediousness of this is one of the many benefits of using a modern language, but at the cost of control that could potentially decrease performance.
+
+\subsection{F\# Code Quotations}
+Code quotations is a language feature of F\# that allows one to dynamically generate abstract syntax trees from F\# expressions. It is used in particular to transform F\# to other languages, for example SQL, automatically. It can also be used to generate F\# code that can be evaluated. Code quotations support both typed and untyped expressions using $<@ ... @>$ and $<@@ ... @@>$ respectively.
+
+For example, the expression $<@ let plusfive number = number + 5 in plusfive @>$ is automatically translated into the abstract syntax tree in figure \ref{quotationast}. As quotations only support expressions, a let declaration can not exist on its own, hence returning the function at the end (in the $in$ part of the quotation).
+
+\begin{lstlisting}[caption=Abstract syntax tree for the example quotation expression, label=quotationast]
+Let (plusfive, 
+	Lambda (number, 
+		Call (None, op_Addition, [number, Value (5)])
+	), 
+	plusfive)
+\end{lstlisting}
+
+Code quotations also allow for the mixing of quotation expressions using the splicing operators $\%$ for typed and $\%\%$ for untyped expressions as can be seen in code sample \ref{quotationsmixin}.
+
+\begin{lstlisting}[caption=Quotation mixing, label=quotationsmixin]
+let plusfive = <@ let plusfive number = number + 5 in plusfive @>
+//Has type Expr<int->int>
+let plus10 = <@ let plusten number = number |> %plusfive |> %plusfive in plusten @>
+//Also has type Expr<int->int>
+let untypedplus10 = <@@ %plus10 @@>
+//Has type Expr
+\end{lstlisting}
+
 
 \subsection{F\# and Alea.cuBase}
 F\#\cite{fsharp} is an open source, cross-platform functional programming language originating from Microsoft that runs on the .NET platform.
 Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language-integrated compiler for F\# that allows for CUDA development on the .NET platform.
 By relying on run-time code-generation it allows for extremely extensible kernels to an extend not easily possible in CUDA C.
 
-It utilizes F\#'s meta-programming support Code Quotation\cite{ms:quotations} for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
-Code sample \ref{cubase_add} shows what a simple squaring-kernel could look like in Alea.cuBase F\#. 
+It utilizes F\#'s meta-programming support Code Quotations for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
+Code sample \ref{cubase_add} shows what a simple vector squaring-kernel could look like in F\# with Alea.cuBase.
 
 \begin{lstlisting}[caption=Alea.cuBase square kernel, label=cubase_add]
 let Square = cuda { //use the Alea.cuBase cuda workflow
   let! kernel = <@ fun (a:deviceptr<int>) (result:deviceptr<int>) ->
       let i = blockIdx.x * blockDim.x + threadIdx.x
       result.[i] <- a.[i] * a.[i] @> |> Compiler.DefineKernel
-  //<@ @> is the Code Quotation, that is then compiled with Alea.cuBase
   return Entry(fun program ->
     let worker = program.Worker
     let kernel = program.Apply kernel
@@ -157,12 +187,62 @@ let main argv =
   0 //return 0 to indicate success
 \end{lstlisting}
 
-The cuda workflow/computation expression (or "monad" for the so inclined) contains the kernel defined with Code Quotations and compiled to an actual kernel and returns a host-side execution method that will handle allocation and de-allocation of device-side memory. 
-As we are using F\#, the deallocation can be handled automatically by using the $use$-keyword. 
-The program is then loaded to a worker (a CUDA context and background-thread) in the main method compiling the PTX to NVIDIA internal ISA.
-The program is then run using the parameters defined in the run-time method of the cuda workflow (in this case, it just takes an integer array) and the result is returned to the CPU where it can be processed (in this example, the result is simply printed).
+The $cuda$ workflow/computation expression (or ``monad'' for the so inclined) contains the kernel defined in a code quotations and compiled to an actual kernel, and it returns a host-side execution method that will handle allocation and de-allocation of device-side memory. 
+As we are using F\#, the deallocation is handled automatically by using the $use$-keyword that automatically frees up resources once the variables referencing them are out of scope. 
+The program is then loaded to a worker (a CUDA context and background-thread) in the main method compiling the PTX code to NVIDIA internal ISA code. %explain better
+The program is then run using the parameters defined in the run-time method of the $cuda$ workflow (in this case, it just takes an integer array) and the result is returned to the CPU where it can be processed (in this example, the result is simply printed).
+
+\subsection{Actulus Calculation Specification language}
+The Actulus Calculation Specification language (CalcSpec) is a language for defining the differential equations that make up an insurance plan. The overall structure can be seen in code sample \ref{calcspecstructure}.
+
+
+\begin{lstlisting}[caption=CalcSpec structure, label=calcspecstructure]
+calculation = {
+    name = <Name of calculation>,
+    algorithm = { <Algorithm> },
+    equations = { <Equations> },
+    range = { <Range> },
+    [output = "[" <Output> "]",]
+    boundaryvalues = { <Boundary values> },
+    expressions = { <Expressions> }
+  }
+\end{lstlisting}
+
+\begin{itemize}
+\item The $<Algorithm>$ will include the name of the algorithm (for example ``Runge Kutta 4'') and the parameters (for example the step-size for Runge Kutta 4) for the algorithm.
+\item The $<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in $<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If coefficients are 0, they can also be described as constants (for example 0) as an empty blocks for multi-part coefficients.
+\item The $<Range>$ and $<Boundary values>$ are related to the differential equation described in $<Equations>$ and describes the interval in which the algorithm should solve the equation using the boundary conditions.
+\item $<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
+\item $<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
+\end{itemize}
+
+An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. Note that it utilizes the Dirac $delta$ function which is used to express a discontinuity point.%explain and cite
+
+\begin{lstlisting}[caption=The pure endowment insurance plan expressed in CalcSpec, label=pe_calcspec]
+calculation = 
+  {
+    name = 'Pure endowment',
+    algorithm = { type = 'Runge Kutta 4', parameters = { stepsize = 0.01 } },
+    equations = { 
+        0 = { r_j = r, b_j = b0, mu_jk = { 1 = GM }, b_jk = { } },
+        1 = { },
+    },
+    range = { from = 40, to = 0 },
+    boundaryvalues = { 0 = 0 , 1 = 0 },
+    expressions = {
+        interestrate = 0.05,
+        bpension = 1,
+        pensiontime = 35,
+        age = 30,
+        r(t) = interestrate,
+        b0(t) = bpension * delta(t - pensiontime),
+        GM(t) = 0.0005 + 10 ^ (5.728 - 10 + 0.038*(age + t))
+    }
+  }
+\end{lstlisting}
 
 \subsection{Hardware}
+%Reduce, move fluff to appendix
 As the intended audience for this particular application of parallelization is fairly limited and can be expected to afford specific hardware, it has not been a concern that specific hardware may be required to run it.
 The minimal requirement to run the program is a GPU of at least compute capability 2.0.
 The code was only tested on the NVIDIA Tesla C2075 GPU which has the following properties:

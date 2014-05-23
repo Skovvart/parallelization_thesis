@@ -55,6 +55,3 @@ type DisabilityTermInsurance (planParams, paramCount) =
                 res.[0] <- bj_00 t
                 res.[1] <- bj_11 t
             @>
-
-//let dti_bdisabled = conv 1
-//let dti_n = conv 35
