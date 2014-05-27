@@ -1,7 +1,8 @@
 % !TeX root = ../thesis.tex
 \section{Background}
-The background section will cover seven topics.
-First the mathematics employed in this project will be covered. 
+The background section will cover eight topics.
+First insurance policies in general will be explained.
+Following this, the mathematics employed in this project will be covered. 
 This consists of Thiele's differential equation and the fourth-order Runge-Kutta method for solving differential equations.
 
 After the mathematics is covered, the technologies utilized will be presented.
@@ -9,39 +10,90 @@ First general information on parallelization and the potential benefits of using
 The CUDA platform and CUDA C will then be presented.
 This is followed by an introduction of F\#'s meta-programming model Code Quotations which is used by Alea.cuBase to generate GPU code.
 The syntax of the Actulus Calculation Specification (CalcSpec) language will then briefly be explained.
-
 Finally, the hardware the project has been tested on will be presented.
 
+\subsection{Life Insurance Policies and Markov-models}
+A life insurance policy is a contract stating the obligations an insuring party has to an insured party in and transitioning between various finite states over many years.
+Such states can include being alive and well (active), disabled, dead and more.
+Transitions between states will have a certain probability, for example mortality rates for transitions between the active and dead state.
+A state model such as this is also known as a continuous-time Markov-model which is used for both its expressiveness and its analyzability.
+
+Figure \ref{fig:markovexample} shows an example of such a model with 3 states and 3 transitions between states. More or less of both are possible.
+The labels between the states each have a $\mu$-function that states the probability of the transition occurring at time $t$. 
+This is also known as the transition intensity.
+Not all transition intensities will change over time while others such as mortality rate will.
+For each change in time $t$ to $t+1$ there may be associated costs whether there is a state transition or not.
+
+\begin{figure}[h] 
+\setlength{\unitlength}{0.14in} % selecting unit length 
+\centering % used for centering Figure 
+\begin{picture}(20,8) % picture environment with the size (dimensions) 
+ % 32 length units wide, and 15 units high. 
+\put(3,6){\framebox(6,3){Active}} 
+\put(13,6){\framebox(6,3){Disabled}}
+\put(8,0){\framebox(6,3){Dead}} 
+
+\put(6.2,6){\vector(1,-1){2.9}}
+\put(9,7.5){\vector(1,0){3.9}} 
+\put(16.2,6){\vector(-1,-1){2.9}}
+
+\put(9.5,8.5) {$\mu_{a-di}(t)$}
+\put(15,4) {$\mu_{di-d}(t)$} 
+\put(4.5,4) {$\mu_{a-d}(t)$} 
+\end{picture} 
+\caption{Disability Term Insurance Markov-model example} % title of the Figure 
+\label{fig:markovexample} % label to refer figure in text 
+\end{figure} 
 
 \subsection{Thiele's differential equation and the Runge-Kutta Method}
-The goal of the computations performed in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given insurance plan.
-Thiele's differential equation\cite{thiele} called ``the foundation of modern life insurance mathematics''\cite{bergermathematik} is a tool for determining conditional expected values in intensity-driven Markov processes. %Explain D:
-It can be used to express a variety of life insurance policies as long as they can be described by multi-state Markov processes. %D:::
-The equation is expressed below in equation \ref{eq:thiele}. It consists of the following parts:
+The goal of the computations performed in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given life insurance plan.
+Thiele's differential equation called ``the foundation of modern life insurance mathematics''\cite{bergermathematik} is a tool for determining conditional expected values in Markov models and it can be used to express a variety of life insurance policies.
+The equation is expressed below in equation \ref{eq:thiele}. It assumes continuity for $V_s$, $b_s$, $\mu$ for every $t$ and consists of the following parts:
 
 \begin{itemize}
-\item $V_t$ is the reserve at time $t$
-\item $\pi_t$ is the premium paid at time $t$
-\item $b_t$ is the benefit paid by the insurer at time $t$
-\item $\mu_{x+t}$ is the mortality intensity at time $t$ with a person of age age $x$ at the time of signing the contract
-\item $r_t$ is interest-rate at time $t$
+\item $S$ is the total amount of states
+\item $V_s(t)$ is the reserve at time $t$ in state $s$
+\item $r_s(t($ is interest-rate at time $t$ in state $s$
+\item $b_s(t)$ is the benefit paid by the insurer at time $t$ in state $s$
+\item $T_s(t)$ is the possible transitions in state $s$
+\item $\mu_{s,ts}(t)$ is the transition intensity from state $s$ to state $ts$
+\item $b_{s,ts}(t)$ is the transition cost from state $s$ to state $ts$
 \end{itemize}
 
 \begin{equation}\label{eq:thiele}
-\frac{d}{dt}V_t = \pi_t - b_t \mu_{x+t} + (r_t + \mu_{x+t}) V_t
+\begin{split}
+\frac{d}{dt}V_s(t) = \forall_{s\in S}r_s(t) V_s(t) - b_s(t) - \sum_{ts \in T_{s}} \mu_{s,ts}(t) (V_{ts}(t) - V_s(t) + b_{s,ts})
+\end{split}
 \end{equation}
 
-With a differential equation such as this, we need a way to solve it. 
-The Runge-Kutta method\cite{runge-kutta} is a method for integrating ordinary differential equations by using a trial step at the midpoint of an interval to cancel out lower-order error terms.
-The fourth-order version of the method can be seen below in equation \ref{eq:rk4}.
+To shortly summarize it, the derivative reserve for a state is for all states the current reserve times the interest-rate minus the benefit paid by the ensurer minus the transitioning costs to all possible states. 
+The transitioning cost to a state is the intensity of the transition times the difference in reserves plus the cost of transitioning.
+
+With a differential equation such as this, we need a way to approximate a result numerically. 
+The Runge-Kutta method\cite{press2007numerical} is a method for integrating ordinary differential equations (ODEs) by using a trial step at the midpoint of an interval to cancel out lower-order error terms.
+It works within boundaries set by a start point and end point. If the start point is greater than the end point, the algorithm works with negative step-sizes.
+The common implementation uses a fixed amount of steps to reduce the inaccuracy of the method. 
+Increase the amount of steps reduces the inaccuracy at the cost of increased computation.
+The most common step size seen in this project is 100 by advice of Peter Sestoft.
+The fourth-order version of the method can be seen below in equation \ref{eq:rk4} approximating $y$ in the step from $t$ to $t+h$. It consists of the following parts:
+
+\begin{itemize}
+\item $h$ is the size of the step. With 100 steps, the step-size would be 0.01, or -0.01 if the start point $>$ end point.
+\item $f(t, e)$  is the right hand side of the given differential equation evaluated at time $t$ in an environment $e$
+\item $t$ is the initial time of the step
+\item $y_t$ approximated result at time t
+\item $O(x)$ represents the inaccuracy of the method
+\end{itemize}
 
 \begin{equation}\begin{aligned}\label{eq:rk4}
-&k_1 = h f(x_n, y_n)\\
-&k_2 = h f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}k_1)\\
-&k_3 = h f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}k_2)\\
-&k_4 = h f(x_n + h, y_n + k_3)\\
-&y_{n+1} = y_n + \frac{1}{6}k_1 + \frac{1}{3}k_2 + \frac{1}{3}k_3 + \frac{1}{6}k_4 + O(h^5)
+&k_1 = h f(t, y_t)\\
+&k_2 = h f(t + \frac{h}{2}, y_t + \frac{k_1}{2})\\
+&k_3 = h f(t + \frac{h}{2}, y_t + \frac{k_2}{2})\\
+&k_4 = h f(t + h, y_t + k_3)\\
+&y_{n+1} = y_t + \frac{k_1}{6} + \frac{k_2}{3} + \frac{k_3}{3} + \frac{k_4}{6} + O(h^5)
 \end{aligned}\end{equation}
+
+%Insert graphics showing step
 
 \subsection{Parallelization and the GPU}
 Parallelization is the act of taking one large task and splitting it into smaller tasks that run concurrently (''in parallel'').
@@ -53,17 +105,12 @@ Utilizing various synchronization techniques, partially dependent calculations c
 As only independent computation parallelization is utilized, other forms will not be discussed further.
 
 Parallelization can be performed on multi-core CPUs utilizing constructs such as processes and threads, but can especially be utilized by GPUs that were designed for compute-intensive and highly parallel computations, precisely what graphics rendering is about.
-This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange) such as a cache and dynamic random-access memory (DRAM).
+This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange) such as a memory cache and dynamic random-access memory (DRAM).
 
 \begin{figure}[h!]
 \includegraphics{cpugpu.jpg}
 \caption{The GPU devotes more transistors to data processing. From the CUDA C Programming Guide \cite{nvidia2014programming}\label{cpugpu}}
 \end{figure}
-
-%http://docs.nvidia.com/cuda/pdf/CUDA_C_Programming_Guide.pdf
-%highly parallel, multithreaded, manycore processor with tremendous computational horsepower and very high memory bandwidth
-%The reason behind the discrepancy in floating-point capability between the CPU and the GPU is that the GPU is specialized for compute-intensive, highly parallel computation - exactly what graphics rendering is about - and therefore designed such that more transistors are devoted to data processing rather than data caching and flow control
-%Talk about GPU vs CPU and parallelization in general
 
 \subsection{The CUDA platform and CUDA C}
 CUDA is NVIDIAs parallel computing platform and programming model for harnessing the power of the GPU.
@@ -102,7 +149,8 @@ The properties of the various memory types can be seen in table \ref{table:memor
 \caption{Properties of CUDA memory types\label{table:memorytypes}}
 \end{table}
 
-Talk about memory throughput
+%Update the above table to something more useful...
+%Talk about memory throughput
 
 \subsubsection{CUDA C}
 CUDA C is mostly C with added declaration specifiers for methods and variables. The most essential declaration specifier is the \textbf{\_\_global\_\_} specifier which declares a method to be a \textbf{kernel}. Kernels are void-methods that are callable from the CPU but will be executed on the GPU. Code sample \ref{cuda_add} shows a simple kernel performing vector addition of the vectors of size $N$.
@@ -118,7 +166,7 @@ __global__ void Add(float* a, float* b, float* result){
 int main(){
 	...//Initiate memory on host and device
 	Add<<<1, N>>>(a, b, result); //invoke kernel on 1 block of N threads
-	...//Copy back results, free memory as appropriate
+	...//Copy back and use result, free memory as appropriate
 }
 \end{lstlisting}
 
@@ -210,13 +258,14 @@ calculation = {
 
 \begin{itemize}
 \item The $<Algorithm>$ will include the name of the algorithm (for example ``Runge Kutta 4'') and the parameters (for example the step-size for Runge Kutta 4) for the algorithm.
-\item The $<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in $<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If coefficients are 0, they can also be described as constants (for example 0) as an empty blocks for multi-part coefficients.
-\item The $<Range>$ and $<Boundary values>$ are related to the differential equation described in $<Equations>$ and describes the interval in which the algorithm should solve the equation using the boundary conditions.
+\item The $<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in $<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If coefficients are 0, they can also be described as constants (for example 0) or as an empty blocks for multi-part coefficients.
+\item The $<Range>$ and $<Boundary\ values>$ are related to the differential equation described in $<Equations>$ and describes the interval in which the algorithm should solve the equation using the boundary conditions.
 \item $<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
 \item $<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
 \end{itemize}
 
-An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. Note that it utilizes the Dirac $delta$ function which is used to express a discontinuity point.%explain and cite
+An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. 
+Note that it utilizes the Dirac $delta$ function which is used to express a discontinuity point.%explain and cite
 
 \begin{lstlisting}[caption=The pure endowment insurance plan expressed in CalcSpec, label=pe_calcspec]
 calculation = 
