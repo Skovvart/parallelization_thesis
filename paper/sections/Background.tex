@@ -8,7 +8,7 @@ This consists of Thiele's differential equation and the fourth-order Runge-Kutta
 After the mathematics is covered, the technologies utilized will be presented.
 First general information on parallelization and the potential benefits of using the GPU compared to the CPU will be explained.
 The CUDA platform and CUDA C will then be presented.
-This is followed by an introduction of F\#'s meta-programming model Code Quotations which is used by Alea.cuBase to generate GPU code.
+This is followed by an introduction to F\#'s meta-programming model Code Quotations which is used by the language-integrated compiler Alea.cuBase to generate GPU code.
 The syntax of the Actulus Calculation Specification (CalcSpec) language will then briefly be explained.
 Finally, the hardware the project has been tested on will be presented.
 
@@ -29,17 +29,17 @@ For each change in time $t$ to $t+1$ there may be associated costs whether there
 \centering % used for centering Figure 
 \begin{picture}(20,8) % picture environment with the size (dimensions) 
  % 32 length units wide, and 15 units high. 
-\put(3,6){\framebox(6,3){Active}} 
-\put(13,6){\framebox(6,3){Disabled}}
-\put(8,0){\framebox(6,3){Dead}} 
+\put(3,6){\framebox(6,3){0 (Active)}} 
+\put(13,6){\framebox(6,3){1 (Disabled)}}
+\put(8,0){\framebox(6,3){2 (Dead)}} 
 
 \put(6.2,6){\vector(1,-1){2.9}}
 \put(9,7.5){\vector(1,0){3.9}} 
 \put(16.2,6){\vector(-1,-1){2.9}}
 
-\put(9.5,8.5) {$\mu_{a-di}(t)$}
-\put(15,4) {$\mu_{di-d}(t)$} 
-\put(4.5,4) {$\mu_{a-d}(t)$} 
+\put(9.5,8.5) {$\mu_{01}(t)$}
+\put(15,4) {$\mu_{12}(t)$} 
+\put(4.5,4) {$\mu_{02}(t)$} 
 \end{picture} 
 \caption{Disability Term Insurance Markov-model example} % title of the Figure 
 \label{fig:markovexample} % label to refer figure in text 
@@ -61,25 +61,23 @@ The equation is expressed below in equation \ref{eq:thiele}. It assumes continui
 \end{itemize}
 
 \begin{equation}\label{eq:thiele}
-\begin{split}
-\frac{d}{dt}V_s(t) = \forall_{s\in S}r_s(t) V_s(t) - b_s(t) - \sum_{ts \in T_{s}} \mu_{s,ts}(t) (V_{ts}(t) - V_s(t) + b_{s,ts})
-\end{split}
+\frac{d}{dt}V(t) = \forall_{s\in S} r_s(t) V_s(t) - b_s(t) - \sum_{ts \in T_{s}} \mu_{s,ts}(t) (V_{ts}(t) - V_s(t) + b_{s,ts})
 \end{equation}
 
-To shortly summarize it, the derivative reserve for a state is for all states the current reserve times the interest-rate minus the benefit paid by the ensurer minus the transitioning costs to all possible states. 
-The transitioning cost to a state is the intensity of the transition times the difference in reserves plus the cost of transitioning.
+To shortly summarize it, the derivative reserve is for all states the current reserve times the interest-rate minus the benefit paid by the ensurer in the state minus the weighted transitioning costs to all possible states. 
+The weighted transitioning cost to a state is the intensity of the transition (probability of the transition occurring) times the difference in reserves plus the cost of transitioning.
 
 With a differential equation such as this, we need a way to approximate a result numerically. 
 The Runge-Kutta method\cite{press2007numerical} is a method for integrating ordinary differential equations (ODEs) by using a trial step at the midpoint of an interval to cancel out lower-order error terms.
-It works within boundaries set by a start point and end point. If the start point is greater than the end point, the algorithm works with negative step-sizes.
-The common implementation uses a fixed amount of steps to reduce the inaccuracy of the method. 
-Increase the amount of steps reduces the inaccuracy at the cost of increased computation.
-The most common step size seen in this project is 100 by advice of Peter Sestoft.
-The fourth-order version of the method can be seen below in equation \ref{eq:rk4} approximating $y$ in the step from $t$ to $t+h$. It consists of the following parts:
+It works within boundaries set by a starting and end point. If the starting point is greater than the end point, the algorithm works backwards with negative step-sizes.
+The basic implementation uses a fixed amount of steps to reduce the inaccuracy of the method. 
+By increasing the amount of steps, the inaccuracy of the method is reduced at the cost of increased computational costs.
+The most common step size seen in this project is 100 steps by advice of Peter Sestoft and by calculation specification definitions.
+The fourth-order version of the Runge-Kutta method can be seen below in equation \ref{eq:rk4} approximating $y$ in the step from $t$ to $t+h$. It consists of the following parts:
 
 \begin{itemize}
 \item $h$ is the size of the step. With 100 steps, the step-size would be 0.01, or -0.01 if the start point $>$ end point.
-\item $f(t, e)$  is the right hand side of the given differential equation evaluated at time $t$ in an environment $e$
+\item $f(t, e)$  is the right hand side of the given differential equation evaluated at time $t$ in environment $e$
 \item $t$ is the initial time of the step
 \item $y_t$ approximated result at time t
 \item $O(x)$ represents the inaccuracy of the method
@@ -97,23 +95,29 @@ The fourth-order version of the method can be seen below in equation \ref{eq:rk4
 
 \subsection{Parallelization and the GPU}
 Parallelization is the act of taking one large task and splitting it into smaller tasks that run concurrently (''in parallel'').
-This could for example be an algorithm that initially does some computation that loops $n$ times where each iteration is independent and takes $w$ time to complete, but is altered to instead utilize $n$ tasks that each execute one iterations worth of work.
+This could for example be cooking 10 different pies, where rather than using 1 baker in 1 kitchen you now use 10 bakers in 10 kitchens taking approximately a tenth of the time.
+Algorithmically this could be an algorithm that initially does some computation that loops $n$ times where each iteration is independent and takes $w$ time to complete, but is altered to instead utilize $n$ tasks that each execute one iterations worth of work.
 Instead of taking $w \cdot n$ time to complete, it can now be done in just $w$ time plus whatever overhead is associated with creating the tasks and dividing the work.
 This is reliant on each iteration being independent, as if the iterations are dependent on each other then it can not be executed before the previous iteration completes.
-Loops isn't the only way to utilize parallelization and all independent tasks can in theory be parallelized. 
-Utilizing various synchronization techniques, partially dependent calculations can also harness the power of parallelization, though at the risk of increased complexity and deadlocks.
+To continue the pie example, if one baker is assigned to make all the pie-crusts, no pie will be baked before this tasks is done.
+Loops isn't the only way to utilize parallelization and all independent tasks can to some extend be parallelized. 
+Utilizing various synchronization techniques, partially dependent calculations can also harness the power of parallelization, though at the risk of increased complexity and errors such as deadlocks.
 As only independent computation parallelization is utilized, other forms will not be discussed further.
 
-Parallelization can be performed on multi-core CPUs utilizing constructs such as processes and threads, but can especially be utilized by GPUs that were designed for compute-intensive and highly parallel computations, precisely what graphics rendering is about.
-This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange) such as a memory cache and dynamic random-access memory (DRAM).
+In computing, parallelization utilizing constructs such as processes and threads can be performed on multi-core CPUs, but can especially be utilized by GPUs that were designed for compute-intensive and highly parallel computations, precisely what graphics rendering is about.
+This is because unlike the CPU which is specialized for data-caching and flow control, the GPU has more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. 
+The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange) such as a memory cache and dynamic random-access memory (DRAM).
 
 \begin{figure}[h!]
 \includegraphics{cpugpu.jpg}
-\caption{The GPU devotes more transistors to data processing. From the CUDA C Programming Guide \cite{nvidia2014programming}\label{cpugpu}}
+\caption{Structural comparison of the CPU and GPU. From the CUDA C Programming Guide, page 3 \cite{nvidia2014programming}\label{cpugpu}}
 \end{figure}
 
 \subsection{The CUDA platform and CUDA C}
-CUDA is NVIDIAs parallel computing platform and programming model for harnessing the power of the GPU.
+CUDA is NVIDIAs parallel computing platform and programming model for the GPU.
+It is available on multiple platforms but does require an NVIDIA graphics card. 
+A particular NVIDIA graphics card will have a certain Compute Capability (CC) that determines availability of certain attributes and features.
+
 The CUDA platform consists of the CUDA C and C++ language (referred to as CUDA C from this point), based on the C and C++ languages but with some alterations.
 It also has parallel computing extensions for other languages such as Fortran and Python.
 The CUDA Toolkit is also a part of the platform, consisting of a compiler, math libraries and tools for debugging and optimizing performance as well as guides, user manuals, API references and other documentation.
@@ -121,39 +125,83 @@ The CUDA Toolkit is also a part of the platform, consisting of a compiler, math 
 \subsubsection{CUDA Architecture}
 The CUDA model is build around a hierarichal architecture of the GPU. 
 At the top of the architecture is the streaming multi-processor (SM) of which a GPU can have many. 
-Each SM consists of multiple CUDA cores that are used to concurrently execute a group of 32 threads known as a warp. As the SM executes the instructions in terms of warps, the total amount of threads in a block should be a multiple of the warp-size for maximum efficiency.
-Each SM executes one group of threads that have access to a shared memory-space. This group of threads, which should be a multiple of warps, is called a block. 
-As each SM executes a block at a time, more SMs available to the GPU will speed up the execution of the total amount of blocks. 
-This also means that the amount of blocks should be a multiple of the amount of multiprocessors for maximum efficiency. %confirm
+Each SM consists of multiple CUDA cores that are used to concurrently execute a group of 32 threads known as a warp. 
+As the SM executes the instructions in terms of warps, the total amount of threads in a block should be a multiple of the warp-size for maximum efficiency.
+Each SM executes one group of threads that have access to a shared memory-space.
+This group of threads, which ideally should be a multiple of warps, is called a block. 
+An example overview of the architecture can bse seen in figure \ref{cuda_architecture}.
+As each SM executes blocks sequentially, more SMs available to the GPU will increase the possible parallelization and speed up the execution of the total amount of blocks. 
+This also means that the amount of blocks should be a multiple of the amount of multiprocessors for maximum efficiency.
+
+\begin{figure}[h!]\centering
+\includegraphics[scale=0.75]{cuda_architecture.jpg}
+\caption{The CUDA SM/block architecture. From the CUDA C Programming Guide, page 7 \cite{nvidia2014programming}\label{cuda_architecture}}
+\end{figure}
+
+\subsubsection{Thread Hierarchy}
+Blocks can be organized in a grid of multiple dimensions (up to 3 on the latest version of NVIDIA cards). 
+The same applies to the threads within a block.
+An example of can be seen in figure \ref{thread_distribution}.
+
+\begin{figure}[h!]\centering
+\includegraphics[scale=0.75]{thread_distribution.jpg}
+\caption{The CUDA thread hierarchy. From the CUDA C Programming Guide, page 11 \cite{nvidia2014programming}\label{thread_distribution}}
+\end{figure}
+
+As this project only utilizes 1-dimensional grids and blocks, the resulting thread hierarchy is a two-dimensional matrix. 
+An example with the unique thread-id's can be seen in figure \ref{thread_hierarchy}.
+
+\begin{figure}[h!]\centering
+\includegraphics[scale=0.75]{thread_hierarchy.jpg}
+\caption{1-dimensional CUDA thread hierarchy.\label{thread_hierarchy}}
+\end{figure}
+
 
 \subsubsection{Memory model}
-A thread has access to memory only available to itself. This is done using registers, that are fast, as long as they're available and falling back on local memory otherwise, which is slow.
-Beyond that it has access to shared memory that is available to all threads in the same block, which is fast, as well as global memory accessible to all threads in all blocks, which is slow.
-There is also constant memory and texture memory both of which are fast but immutable. 
-There is also a L1 and L2 cache \textbf{todo.. used for global/local memory I suppose?}.
-The properties of the various memory types can be seen in table \ref{table:memorytypes}.
-{\renewcommand{\arraystretch}{3}%
+A thread has access to various types of memory.
+There is local memory only available to the thread itself.
+This is facilitated by a relatively small amount of fast registers as long as they are available and falling back on relatively slow local memory afterwards (stored in global memory but only accessed by the thread).
+
+Beyond that, it has access to low-latency shared on-chip memory physically residing on the GPU that is available to all threads in the same block. 
+Because of these properties, shared memory can be used for communication between threads or as a software managed cache.
+
+The thread also has access to global off-chip memory accessible to all threads in all blocks.
+This has a higher latency, but caching can alleviate some of this.
+
+There is also 64KB of immutable cached constant memory which can be an alternative to unchanging global memory.
+It is especially fast when all threads in the warp need to read the same memory location.
+Constant memory will often be faster than global memory due to a higher likelihood of being cached on-chip, but the fact it is immutable and of a fixed size limits its applicability.
+Another immutable memory type is texture memory which can be used for various purposes, but is ideally used for algorithms with memory access patterns where threads are likely to read from an address that is 2-dimension-spatially local (such as computer graphic shaders).
+
+Data loaded from local or global memory is cached in the on-chip L1 cache for each SM and a shared L2 cache for all SMs.
+The L1 cache will typically contain up to 16KB of data, but this limit can be increased up to 48KB by by sacrificing shared memory.
+The L2 cache will on newer graphics cards contain up to 768KB of data.
+
+A summary of the properties of the various memory types can be seen in table \ref{table:memorytypes}.
+
 \begin{table}[h!]
 \centering
-\begin{tabular}{ | c | c | c | c | }
+\begin{tabular}{ | c | c | c | c | c | }
   \hline
-           & Mutable & Speed & Cached \\ \hline
-  Register & Yes     & Fast  & No     \\ \hline
-  Local    & Yes     & Slow  & Yes    \\ \hline
-  Shared   & Yes     & Fast  & No     \\ \hline
-  Global   & Yes     & Slow  & Yes    \\ \hline
-  Texture  & No      & Fast  & Yes    \\ \hline
-  Constant & No      & Slow  & Yes    \\ \hline
+           & Read-only & On-chip   & Cached & Scope  \\ \hline
+  Register & No        & Yes       & No     & Thread \\ \hline
+  Local    & No        & No        & Yes    & Thread \\ \hline
+  Shared   & No        & Yes       & No     & Block  \\ \hline
+  Global   & No        & No        & Yes    & Kernel \\ \hline
+  Texture  & Yes       & No        & Yes    & Kernel \\ \hline
+  Constant & Yes       & No        & Yes    & Kernel \\ \hline
+  L1 Cache & No        & Yes       & N/A    & N/A    \\ \hline
+  L2 Cache & No        & No        & N/A    & N/A    \\ \hline
 
 \end{tabular}
 \caption{Properties of CUDA memory types\label{table:memorytypes}}
 \end{table}
 
-%Update the above table to something more useful...
-%Talk about memory throughput
-
 \subsubsection{CUDA C}
-CUDA C is mostly C with added declaration specifiers for methods and variables. The most essential declaration specifier is the \textbf{\_\_global\_\_} specifier which declares a method to be a \textbf{kernel}. Kernels are void-methods that are callable from the CPU but will be executed on the GPU. Code sample \ref{cuda_add} shows a simple kernel performing vector addition of the vectors of size $N$.
+CUDA C is based on C with added declaration specifiers for methods and variables. 
+The most essential declaration specifier is the \textbf{\_\_global\_\_} specifier which declares a method to be a \textbf{kernel}. 
+Kernels are void-methods that are callable from the CPU but executed on the GPU. 
+Code sample \ref{cuda_add} shows a simple kernel performing vector addition of the vectors $a$ and $b$ of size $N$.
 
 \begin{lstlisting}[language=C++, caption=CUDA C addition kernel, label=cuda_add]
 __global__ void Add(float* a, float* b, float* result){
@@ -170,19 +218,26 @@ int main(){
 }
 \end{lstlisting}
 
-Another thing to note is the launch-parameters of the Add-kernel which specify the amount of blocks and the amount of threads per block. A block can be organized into either one-dimensional, two-dimensional or three-dimensional grids. This can be convenient in the case of working with for example matrices, but is not utilized in this thesis and will not be covered in further detail.
+One thing to note is the kernel launch-parameters of Add-method in $main$ which specify the amount of blocks and the amount of threads per block on which the kernel should be executed. 
 
-CUDA C also has other declaration specifiers. \textbf{\_\_device\_\_} specifies that a method will only be compiled for the GPU (which can be referenced by kernels), \textbf{\_\_host\_\_} specifies that a method will be available for the CPU. These two specifiers can also be used together for compilation to both platforms.
+CUDA C also has other declaration specifiers. 
+\textbf{\_\_device\_\_} specifies that a method will only be compiled for the GPU (which can be referenced by kernels), \textbf{\_\_host\_\_} specifies that a method will be available for the CPU.
+These two specifiers can also be used together for compilation to both platforms.
 Variables have the \textbf{\_\_device\_\_} qualifier, as well as \textbf{\_\_constant\_\_} to indicate it should be stored in constant memory or \textbf{\_\_shared\_\_} for shared memory.
 
 As it is based on C, dynamic memory must be allocated using $malloc$ and subsequently de-allocated by $free$.
 This operation also has to be done for the device memory using the equivalent $cudaMalloc$ and $cudaFree$.
 The tediousness of this is one of the many benefits of using a modern language, but at the cost of control that could potentially decrease performance.
 
-\subsection{F\# Code Quotations}
-Code quotations is a language feature of F\# that allows one to dynamically generate abstract syntax trees from F\# expressions. It is used in particular to transform F\# to other languages, for example SQL, automatically. It can also be used to generate F\# code that can be evaluated. Code quotations support both typed and untyped expressions using $<@ ... @>$ and $<@@ ... @@>$ respectively.
+\subsection{F\# and Code Quotations}
+F\#\cite{fsharp} is an open source, cross-platform functional programming language originating from Microsoft that runs on the .NET platform.
+Code quotations is a language feature of F\# that allows one to dynamically generate abstract syntax trees from F\# expressions. 
+It is used in particular to transform F\# to other languages such as SQL automatically. 
+It can also be used to generate F\# code that can be evaluated. 
+Code quotations support both typed and untyped expressions using $<@ ... @>$ and $<@@ ... @@>$ respectively. 
 
-For example, the expression $<@ let plusfive number = number + 5 in plusfive @>$ is automatically translated into the abstract syntax tree in figure \ref{quotationast}. As quotations only support expressions, a let declaration can not exist on its own, hence returning the function at the end (in the $in$ part of the quotation).
+For example, the expression $<@ let plusfive number = number + 5 in plusfive @>$ is automatically translated into the abstract syntax tree in figure \ref{quotationast}. 
+As quotations only support expressions, a let declaration can not exist on its own, hence returning the function at the end (in the $in$ part of the quotation).
 
 \begin{lstlisting}[caption=Abstract syntax tree for the example quotation expression, label=quotationast]
 Let (plusfive, 
@@ -205,12 +260,11 @@ let untypedplus10 = <@@ %plus10 @@>
 
 
 \subsection{F\# and Alea.cuBase}
-F\#\cite{fsharp} is an open source, cross-platform functional programming language originating from Microsoft that runs on the .NET platform.
 Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language-integrated compiler for F\# that allows for CUDA development on the .NET platform.
 By relying on run-time code-generation it allows for extremely extensible kernels to an extend not easily possible in CUDA C.
 
 It utilizes F\#'s meta-programming support Code Quotations for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
-Code sample \ref{cubase_add} shows what a simple vector squaring-kernel could look like in F\# with Alea.cuBase.
+Code sample \ref{cubase_add} shows what a simple vector squaring-kernel could look like in F\# using Alea.cuBase.
 
 \begin{lstlisting}[caption=Alea.cuBase square kernel, label=cubase_add]
 let Square = cuda { //use the Alea.cuBase cuda workflow
@@ -237,12 +291,13 @@ let main argv =
 
 The $cuda$ workflow/computation expression (or ``monad'' for the so inclined) contains the kernel defined in a code quotations and compiled to an actual kernel, and it returns a host-side execution method that will handle allocation and de-allocation of device-side memory. 
 As we are using F\#, the deallocation is handled automatically by using the $use$-keyword that automatically frees up resources once the variables referencing them are out of scope. 
-The program is then loaded to a worker (a CUDA context and background-thread) in the main method compiling the PTX code to NVIDIA internal ISA code. %explain better
-The program is then run using the parameters defined in the run-time method of the $cuda$ workflow (in this case, it just takes an integer array) and the result is returned to the CPU where it can be processed (in this example, the result is simply printed).
+The kernel is then loaded to a worker (a CUDA context and background-thread) in the main method compiling the PTX code to NVIDIA internal ISA code. %explain better
+The kernel is then run using the parameters defined in the run-time method of the $cuda$ workflow (in this case, just an integer array) and the result is returned to the CPU where it can be processed (only printed to the console in this example).
 
 \subsection{Actulus Calculation Specification language}
-The Actulus Calculation Specification language (CalcSpec) is a language for defining the differential equations that make up an insurance plan. The overall structure can be seen in code sample \ref{calcspecstructure}.
-
+The Actulus Calculation Specification language (CalcSpec) is a domain-specific language for defining the differential equations that make up an insurance plan.
+The main purpose of the language is to define various coefficient used in the Markov-model defining the life insurance policy.
+The overall structure of the language can be seen in code sample \ref{calcspecstructure}.
 
 \begin{lstlisting}[caption=CalcSpec structure, label=calcspecstructure]
 calculation = {
@@ -256,16 +311,18 @@ calculation = {
   }
 \end{lstlisting}
 
+An explanation of each element follows:
 \begin{itemize}
 \item The $<Algorithm>$ will include the name of the algorithm (for example ``Runge Kutta 4'') and the parameters (for example the step-size for Runge Kutta 4) for the algorithm.
 \item The $<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in $<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If coefficients are 0, they can also be described as constants (for example 0) or as an empty blocks for multi-part coefficients.
-\item The $<Range>$ and $<Boundary\ values>$ are related to the differential equation described in $<Equations>$ and describes the interval in which the algorithm should solve the equation using the boundary conditions.
+\item The $<Range>$ and $<Boundary\ values>$ are related to the differential equation described in $<Equations>$ and describes the interval in which the algorithm should solve the equation subject to the boundary conditions.
 \item $<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
 \item $<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
 \end{itemize}
 
 An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. 
-Note that it utilizes the Dirac $delta$ function which is used to express a discontinuity point.%explain and cite
+Note that it utilizes the Dirac $delta$ function\cite{hassani2009dirac} which is used to express a discontinuity point in which a lump sum is to be paid.%confirm this isn't bullshit
+
 
 \begin{lstlisting}[caption=The pure endowment insurance plan expressed in CalcSpec, label=pe_calcspec]
 calculation = 
@@ -291,32 +348,22 @@ calculation =
 \end{lstlisting}
 
 \subsection{Hardware}
-%Reduce, move fluff to appendix
 As the intended audience for this particular application of parallelization is fairly limited and can be expected to afford specific hardware, it has not been a concern that specific hardware may be required to run it.
-The minimal requirement to run the program is a GPU of at least compute capability 2.0.
-The code was only tested on the NVIDIA Tesla C2075 GPU which has the following properties:
+That being said, the minimal requirement to run the program is only an NVIDIA GPU of at least compute capability 2.0 as it is the minimal requirement to use Alea.cuBase (and use double-precision floats).
+The code was only tested on the NVIDIA Tesla C2075 GPU which has the following properties (see appendix \ref{app:deviceQuery} for full results of running NVIDIA's deviceQuery tool):
 
 \begin{itemize}
 \item Compute capability: 2.0
 \item Multiprocessors: 14
 \item CUDA cores per Multiprocessor: 32
-\item Clock rate: 1147 MHz (1.15 GHz)
+\item GPU Clock rate: 1147 MHz (1.15 GHz)
 \item Memory clock rate: 1566 MHz
-\item Total global memory: 17592186044416 MBytes
-\item Total constant memory: 65536 bytes
-\item Total shared memory per block: 49152 bytes
+\item Total global memory: 4.096GB
+\item Total constant memory: 64KB
+\item Total shared memory per block: 48KB
 \item Total amount of registers per block: 32768
 \item Total amount of threads per multiprocessor: 1536
 \item Total amount of threads per block: 1024
-\item L2 Cache Size: 786432 bytes
-\item Warp size: 32
-\item Maximum sizes of each dimension of a block: 1024 x 1024 x 64
-\item Maximum sizes of each dimension of a grid: 65535 x 65535 x 65535
-\item Texture alignment: 512 bytes
-\item Maximum memory pitch: 2147483647 bytes
-\item Concurrent copy and kernel execution: Yes with 2 copy engines
+\item L2 Cache Size: 768KB
 \item Run time limit on kernels: No
-\item Integrated GPU shareing Host Memory: No
-\item Support host page-locked memory mapping: Yes
-\item Concurrent kernel execution: Yes
 \end{itemize}
