@@ -1,0 +1,60 @@
+static double[][] RK4_n(Action<double, double[], double[]> dV, Action<double, double[]> bj_ii, int a, int b, int steps, double[] Va){
+  int n = Va.Length;
+  double[][] result = new double[a - b + 1][];
+  for (int y = a; y >= b; y--)
+    result[y - b] = new double[n];
+  double h = -1.0 / steps;
+  result[a - b] = Va;
+  double[]
+    k1 = new double[n],
+    k2 = new double[n],
+    k3 = new double[n],
+    k4 = new double[n],
+    tmp = new double[n];
+  double[] v = new double[n];
+  for (int y = a; y > b; y--){
+    bj_ii(y, v);
+    v = saxpy(1.0, v, result[y - b]);
+    for (int s = 0; s < steps; s++){
+     	// Integrate backwards over [y,y-1]
+      double t = y - s / (double)steps;
+      // Hack: Fake limit from left
+      dV(s == 0 ? t - 1e-14 : t, v, k1);
+      sax(h, k1, k1);
+      saxpy(0.5, k1, v, tmp);
+      dV(t + h / 2, tmp, k2);
+      sax(h, k2, k2);
+      saxpy(0.5, k2, v, tmp);
+      dV(t + h / 2, tmp, k3);
+      sax(h, k3, k3);
+      saxpy(1, k3, v, tmp);
+      // Hack: Fake limit from right
+      dV(s == steps - 1 ? t + h + 1e-14 : t + h, tmp, k4);
+      sax(h, k4, k4);
+      saxpy(1 / 6.0, k4, v, tmp);
+      saxpy(2 / 6.0, k3, tmp, tmp);
+      saxpy(2 / 6.0, k2, tmp, tmp);
+      saxpy(1 / 6.0, k1, tmp, v);
+    }
+    Array.Copy(v, result[y - 1 - b], v.Length);
+  }
+  return result;
+}
+
+// sax = scalar a times x array, imperative version
+static void sax(double a, double[] x, double[] res){
+  if (x.Length != res.Length)
+      throw new Exception("sax: lengths of x and res differ");
+  for (int i = 0; i < x.Length; i++)
+      res[i] = a * x[i];
+}
+
+// saxpy = scalar a times x array plus y array, imperative version
+static void saxpy(double a, double[] x, double[] y, double[] res){
+  if (x.Length != y.Length)
+      throw new Exception("saxpy: lengths of x and y differ");
+  if (x.Length != res.Length)
+      throw new Exception("saxpy: lengths of x and res differ");
+  for (int i = 0; i < x.Length; i++)
+      res[i] = a * x[i] + y[i];
+}

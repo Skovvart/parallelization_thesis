@@ -1,3 +1,86 @@
 % !TeX root = ../thesis.tex
 \subsection{CUDA C Solution}
-Describe implemented CUDA solution
+A CUDA C solution was implemented to be used as a base-line comparison for further development.
+It is intended to be fairly efficient but not much time has been spent optimizing it, as this has never been the end-goal.
+It is based on the initial C\# solution but has some alterations due to the language.
+It features the same 6 life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta 4 kernel which is identical but for references to implementations of different $dV$ and $bj_ii$ functions and the number of states used by the plan.
+This is due to the CUDA C kernels not allowing references to objects or methods. %unless certain version of cuda?
+Another difference is that all of the kernel code is required to be in the same file as no cross-referencing is possible, where as this is possible in the C\# version.
+
+See code sample \ref{cuda_pureendowment} for an implementation of Pure Endowment in CUDA C.
+\begin{lstlisting}[caption=The pure endowment insurance plan expressed in C\#, label=cuda_pureendowment]
+__device__ class PureEndowment {
+	__device__ floatP b_0(floatP t) { return (floatP)0; }
+	__device__ floatP mu_01(floatP t) { return GM(t); }
+	__device__ floatP bj_00(floatP t) { return t == pensiontime ? bpension : (floatP)0; }
+	__device__ floatP bj_01(floatP t) { return (floatP)0; }
+public:
+	#define PESTATES 1
+	__device__ void dV(floatP t, floatP* V, floatP* res){ 
+		res[0] = r(t) * V[0] - b_0(t) - mu_01(t) * (0 - V[0] + bj_01(t));
+	}
+
+	__device__ void bj_ii(floatP t, floatP* res){
+		res[0] = bj_00(t);
+	}
+} pe;
+\end{lstlisting}
+
+Note that this code uses the $floatP$ type alias to easily switch between float and double precision.
+What may be of interest is the that the $pe$ object is copied to device memory and that a compile-time replaced $PESTATES$ macro is defined.
+The device-size object is then referenced in the plan-specific implementation of the Runge-Kutta 4 solver.
+The macro is due to C/C++ requiring constant values for array initialization.
+Dynamic memory allocation and deallocation of the temporary arrays could be used, but testing showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
+
+The results of running one iteration with 32-bit float precisions took 42,0 ms, about 65\% slower than the C\# equivalent.
+The double-precision took 124,48, or about 500\% times slower than the C\# equivalent.
+The key factor to consider is the fact that the parallelized version was never intended to be faster with one iteration.
+Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales much better.
+
+The highest performance tested with float precision was at 91,43 iterations per millisecond, making it more than 2200 times faster than the C\# version.
+The highest performance with double precision was at 25,97 iterations per millisecond, making it more than 650 times faster than the C\# version.
+The double precision version, while respectable, was a good bit slower than could be expected and could most likely be optimized to a rate where it would be about half as fast as the float precision equivalent.
+
+For the full float results see table \ref{table:cudacfloattime} and for double results see table \ref{table:cudacdoubletime}.
+What may be of interest is the diagonals where the total thread amount ($blocks \cdot threads$) is the same.
+Here a trend can be spotted where increasing the thread amount appears to be preferable to increasing the block amount, though not by a large factor.
+
+For the full CUDA C performance comparisons, see appendix \ref{app:cuda_runtimes}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ | c | c | c | c | c | c | c | c | c | }
+  \hline
+           & Blocks &  1    &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
+  Threads  &        &       &       &       &       &       &       &       \\ \hline
+  1        &        & 0,02  & 0,33  & 1,55  & 1,56  & 2,00  & 1,92  & 2,17  \\ \hline
+  8        &        & 0,19  & 2,65  & 12,39 & 12,45 & 15,94 & 15,35 & 17,35 \\ \hline
+  16       &        & 0,38  & 5,28  & 24,69 & 24,81 & 31,58 & 30,59 & 34,61 \\ \hline
+  32       &        & 0,75  & 10,48 & 49,02 & 49,26 & 63,16 & 60,76 & 68,91 \\ \hline
+  64       &        & 1,47  & 20,58 & 64,17 & 70,13 & 81,71 & 80,77 & 86,85 \\ \hline
+  128      &        & 2,62  & 35,83 & 72,14 & 80,42 & 83,14 & 85,78 & 85,69 \\ \hline
+  256      &        & 3,20  & 44,15 & 78,57 & 90,82 & 91,07 & 88,55 & 89,01 \\ \hline
+  512      &        & 12,16 & 45,49 & 91,03 & 91,35 & 91,41 & 91,40 & 91,43 \\ \hline
+\end{tabular}
+\caption{CUDA C calculations per ms with float precision\label{table:cudacfloattime}}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ | c | c | c | c | c | c | c | c | c | }
+  \hline
+           & Blocks &  1   &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
+  Threads  &        &      &       &       &       &       &       &       \\ \hline
+  1        &        & 0,01 & 0,11  & 0,51  & 0,50  & 0,65  & 0,61  & 0,69  \\ \hline
+  8        &        & 0,06 & 0,90  & 4,06  & 4,01  & 5,16  & 4,89  & 5,50  \\ \hline
+  16       &        & 0,13 & 1,79  & 8,11  & 8,02  & 10,33 & 9,77  & 11,01  \\ \hline
+  32       &        & 0,26 & 3,59  & 16,22 & 16,03 & 20,65 & 19,53 & 22,01 \\ \hline
+  64       &        & 0,51 & 6,94  & 18,49 & 21,71 & 23,59 & 24,10 & 25,12 \\ \hline
+  128      &        & 1,00 & 11,52 & 22,74 & 25,00 & 25,30 & 25,25 & 25,69 \\ \hline
+  256      &        & 1,67 & 12,98 & 25,55 & 25,59 & 25,93 & 25,88 & 25,97 \\ \hline
+  512      &        & 1,85 & 25,95 & 25,96 & 25,97 & 25,97 & 25,97 & 25,97 \\ \hline
+\end{tabular}
+\caption{CUDA C calculations per ms with double precision\label{table:cudacdoubletime}}
+\end{table}

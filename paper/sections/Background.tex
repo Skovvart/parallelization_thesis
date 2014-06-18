@@ -313,11 +313,11 @@ calculation = {
 
 An explanation of each element follows:
 \begin{itemize}
-\item The $<Algorithm>$ will include the name of the algorithm (for example ``Runge Kutta 4'') and the parameters (for example the step-size for Runge Kutta 4) for the algorithm.
-\item The $<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in $<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If coefficients are 0, they can also be described as constants (for example 0) or as an empty blocks for multi-part coefficients.
-\item The $<Range>$ and $<Boundary\ values>$ are related to the differential equation described in $<Equations>$ and describes the interval in which the algorithm should solve the equation subject to the boundary conditions.
-\item $<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
-\item $<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
+\item The \textless Algorithm\textgreater  will include the name of the algorithm (for example ``Runge Kutta 4'') and the parameters (for example the step-size for Runge Kutta 4) for the algorithm.
+\item The \textless Equations\textgreater  describes the differential equations used by the algorithm. This is typically done by referencing functions defined in \textless Expressions\textgreater . Every component of the differential equation must describe the coefficients of the component. If coefficients are 0, they can also be described as constants (for example 0) or as an empty blocks for multi-part coefficients.
+\item The \textless Range\textgreater  and \textless Boundary values\textgreater  are related to the differential equation described in \textless Equations\textgreater  and describes the interval in which the algorithm should solve the equation subject to the boundary conditions.
+\item \textless Output\textgreater  is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
+\item \textless Expressions\textgreater  is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
 \end{itemize}
 
 An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. 
@@ -367,3 +367,5 @@ The code was only tested on the NVIDIA Tesla C2075 GPU which has the following p
 \item L2 Cache Size: 768KB
 \item Run time limit on kernels: No
 \end{itemize}
+
+The CPU is a 2.53GHz Intel Xeion W3505 and the system has 4GB ram.

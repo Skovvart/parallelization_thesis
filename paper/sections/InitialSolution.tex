@@ -1,3 +1,47 @@
 % !TeX root = ../thesis.tex
+%The required reserve will increase with age, and likelihood of death, until retirement is reached in which no reserve will be needed.
 \subsection{Initial C\# Solution}
-Describe original (C\#) solution
+The original solution was single-threaded and written in C\# by Peter Sestoft using various optimizations (such for example using $Exp$ rather than $Pow$. 
+It features 6 life insurance plans and multiple implementation of Runge-Kutta solvers. 
+The insurance plans are the following:
+\begin{itemize}
+\item Pure Endowment : Ensurer pays a lump sum if the ensured dies before age of retirement. 
+\item $m$-year Deferred $n$-year Temporary Life Annuity : After $m$ years, ensurer makes yearly payments to the ensured for $n$ years if the ensured is alive.
+\item $n$-year Temporary Life Annuity Premium : The ensured is paid yearly for $n$ years if alive.
+\item $n$-year Term Insurance : Ensurer pays a lump sum if the ensured dies before $n$ years.
+\item Disability Annuity : The ensured is paid yearly for $n$ years if disabled.
+\item Disability Term Insurance : Ensurer pays lump sum upon disability of ensured if it happens within $n$ years.
+\end{itemize}
+
+The plans are implemented using C\# classes without inheritance or the like, as they attempt to stay relatively similar to a potential C-solution.
+
+The Runge-Kutta 4 solver introduced last is the fastest and is an imperative version which reuses intermediary arrays.
+It has the following signature: \textit{static double[][] RK4\_n(Action\textless double, double[], double[]\textgreater  dV, Action\textless double, double[]\textgreater  bj\_ii, int a, int b, int steps, double[] Va)}.
+The $dV$ function implements an arbitrary amount of derivatives.
+The $bj\_ii$ function is used for lump-sum payments.
+$a$ and $b$ are start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta 4 and $Va$ is the initial reserve (at time $a$).
+
+An example implementation of the Pure Endowment life insurance plan can be seen below in code sample \ref{csharp_pureendowment}. 
+Note: It does refer to some shared constants and methods defined outside the class itself.
+
+\begin{lstlisting}[caption=The pure endowment insurance plan expressed in C\#, label=csharp_pureendowment]
+class PureEndowment{
+    static double b_0(double t){ return 0.0;}
+    static double mu_01(double t){ return GM(t); }
+    static double bj_00(double t){ return t == pensiontime ? bpension : 0.0; }
+    static double bj_01(double t){ return 0.0; }
+    public static double[][] Compute(){
+        return RK4_n(
+            (double t, double[] V, double[] res) => { 
+                res[0] = r(t) * V[0] - b_0(t) - mu_01(t) * (0 - V[0] + bj_01(t)); 
+            },
+            (double t, double[] res) => { res[0] = bj_00(t); },
+            40, 0, steps, new double[] { 0 });
+    }
+}
+\end{lstlisting}
+
+Using floating point numbers of 32-bit precision (floats) it could do one iteration of all six plans in approximately \emph{25.3} milliseconds (ms), and with 64-bit precision (doubles) it took approximately \emph{24.5} ms on the test machine.
+It may look surprising that the float-version was actually slowe.
+This is in part due to the fact that the $Exp$ function from System.Math uses and returns doubles (and requires type-casting), but is mainly because double operations are optimized by the hardware\cite{northrup2008mcts}.
+The float version should have an edge if the application was memory-bound, but this is not the case in this situation.
