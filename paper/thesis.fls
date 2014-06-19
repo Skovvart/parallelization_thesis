@@ -168,6 +168,7 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thr
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/listings/lstlang1.sty
@@ -180,7 +181,6 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/omlcmr.fd
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/omlcmr.fd
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/InitialSolution.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/InitialSolution.tex
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/CUDASolution.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/CUDASolution.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/F-SharpSolution.tex
