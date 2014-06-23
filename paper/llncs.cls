@@ -648,6 +648,11 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
  \@starttoc{lot}\if@restonecol\twocolumn\fi}
 \let\l@table\l@figure
 
+\def\lstlistoflistings{\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn
+ \fi\section*{\lstlistingname\@mkboth{{\lstlistingname}}{{\lstlistingname}}}
+ \@starttoc{lol}\if@restonecol\twocolumn\fi}
+\let\l@listing\l@table
+
 \renewcommand\listoffigures{%
     \section*{\listfigurename
       \@mkboth{\listfigurename}{\listfigurename}}%
@@ -658,6 +663,12 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
     \section*{\listtablename
       \@mkboth{\listtablename}{\listtablename}}%
     \@starttoc{lot}%
+    }
+
+\renewcommand\lstlistoflistings{%
+    \section*{\lstlistingname
+      \@mkboth{\lstlistingname}{\lstlistingname}}%
+    \@starttoc{lol}%
     }
 
 \ifx\oribibl\undefined

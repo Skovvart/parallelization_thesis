@@ -22,6 +22,7 @@
 \bibliographystyle{abbrv}
 % Listing settings start
 \renewcommand{\lstlistingname}{Code Sample}
+\renewcommand{\lstlistlistingname}{List of Code Samples}
 \lstset {
     basicstyle = \footnotestyle\ttfamily,
     captionpos = b,
@@ -30,6 +31,11 @@
 \lstdefinelanguage{calcspec}{
   morekeywords={calculation,name,equations,algorithm,type,parameters,stepsize,%
     boundaryvalues,expressions,range,from,to,r_j,b_j,mu_jk,b_jk},
+  sensitive=true,
+  morestring=[b]'
+}
+\lstdefinelanguage{cudac}{
+  morekeywords={__device__, __global__, __local__, __shared__, __texture__},
   sensitive=true,
   morestring=[b]'
 }
@@ -42,20 +48,20 @@
   numbers=none,
   keywordstyle=\bf
 }
-
 % Listing settings end
 
 %Fix TOC
 % make a proper TOC despite llncs
-\setcounter{tocdepth}{2}
+\setcounter{tocdepth}{3}
 \makeatletter
 \renewcommand*\l@author[2]{}
 \renewcommand*\l@title[2]{}
 \makeatletter
+
 %End fix TOC
 
 %Meta
-\title{CUDA GPGPU programming using F\# Alea.cuBase and Actulus CalcSpec for parallelized insurance reserve estimation}
+\title{Parallelized GPU insurance reserve estimation using Alea.cuBase and Actulus CalcSpec}
 \author{Nicolai Bo Skovvart \email{nbsk@itu.dk}\\Superviser: Peter Sestoft}
 \date{\today}
 \institute{IT University of Copenhagen}
@@ -63,19 +69,23 @@
 %Document 
 \begin{document}
 	
-	\includepdf[pages={1}]{sections/FrontPage.pdf}
-	\setcounter{page}{1}
-	
+	\includepdf[pages={1}]{sections/FrontPage.pdf}	
 	\maketitle
 
 	\input{sections/Abstract}
-
 	\tableofcontents
-	\listoffigures
+	
+	% Dirty Hack to make LoL header use section* rather than chapter* like LoF and LoT
+	\newcommand\stdchapter{\chapter}
+	\def\chapter*#1{\section*{#1}}
+	\lstlistoflistings
+	\let\chapter\stdchapter
+	%End Dirty hack
+
+	\listoffigures{}\thispagestyle{empty}
 	\listoftables
-
 	\clearpage	
-
+	\setcounter{page}{1}
 	\input{sections/Introduction}
 	\input{sections/Background}
 
@@ -83,6 +93,7 @@
 	\input{sections/InitialSolution}
 	\input{sections/CUDASolution}
 	\input{sections/F-SharpSolution}
+	\input{sections/Comparison}
 
 	\input{sections/Generation}
 	\input{sections/Optimization}

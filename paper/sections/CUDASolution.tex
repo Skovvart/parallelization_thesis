@@ -3,12 +3,12 @@
 A CUDA C solution was implemented to be used as a base-line comparison for further development.
 It is intended to be fairly efficient but not much time has been spent optimizing it, as this has never been the end-goal.
 It is based on the initial C\# solution but has some alterations due to the language.
-It features the same 6 life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta 4 kernel which is identical but for references to implementations of different $dV$ and $bj_ii$ functions and the number of states used by the plan.
+It features the same 6 life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta 4 kernel which is identical but for references to implementations of different $dV$ and $bj\_ii$ functions and the number of states used by the plan.
 This is due to the CUDA C kernels not allowing references to objects or methods. %unless certain version of cuda?
-Another difference is that all of the kernel code is required to be in the same file as no cross-referencing is possible, where as this is possible in the C\# version.
+Another difference is that all of the kernel code is required to be in the same file as no cross-referencing is possible unlike the C\# version.
 
 See code sample \ref{cuda_pureendowment} for an implementation of Pure Endowment in CUDA C.
-\begin{lstlisting}[caption=The pure endowment insurance plan expressed in C\#, label=cuda_pureendowment]
+\begin{lstlisting}[language=cudac, caption=The pure endowment insurance plan expressed in CUDA C, label=cuda_pureendowment]
 __device__ class PureEndowment {
 	__device__ floatP b_0(floatP t) { return (floatP)0; }
 	__device__ floatP mu_01(floatP t) { return GM(t); }
