@@ -16,11 +16,11 @@ __device__ class PureEndowment {
 	__device__ floatP bj_01(floatP t) { return (floatP)0; }
 public:
 	#define PESTATES 1
-	__device__ void dV(floatP t, floatP* V, floatP* res){ 
+	__device__ void dV(floatP t, floatP *V, floatP *res){ 
 		res[0] = r(t) * V[0] - b_0(t) - mu_01(t) * (0 - V[0] + bj_01(t));
 	}
 
-	__device__ void bj_ii(floatP t, floatP* res){
+	__device__ void bj_ii(floatP t, floatP *res){
 		res[0] = bj_00(t);
 	}
 } pe;
@@ -42,45 +42,48 @@ The highest performance with double precision was at 25,97 iterations per millis
 The double precision version, while respectable, was a good bit slower than could be expected and could most likely be optimized to a rate where it would be about half as fast as the float precision equivalent.
 
 For the full float results see table \ref{table:cudacfloattime} and for double results see table \ref{table:cudacdoubletime}.
-What may be of interest is the diagonals where the total thread amount ($blocks \cdot threads$) is the same.
-Here a trend can be spotted where increasing the thread amount appears to be preferable to increasing the block amount, though not by a large factor.
+What may be of special interest is the diagonals where the total thread amount ($blocks \cdot threads$) is the same.
+Here a trend can be spotted where increasing the number of threads appears to be preferable to increasing the number of blocks, though not by a large factor.
 
-For the full CUDA C performance comparisons, see appendix \ref{app:cuda_runtimes}
+For the full CUDA C performance comparisons, see appendix \ref{app:cuda_runtimes}.
+For comparison of results with the original solution, see section \ref{subsec:result_comparison}.
 
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{ | c | c | c | c | c | c | c | c | c | }
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | c | c | c | c | c | c | c | c | }
   \hline
-           & Blocks &  1    &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
-  Threads  &        &       &       &       &       &       &       &       \\ \hline
-  1        &        & 0,02  & 0,33  & 1,55  & 1,56  & 2,00  & 1,92  & 2,17  \\ \hline
-  8        &        & 0,19  & 2,65  & 12,39 & 12,45 & 15,94 & 15,35 & 17,35 \\ \hline
-  16       &        & 0,38  & 5,28  & 24,69 & 24,81 & 31,58 & 30,59 & 34,61 \\ \hline
-  32       &        & 0,75  & 10,48 & 49,02 & 49,26 & 63,16 & 60,76 & 68,91 \\ \hline
-  64       &        & 1,47  & 20,58 & 64,17 & 70,13 & 81,71 & 80,77 & 86,85 \\ \hline
-  128      &        & 2,62  & 35,83 & 72,14 & 80,42 & 83,14 & 85,78 & 85,69 \\ \hline
-  256      &        & 3,20  & 44,15 & 78,57 & 90,82 & 91,07 & 88,55 & 89,01 \\ \hline
-  512      &        & 12,16 & 45,49 & 91,03 & 91,35 & 91,41 & 91,40 & 91,43 \\ \hline
-\end{tabular}
+\diaghead{Threads/Blocks}{Threads}{Blocks}
+           & 1     &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
+  1        & 0,02  & 0,33  & 1,55  & 1,56  & 2,00  & 1,92  & 2,17  \\ \hline
+  8        & 0,19  & 2,65  & 12,39 & 12,45 & 15,94 & 15,35 & 17,35 \\ \hline
+  16       & 0,38  & 5,28  & 24,69 & 24,81 & 31,58 & 30,59 & 34,61 \\ \hline
+  32       & 0,75  & 10,48 & 49,02 & 49,26 & 63,16 & 60,76 & 68,91 \\ \hline
+  64       & 1,47  & 20,58 & 64,17 & 70,13 & 81,71 & 80,77 & 86,85 \\ \hline
+  128      & 2,62  & 35,83 & 72,14 & 80,42 & 83,14 & 85,78 & 85,69 \\ \hline
+  256      & 3,20  & 44,15 & 78,57 & 90,82 & 91,07 & 88,55 & 89,01 \\ \hline
+  512      & 12,16 & 45,49 & 91,03 & 91,35 & 91,41 & 91,40 & 91,43 \\ \hline
+\end{tabular}}}
 \caption{CUDA C calculations per ms with float precision\label{table:cudacfloattime}}
 \end{table}
 
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{ | c | c | c | c | c | c | c | c | c | }
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | c | c | c | c | c | c | c | c | }
   \hline
-           & Blocks &  1   &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
-  Threads  &        &      &       &       &       &       &       &       \\ \hline
-  1        &        & 0,01 & 0,11  & 0,51  & 0,50  & 0,65  & 0,61  & 0,69  \\ \hline
-  8        &        & 0,06 & 0,90  & 4,06  & 4,01  & 5,16  & 4,89  & 5,50  \\ \hline
-  16       &        & 0,13 & 1,79  & 8,11  & 8,02  & 10,33 & 9,77  & 11,01  \\ \hline
-  32       &        & 0,26 & 3,59  & 16,22 & 16,03 & 20,65 & 19,53 & 22,01 \\ \hline
-  64       &        & 0,51 & 6,94  & 18,49 & 21,71 & 23,59 & 24,10 & 25,12 \\ \hline
-  128      &        & 1,00 & 11,52 & 22,74 & 25,00 & 25,30 & 25,25 & 25,69 \\ \hline
-  256      &        & 1,67 & 12,98 & 25,55 & 25,59 & 25,93 & 25,88 & 25,97 \\ \hline
-  512      &        & 1,85 & 25,95 & 25,96 & 25,97 & 25,97 & 25,97 & 25,97 \\ \hline
-\end{tabular}
+\diaghead{Threads/Blocks}{Threads}{Blocks}
+           &  1   &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
+  1        & 0,01 & 0,11  & 0,51  & 0,50  & 0,65  & 0,61  & 0,69  \\ \hline
+  8        & 0,06 & 0,90  & 4,06  & 4,01  & 5,16  & 4,89  & 5,50  \\ \hline
+  16       & 0,13 & 1,79  & 8,11  & 8,02  & 10,33 & 9,77  & 11,01  \\ \hline
+  32       & 0,26 & 3,59  & 16,22 & 16,03 & 20,65 & 19,53 & 22,01 \\ \hline
+  64       & 0,51 & 6,94  & 18,49 & 21,71 & 23,59 & 24,10 & 25,12 \\ \hline
+  128      & 1,00 & 11,52 & 22,74 & 25,00 & 25,30 & 25,25 & 25,69 \\ \hline
+  256      & 1,67 & 12,98 & 25,55 & 25,59 & 25,93 & 25,88 & 25,97 \\ \hline
+  512      & 1,85 & 25,95 & 25,96 & 25,97 & 25,97 & 25,97 & 25,97 \\ \hline
+\end{tabular}}}
 \caption{CUDA C calculations per ms with double precision\label{table:cudacdoubletime}}
 \end{table}

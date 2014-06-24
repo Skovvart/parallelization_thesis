@@ -216,7 +216,7 @@ The most essential declaration specifier is the \textbf{\_\_global\_\_} specifie
 Kernels are void-methods that are callable from the CPU but executed on the GPU. 
 Code sample \ref{cuda_add} shows a simple kernel performing vector addition of the vectors $a$ and $b$ of size $N$.
 
-\begin{lstlisting}[language=C++, caption=CUDA C addition kernel, label=cuda_add]
+\begin{lstlisting}[language=cudac, caption=CUDA C addition kernel, label=cuda_add]
 __global__ void Add(float *a, float *b, float *result){
 	//unique id within the kernel
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -262,7 +262,7 @@ Let (plusfive,
 
 Code Quotations also allow for the mixing of Quotation expressions using the splicing operators $\%$ for typed and $\%\%$ for untyped expressions as can be seen in code sample \ref{quotationsmixin}.
 
-\begin{lstlisting}[caption=Quotation mixing, label=quotationsmixin, language=ml]
+\begin{lstlisting}[caption=Quotation mixing, label=quotationsmixin, language=FSharp]
 let plusfive = <@ let plusfive number = number + 5 in plusfive @>
 //Has type Expr<int->int>
 let plus10 = <@ let plusten number = number |> %plusfive |> %plusfive in plusten @>
@@ -279,7 +279,7 @@ By relying on run-time code-generation it allows for extremely extensible kernel
 It utilizes F\#'s meta-programming support Code Quotations for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
 Code sample \ref{cubase_add} shows what a simple vector squaring-kernel could look like in F\# using Alea.cuBase.
 
-\begin{lstlisting}[caption=Alea.cuBase square kernel, label=cubase_add, language=ml]
+\begin{lstlisting}[caption=Alea.cuBase square kernel, label=cubase_add, language=FSharp]
 let Square = cuda { //use the Alea.cuBase cuda workflow
   let! kernel = <@ fun (a:deviceptr<int>) (result:deviceptr<int>) ->
       let i = blockIdx.x * blockDim.x + threadIdx.x
@@ -339,26 +339,25 @@ Note that it utilizes the Dirac $delta$ function\cite{hassani2009dirac} which is
 
 
 \begin{lstlisting}[caption=The pure endowment insurance plan expressed in CalcSpec, label=pe_calcspec, language=calcspec]
-calculation = 
-  {
-    name = 'Pure endowment',
-    algorithm = { type = 'Runge Kutta 4', parameters = { stepsize = 0.01 } },
-    equations = { 
-        0 = { r_j = r, b_j = b0, mu_jk = { 1 = GM }, b_jk = { } },
-        1 = { },
-    },
-    range = { from = 40, to = 0 },
-    boundaryvalues = { 0 = 0 , 1 = 0 },
-    expressions = {
-        interestrate = 0.05,
-        bpension = 1,
-        pensiontime = 35,
-        age = 30,
-        r(t) = interestrate,
-        b0(t) = bpension * delta(t - pensiontime),
-        GM(t) = 0.0005 + 10 ^ (5.728 - 10 + 0.038*(age + t))
-    }
-  }
+calculation = {
+	name = 'Pure endowment',
+	algorithm = { type = 'Runge Kutta 4', parameters = { stepsize = 0.01 } },
+	equations = { 
+		0 = { r_j = r, b_j = b0, mu_jk = { 1 = GM }, b_jk = { } },
+		1 = { },
+	},
+	range = { from = 40, to = 0 },
+	boundaryvalues = { 0 = 0, 1 = 0 },
+	expressions = {
+		interestrate = 0.05,
+		bpension = 1,
+		pensiontime = 35,
+		age = 30,
+		r(t) = interestrate,
+		b0(t) = bpension * delta(t - pensiontime),
+		GM(t) = 0.0005 + 10 ^ (5.728 - 10 + 0.038*(age + t))
+	}
+}
 \end{lstlisting}
 
 \subsection{Hardware}\label{subsec:background:hardware}
@@ -372,7 +371,7 @@ The code was only tested on the NVIDIA Tesla C2075 GPU which has the following p
 \item CUDA cores per Multiprocessor: 32
 \item GPU Clock rate: 1147 MHz (1.15 GHz)
 \item Memory clock rate: 1566 MHz
-\item Total global memory: 4.096GB
+\item Total global memory: 4GiB
 \item Total constant memory: 64KiB
 \item Total shared memory per block: 48KiB
 \item Total amount of registers per block: 32KiB

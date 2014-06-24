@@ -7,14 +7,20 @@
 %\usepackage{graphicx}
 %\usepackage{placeins}
 \usepackage{listings}
+\usepackage{upquote}
 \usepackage{pdfpages}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage[titletoc]{appendix}
 %\usepackage{verbatim}
 \usepackage{fancyvrb}
+\usepackage{makecell}
 
 %Settings 
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{turqusnumbers}{rgb}{0.17,0.57,0.69}
+\definecolor{redstrings}{rgb}{0.5,0,0}
 \restylefloat{table,figure}
 \graphicspath{{images/}}
 \pagestyle{headings}
@@ -23,21 +29,50 @@
 % Listing settings start
 \renewcommand{\lstlistingname}{Code Sample}
 \renewcommand{\lstlistlistingname}{List of Code Samples}
-\lstset {
-    basicstyle = \footnotestyle\ttfamily,
-    captionpos = b,
-    breaklines = true
+
+\lstdefinelanguage{FSharp}%
+{
+  alsoletter={|, >, -, <, @},
+  morekeywords={let, new, match, with, rec, open, module, namespace, type, of, member, % 
+and, for, while, true, false, in, do, begin, end, fun, function, return, yield, try, %
+mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit, finally, __local__, |> , ->, <@, @>},
+  otherkeywords={ let!, return!, do!, yield!, use!, var, from, select, where, order, by },
+  sensitive=true,
+	breaklines=true,
+  xleftmargin=\parindent,
+  aboveskip=\bigskipamount,
+	tabsize=4,
+  morecomment=[l][\color{greencomments}]{///},
+  morecomment=[l][\color{greencomments}]{//},
+  morecomment=[s][\color{greencomments}]{{(*}{*)}},
+  morestring=[b]',
+  showstringspaces=false,
+  literate={`}{\`}1,
+  stringstyle=\color{redstrings},
+}
+\lstdefinelanguage{FSharpcuBase}{
+  morekeywords={let,fun,->,<,>,<-,=, __local__,},
+  sensitive=true,
+  morestring=[b]'
 }
 \lstdefinelanguage{calcspec}{
-  morekeywords={calculation,name,equations,algorithm,type,parameters,stepsize,%
-    boundaryvalues,expressions,range,from,to,r_j,b_j,mu_jk,b_jk},
+  morekeywords={calculation,name,equations,algorithm,boundaryvalues,%
+delta,expressions,range,from,to,r_j,b_j,mu_jk,b_jk,type,parameters,stepsize},
   sensitive=true,
   morestring=[b]'
 }
 \lstdefinelanguage{cudac}{
-  morekeywords={__device__, __global__, __local__, __shared__, __texture__},
+  alsoletter={\#},
+  morekeywords={__device__,__global__,__local__,__shared__,__texture__,public, return, \#define, class, void, unsigned, long, for, int},
   sensitive=true,
-  morestring=[b]'
+  morecomment=[l][\color{greencomments}]{//},
+  morestring=[b]',
+}
+\lstdefinelanguage{CSharp}{
+  alsoletter={=, >},
+  morekeywords={public, static, class, new, return, =>},
+  sensitive=true,
+  morestring=[b]',
 }
 \lstset{frame=tb,
   aboveskip=3mm,
@@ -46,7 +81,10 @@
   columns=flexible,
   basicstyle={\small\ttfamily},
   numbers=none,
-  keywordstyle=\bf
+  keywordstyle=\bf\color{bluekeywords},
+  breaklines=true,
+  captionpos = b,
+  morecomment=[l][\color{greencomments}]{//},
 }
 % Listing settings end
 

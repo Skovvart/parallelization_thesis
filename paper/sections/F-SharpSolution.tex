@@ -1,5 +1,84 @@
 % !TeX root = ../thesis.tex
 \subsection{F\# Alea.cuBase Solution}
+The F\# Alea.cuBase solution has many similarities to the CUDA C implementation.
+One key factor is that the Runge-Kutta 4 kernel is implemented using Code Quotations, as are they plan-specific $dV$ and $bj\_ii$ methods.
+As the plan-specific $dV$ and $bj\_ii$ typically refer to helper-methods, you would often define them in terms of Quotations and use the splicing operators to mix them together.
+This is possible, but F\# also allows one to use the \textit{[\textless{}ReflectedDefinition\textgreater{}]} attribute on method calls to make regular methods accessible in Quotations.
+An example of this can be seen in code sample \ref{cubase_pureendowment}. 
+The various plans are in this case not implemented using classes, so each method name is prepended with a plan acronym ($pe\_$).
+It also refers to come common constants and methods not defined in the class, much like the previous implementations.
+
+\begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
+[<ReflectedDefinition>] 
+let pe_b_0 t = zero
+[<ReflectedDefinition>]
+let pe_mu_01 t = GM t
+[<ReflectedDefinition>]
+let pe_bj_00 t = if t = pensiontime then bpension else zero
+[<ReflectedDefinition>]
+let pe_bj_01 t = zero
+let pe_dV = 
+	<@ fun t (V:deviceptr<floatP>) (res:deviceptr<floatP>) -> 
+		res.[0] <- r t * V.[0] - pe_b_0 t - pe_mu_01 t * (zero - V.[0] + pe_bj_01 t) @>
+let pe_bj_ii = 
+	<@ fun t (res:deviceptr<floatP>) ->
+		res.[0] <- pe_bj_00 t @>
+\end{lstlisting}
+
+To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. For the full algorithm see appendix \ref{app:cubase_rk4_n}
+
+\begin{lstlisting}[language=FSharp, caption=The Runge-Kutta 4 solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
+let RK4_n dV bj_ii states = cuda {
+    let! kernel =
+        <@ fun a b steps (Va:deviceptr<floatP>) (result:deviceptr<floatP>) ->
+            //Calculate unique result offset
+            let offset = (blockIdx.x * blockDim.x + threadIdx.x) * states * (a + 1)
+            
+            //Splice in other quotation expressions
+            let dV = %dV
+            let bj_ii = %bj_ii
+            let limConv = %limConv //different limits for float and double
+
+            let h   = -one / conv steps
+			//Initialize reusable intermediary arrays
+            let k1  = __local__.Array<floatP>(states) |> __array_to_ptr
+            let k2  = __local__.Array<floatP>(states) |> __array_to_ptr
+            let k3  = __local__.Array<floatP>(states) |> __array_to_ptr
+            let k4  = __local__.Array<floatP>(states) |> __array_to_ptr
+            let tmp = __local__.Array<floatP>(states) |> __array_to_ptr
+            let v   = __local__.Array<floatP>(states) |> __array_to_ptr
+            
+            ...Actual Runge-Kutta 4 implementation
+        @> |> Compiler.DefineKernel 
+
+    return Entry(fun program ->
+        let worker = program.Worker
+        let kernel = program.Apply kernel
+        fun a b steps ->
+            //Calculate size of result array
+            let n = (a + 1) * states * blocks * threads
+            use Va = worker.Malloc(Array.zeroCreate<floatP> states)
+            use result = worker.Malloc(Array.zeroCreate<floatP> n)
+            let lp = LaunchParam (blocks, threads)
+            //Start timing mechanism
+            use start = worker.CreateEvent()
+            use stop = worker.CreateEvent()
+            worker.Synchronize()
+            start.Record()
+            //Launch kernel with parameters
+            kernel.Launch lp a b steps Va.Ptr result.Ptr
+            //End timing mechanism
+            stop.Record()
+            stop.Synchronize()
+            let ms = Event.ElapsedMilliseconds(start, stop)
+            //Gather device results
+            let result = result.Gather()
+            result, ms
+        )
+}
+\end{lstlisting}
+
+
 Describe implemented F\# Alea.cuBase solution
 
 Talk about kernel generation time + memory copying
