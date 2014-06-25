@@ -25,17 +25,6 @@ This is also known as the transition intensity.
 Not all transition intensities will change over time while others such as mortality rate will.
 For each change in time there may be associated costs whether there is a state transition or not.
 
-\subsubsection{Example life insurance policies}\label{subsubsec:background:insuranceplans}
-The following six life insurance plan examples are used throughout the project.
-\begin{itemize}
-\item Pure Endowment : Ensurer pays a lump sum if the ensured dies before age of retirement. 
-\item $m$-year Deferred $n$-year Temporary Life Annuity : After $m$ years, ensurer makes yearly payments to the ensured for $n$ years given the ensured is alive.
-\item $n$-year Temporary Life Annuity Premium : The ensured is paid yearly for $n$ years if alive.
-\item $n$-year Term Insurance : Ensurer pays a lump sum if the ensured dies before $n$ years.
-\item Disability Annuity : The ensured is paid yearly for $n$ years if disabled.
-\item Disability Term Insurance : Ensurer pays lump sum upon disability of ensured if it happens within $n$ years.
-\end{itemize}
-
 \begin{figure}[h] 
 \setlength{\unitlength}{0.14in} % selecting unit length 
 \centering % used for centering Figure 
@@ -56,6 +45,17 @@ The following six life insurance plan examples are used throughout the project.
 \caption{Disability Term Insurance Markov-model example} % title of the Figure 
 \label{fig:markovexample} % label to refer figure in text 
 \end{figure} 
+
+\subsubsection{Example life insurance policies}\label{subsubsec:background:insuranceplans}
+The following six life insurance plan examples are used throughout the project.
+\begin{itemize}
+\item Pure Endowment : Ensurer pays a lump sum if the ensured dies before age of retirement. 
+\item $m$-year Deferred $n$-year Temporary Life Annuity : After $m$ years, ensurer makes yearly payments to the ensured for $n$ years given the ensured is alive.
+\item $n$-year Temporary Life Annuity Premium : The ensured is paid yearly for $n$ years if alive.
+\item $n$-year Term Insurance : Ensurer pays a lump sum if the ensured dies before $n$ years.
+\item Disability Annuity : The ensured is paid yearly for $n$ years if disabled.
+\item Disability Term Insurance : Ensurer pays lump sum upon disability of ensured if it happens within $n$ years.
+\end{itemize}
 
 \subsection{Thiele's differential equation and the Runge-Kutta Method}\label{subsec:background:thielerungekutta}
 The goal of the computations performed in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given life insurance plan.
@@ -194,6 +194,7 @@ A summary of the properties of the various memory types can be seen in table \re
 
 \begin{table}[h!]
 \centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
 \begin{tabular}{ | c | c | c | c | c | }
   \hline
            & Read-only & On-chip   & Cached & Scope  \\ \hline
@@ -206,7 +207,7 @@ A summary of the properties of the various memory types can be seen in table \re
   L1 Cache & No        & Yes       & N/A    & N/A    \\ \hline
   L2 Cache & No        & No        & N/A    & N/A    \\ \hline
 
-\end{tabular}
+\end{tabular}}}
 \caption{Properties of CUDA memory types\label{table:memorytypes}}
 \end{table}
 

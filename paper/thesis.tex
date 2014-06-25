@@ -15,6 +15,7 @@
 %\usepackage{verbatim}
 \usepackage{fancyvrb}
 \usepackage{makecell}
+\usepackage{pxfonts}
 
 %Settings 
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
@@ -35,8 +36,8 @@
   alsoletter={|, >, -, <, @},
   morekeywords={let, new, match, with, rec, open, module, namespace, type, of, member, % 
 and, for, while, true, false, in, do, begin, end, fun, function, return, yield, try, %
-mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit, finally, __local__, |> , ->, <@, @>},
-  otherkeywords={ let!, return!, do!, yield!, use!, var, from, select, where, order, by },
+mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit, finally, __local__, |> , ->, <@, @>, <@@, @@>},
+  otherkeywords={ let!, return!, do!, yield!, use!, var, select, where, order, by }, %from, 
   sensitive=true,
 	breaklines=true,
   xleftmargin=\parindent,
@@ -45,21 +46,19 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
   morecomment=[l][\color{greencomments}]{///},
   morecomment=[l][\color{greencomments}]{//},
   morecomment=[s][\color{greencomments}]{{(*}{*)}},
-  morestring=[b]',
+  morestring=[b]",
   showstringspaces=false,
   literate={`}{\`}1,
   stringstyle=\color{redstrings},
 }
-\lstdefinelanguage{FSharpcuBase}{
-  morekeywords={let,fun,->,<,>,<-,=, __local__,},
-  sensitive=true,
-  morestring=[b]'
-}
+
 \lstdefinelanguage{calcspec}{
   morekeywords={calculation,name,equations,algorithm,boundaryvalues,%
 delta,expressions,range,from,to,r_j,b_j,mu_jk,b_jk,type,parameters,stepsize},
   sensitive=true,
-  morestring=[b]'
+  morestring=[b]',
+  morestring=[b]",
+  stringstyle=\color{redstrings},
 }
 \lstdefinelanguage{cudac}{
   alsoletter={\#},
@@ -70,10 +69,13 @@ delta,expressions,range,from,to,r_j,b_j,mu_jk,b_jk,type,parameters,stepsize},
 }
 \lstdefinelanguage{CSharp}{
   alsoletter={=, >},
-  morekeywords={public, static, class, new, return, =>},
+  morekeywords={public, static, class, new, return, =>, for, if, void},
+  morecomment=[l][\color{greencomments}]{//},
   sensitive=true,
-  morestring=[b]',
+  morestring=[b]",
+  stringstyle=\color{redstrings},
 }
+%\renewcommand{\ttdefault}{pcr}
 \lstset{frame=tb,
   aboveskip=3mm,
   belowskip=3mm,
@@ -81,7 +83,7 @@ delta,expressions,range,from,to,r_j,b_j,mu_jk,b_jk,type,parameters,stepsize},
   columns=flexible,
   basicstyle={\small\ttfamily},
   numbers=none,
-  keywordstyle=\bf\color{bluekeywords},
+  keywordstyle=\bfseries\color{bluekeywords},
   breaklines=true,
   captionpos = b,
   morecomment=[l][\color{greencomments}]{//},

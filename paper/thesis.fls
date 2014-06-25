@@ -104,9 +104,22 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/makecell/makecell.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/makecell/makecell.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/tools/array.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/tools/array.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/pxfonts.sty
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/pxfonts.sty
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.aux
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.aux
 OUTPUT thesis.aux
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omlpxmi.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omlpxmi.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omspxsy.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omspxsy.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omxpxex.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omxpxex.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxexa.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxexa.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/ot1pxr.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/ot1pxr.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/textcomp.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/textcomp.sty
 INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/ts1enc.def
@@ -133,23 +146,78 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/F
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/FrontPage.pdf
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmtt10.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr9.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsy.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsy.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsy.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxex.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxex.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxex.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxmia.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxmia.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmia.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmia.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmia.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxsya.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxsya.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsya.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsya.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsya.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxsyb.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxsyb.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxsyc.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/upxsyc.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyc.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyc.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyc.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxexa.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxexa.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxexa.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/ot1pxtt.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/ot1pxtt.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txtt.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Abstract.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Abstract.tex
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx9.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
 INPUT C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxr.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxr.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr12.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx12.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
 OUTPUT thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
 OUTPUT thesis.lol
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
@@ -159,16 +227,46 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lot
 OUTPUT thesis.lot
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Introduction.tex
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmbx10.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Background.tex
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmr6.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmmi9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmmi6.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmsy9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmsy6.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsy.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsy.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxex.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxex.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmia.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxmia.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsya.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsya.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyc.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxsyc.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxexa.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxexa.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxr.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxr.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxr.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
@@ -181,17 +279,15 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thr
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmti10.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmtt9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/omlcmr.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/omlcmr.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmmib9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/omscmr.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/omscmr.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/amsfonts/cmextra/cmbsy9.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/ts1cmtt.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/base/ts1cmtt.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/jknappen/ec/tctt0900.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txtt.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txbtt.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omlpxr.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omlpxr.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/ts1pxtt.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/ts1pxtt.fd
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/tcxtt.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/InitialSolution.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/InitialSolution.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/CUDASolution.tex
@@ -210,7 +306,8 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/C
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Conclusion.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.bbl
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.bbl
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/cm/cmti9.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxi.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Appendix.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/Appendix.tex
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/DeviceQuery.tex
@@ -235,26 +332,17 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/a
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase-RK4_n.txt
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase-RK4_n.txt
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.aux
-INPUT C:/Users/Skovvart/AppData/Local/MiKTeX/2.9/fonts/pk/ljfour/jknappen/ec/dpi600/tctt0900.pk
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cmextra/cmbsy9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti9.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt9.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/latxfont/line10.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/pxex.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/pxsy.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxb.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxi.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxmi.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxr.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/txfonts/tcxtt.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/txfonts/txbtt.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/txfonts/txtt.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/palatino/uplb8a.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/palatino/uplr8a.pfb
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/palatino/uplri8a.pfb
