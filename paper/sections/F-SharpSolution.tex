@@ -25,7 +25,9 @@ let pe_bj_ii =
 		res.[0] <- pe_bj_00 t @>
 \end{lstlisting}
 
-To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. For the full algorithm see appendix \ref{app:cubase_rk4_n}
+To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. For the full implementation see appendix \ref{app:cubase_rk4_n}
+What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which function very similarly to pointers in C.
+The temporary arrays may also be of interest. They are simply initiated using Alea.cuBase and then transformed into $deviceptr$'s themselves.
 
 \begin{lstlisting}[language=FSharp, caption=The Runge-Kutta 4 solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
 let RK4_n dV bj_ii states = cuda {
@@ -62,17 +64,10 @@ let RK4_n dV bj_ii states = cuda {
             use result = worker.Malloc(Array.zeroCreate<floatP> n)
 
             let lp = LaunchParam (blocks, threads)
-            //Start timing mechanism
-            use start = worker.CreateEvent()
-            use stop = worker.CreateEvent()
-            worker.Synchronize()
-            start.Record()
+            ...Timing mechanism start
             //Launch kernel with parameters
             kernel.Launch lp a b steps Va.Ptr result.Ptr
-            //End timing mechanism
-            stop.Record()
-            stop.Synchronize()
-            let ms = Event.ElapsedMilliseconds(start, stop)
+            ...Timing mechanism end, save kernel execution time in ms
             //Gather and return device results and kernel execution time
             let result = result.Gather()
             result, ms
@@ -80,12 +75,11 @@ let RK4_n dV bj_ii states = cuda {
 }
 \end{lstlisting}
 
-As the CUDA code is generated at runtime, a lot of the compile-limitations of CUDA disappear.
-While the kernels may not take all types of parameters at runtime, during the kernel-compilation they can often be used.
-The code is not making much use of the functional paradigm and memory-allocation for the device is still required, but lots of small changes like the $use$ keyword still make it faster and safer to program in F\# rather than CUDA C.
+As the CUDA code is generated at runtime, a lot of the compile-time-limitations of CUDA disappear.
+While the kernels may not take all types of parameters at launch-time, during kernel-compilation they can generally be used.
+The code is not making much use of the functional paradigm and memory-allocation for the device is still required, but lots of small changes like the $use$ keyword still make it faster and safer to program in F\# as opposed to CUDA C.
 
-A method was defined to compile the kernels for future use and another to execute them, as can be seen in code sample \ref{cubase_compileandrun}. 
-To execute the compiled kernel
+The solution also makes use of a method to compile the kernels for future use and another to execute them, as can be seen in code sample \ref{cubase_compileandrun}. 
 
 \begin{lstlisting}[language=FSharp, caption=Kernel compilation and execution methods in F\# Alea.cuBase, label=cubase_compileandrun]
 let compile dV bj_ii states = RK4_n dV bj_ii states |> Compiler.load Worker.Default
@@ -93,13 +87,9 @@ let compile dV bj_ii states = RK4_n dV bj_ii states |> Compiler.load Worker.Defa
 let runKernel (program:Program<int->int->int->floatP[]*float>) a b = program.Run a b steps
 \end{lstlisting}
 
-Results of the manual 
-
-
-
-Describe implemented F\# Alea.cuBase solution
-
-Talk about kernel generation time + memory copying
+The results of running the F\# Alea.cuBase solution shows that the highest number of calculations per ms were xx.xx for float precision or xx.xx ms for double precisions.
+This is about identical to the CUDA C solution for floats but almost twice as fast for doubles.
+The results were identical to the CUDA C solutions. For more information on result comparison see section \ref{subsec:result_comparison}.
 
 other todo: 
 	Add RK4\_n step-image like other reports? 

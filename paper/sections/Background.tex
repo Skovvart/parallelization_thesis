@@ -237,6 +237,7 @@ One thing to note is the kernel launch-parameters of Add-method in $main$ which 
 CUDA C also has other declaration specifiers. 
 The \textbf{\_\_device\_\_} specifier indicates that a method will only be compiled for the GPU (which can be referenced by kernels), the \textbf{\_\_host\_\_} specifier indicates that a method will be available for the CPU.
 These two specifiers can also be used together for compilation to both platforms.
+If no specifiers are explicitly stated the \textbf{\_\_host\_\_} specifier is used.
 Variables also have the \textbf{\_\_device\_\_} specifier, as well as the \textbf{\_\_constant\_\_} specifier to indicate that they are to be stored in constant memory and the \textbf{\_\_shared\_\_} specifier for shared memory.
 
 As it is based on C, dynamic memory must be allocated using $malloc$ and subsequently de-allocated by $free$.

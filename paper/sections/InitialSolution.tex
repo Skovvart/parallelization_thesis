@@ -1,12 +1,12 @@
 % !TeX root = ../thesis.tex
 %The required reserve will increase with age, and likelihood of death, until retirement is reached in which no reserve will be needed.
 \subsection{Initial C\# Solution}
-The original solution was single-threaded and written in C\# by Peter Sestoft using various optimizations (such for example using the $Exp$ function rather than $Pow$.
+The original solution was single-threaded and written in C\# by Peter Sestoft using various optimizations (such as for example using the $Exp$ function rather than $Pow$).
 It features the 6 life insurance plans described in section \ref{subsubsec:background:insuranceplans} and multiple implementation of Runge-Kutta solvers.
 The plans are implemented using C\# classes without inheritance or the like, as they attempt to stay relatively similar to a potential C-solution.
 
 The Runge-Kutta 4 solver introduced last is the fastest and is an imperative version which reuses intermediary arrays.
-It has the following signature: \textit{static double[][] RK4\_n(Action\textless double, double[], double[]\textgreater  dV, Action\textless double, double[]\textgreater  bj\_ii, int a, int b, int steps, double[] Va)}.
+It has the following signature: \textit{static double[][] RK4\_n(Action\textless{}double, double[], double[]\textgreater{}dV, Action\textless{}double, double[]\textgreater{}bj\_ii, int a, int b, int steps, double[] Va)}.
 The $dV$ function implements an arbitrary amount of derivatives.
 The $bj\_ii$ function is used for lump-sum payments.
 $a$ and $b$ are start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta 4 and \textit{Va} is the initial reserve (at time $a$).
@@ -32,6 +32,6 @@ class PureEndowment{
 \end{lstlisting}
 
 Using floating point numbers of 32-bit precision (floats) it could do one iteration of all six plans in approximately \emph{25.3} milliseconds (ms), and with 64-bit precision (doubles) it took approximately \emph{24.5} ms on the test machine.
-It may come as a surprise that the float-version was actually slower than the double-version.
+It may come as a surprise that the float-version was actually slower than the double-version despite using twice the amount of bits.
 This is in part due to the fact that the $Exp$ function from System.Math uses and returns doubles (and requires type-casting in the float-version), but is mainly because double operations are optimized by the hardware\cite{northrup2008mcts}.
-The float version should have an edge if the application was memory-bound, but this is not the case in this situation.
+The float version should have an edge if the application was to become memory-bound but is not the case in this situation.

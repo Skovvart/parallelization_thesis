@@ -1,13 +1,13 @@
 % !TeX root = ../thesis.tex
 \subsection{CUDA C Solution}
-A CUDA C solution was implemented to be used as a base-line comparison for further development.
-It is intended to be fairly efficient but not much time has been spent optimizing it, as this has never been the end-goal.
-It is based on the initial C\# solution but has some alterations due to the language.
+A CUDA C solution was implemented to be used as a base-line comparison for the other CUDA-based solutions.
+It is intended to make full use of parallelization and it should be fairly efficient but not much time has been spent optimizing it.
+It is based on the initial C\# solution but features differences due to language-restrictions and the paradigm-switch to parallel computing.
 It features the same 6 life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta 4 kernel which is identical but for references to implementations of different $dV$ and $bj\_ii$ functions and the number of states used by the plan.
 This is due to the CUDA C kernels not allowing references to objects or methods. %unless certain version of cuda?
 Another difference is that all of the kernel code is required to be in the same file as no cross-referencing is possible unlike the C\# version.
 
-See code sample \ref{cuda_pureendowment} for an implementation of Pure Endowment in CUDA C.
+See code sample \ref{cuda_pureendowment} for an implementation of the Pure Endowment insurance plan in CUDA C.
 \begin{lstlisting}[language=cudac, caption=The pure endowment insurance plan expressed in CUDA C, label=cuda_pureendowment]
 __device__ class PureEndowment {
 	__device__ floatP b_0(floatP t) { return (floatP)0; }
@@ -32,9 +32,9 @@ The device-size object is then referenced in the plan-specific implementation of
 The macro is due to C/C++ requiring constant values for array initialization.
 Dynamic memory allocation and deallocation of the temporary arrays could be used, but testing showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
 
-The results of running one iteration with 32-bit float precisions took 42,0 ms, about 65\% slower than the C\# equivalent.
-The double-precision took 124,48, or about 500\% times slower than the C\# equivalent.
-The key factor to consider is the fact that the parallelized version was never intended to be faster with one iteration.
+The results of running one iteration with 32-bit float precisions took 42,0 ms making it about 65\% slower than the C\# equivalent.
+The double-precision took 124,48 making it about 500\% times slower than the C\# equivalent.
+The key factor to consider is the fact that the parallelized version was never intended to be faster with a single iteration.
 Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales much better.
 
 The highest performance tested with float precision was at 91,43 iterations per millisecond, making it more than 2200 times faster than the C\# version.
@@ -46,7 +46,7 @@ What may be of special interest is the diagonals where the total thread amount (
 Here a trend can be spotted where increasing the number of threads appears to be preferable to increasing the number of blocks, though not by a large factor.
 
 For the full CUDA C performance comparisons, see appendix \ref{app:cuda_runtimes}.
-For comparison of results with the original solution, see section \ref{subsec:result_comparison}.
+For comparison of results with the original C\# solution, see section \ref{subsec:result_comparison}.
 
 
 \begin{table}[h!]
