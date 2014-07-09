@@ -93,7 +93,7 @@ The fourth-order version of the Runge-Kutta method can be seen below in equation
 \item $f(t, e)$  is the right hand side of the given differential equation evaluated at time $t$ in environment $e$
 \item $t$ is the initial time of the step
 \item $y_t$ approximated result at time t
-\item $O(h^5)$ represents the inaccuracy of the method
+\item $O(h^5)$ represents the maximal error of the method
 \end{itemize}
 
 \begin{equation}\begin{aligned}\label{eq:rk4}
@@ -171,9 +171,11 @@ An example with the unique thread-IDs can be seen in figure \ref{thread_hierarch
 
 
 \subsubsection{Memory model}
-A thread has access to various types of memory.
+A kernel has access to various types of memory.
 There is \emph{local} memory only available to the thread itself.
 This is facilitated by 32KiB per block of fast registers while available and falling back on relatively slow local memory afterwards (stored in global memory but only accessed by the thread).
+Each kernel can at most use 63 registers making the highest warp-sized number of threads per SM 512.
+If the kernel uses no more than 32 registers up to 1024 threads can be used.
 
 Beyond that, it has access to low-latency \emph{shared} on-chip memory physically residing on the GPU that is available to all threads in the same block. 
 Because of these properties, shared memory can be used for communication between threads or as a software managed cache.
@@ -197,16 +199,15 @@ A summary of the properties of the various memory types can be seen in table \re
 {\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
 \begin{tabular}{ | c | c | c | c | c | }
   \hline
-           & Read-only & On-chip   & Cached & Scope  \\ \hline
-  Register & No        & Yes       & No     & Thread \\ \hline
-  Local    & No        & No        & Yes    & Thread \\ \hline
-  Shared   & No        & Yes       & No     & Block  \\ \hline
-  Global   & No        & No        & Yes    & Kernel \\ \hline
-  Texture  & Yes       & No        & Yes    & Kernel \\ \hline
-  Constant & Yes       & No        & Yes    & Kernel \\ \hline
-  L1 Cache & No        & Yes       & N/A    & N/A    \\ \hline
-  L2 Cache & No        & No        & N/A    & N/A    \\ \hline
-
+			&	Read-only	& On-chip	&	Cached	&	Scope	\\ \hline
+Register		&	No			& Yes		&	No		&	Thread	\\ \hline
+Local		&	No			& No		&	Yes		&	Thread	\\ \hline
+Shared		&	No			& Yes		&	No		& 	Block	\\ \hline
+Global		&	No			& No		&	Yes		&	Kernel	\\ \hline
+Texture		&	Yes			& No		&	Yes		&	Kernel	\\ \hline
+Constant	&	Yes			& No		&	Yes		&	Kernel	\\ \hline
+L1 Cache	&	No			& Yes		& 	N/A		&	N/A		\\ \hline
+L2 Cache	&	No			& No		&	N/A		&	N/A		\\ \hline
 \end{tabular}}}
 \caption{Properties of CUDA memory types\label{table:memorytypes}}
 \end{table}

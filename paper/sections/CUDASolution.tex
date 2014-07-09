@@ -32,38 +32,42 @@ The device-size object is then referenced in the plan-specific implementation of
 The macro is due to C/C++ requiring constant values for array initialization.
 Dynamic memory allocation and deallocation of the temporary arrays could be used, but testing showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
 
-The results of running one iteration with 32-bit float precisions took 42,0 ms making it about 65\% slower than the C\# equivalent.
-The double-precision took 124,48 making it about 500\% times slower than the C\# equivalent.
+The float version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double version used too many registers and could only use 512 threads. 
+It is possible to limit the amount of registers during compilation and make the remaining registers spill to local (global) memory but this makes the kernel run slower.
+
+The results of running one iteration with 32-bit float precisions took 42.0 ms making it about 65\% slower than the C\# equivalent.
+The double-precision took 124.48 making it about 500\% times slower than the C\# equivalent.
 The key factor to consider is the fact that the parallelized version was never intended to be faster with a single iteration.
 Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales much better.
 
-The highest performance tested with float precision was at 91,43 iterations per millisecond, making it more than 2200 times faster than the C\# version.
-The highest performance with double precision was at 25,97 iterations per millisecond, making it more than 650 times faster than the C\# version.
-The double precision version, while respectable, was a good bit slower than could be expected and could most likely be optimized to a rate where it would be about half as fast as the float precision equivalent.
+The highest performance tested with float precision was at 91.43 iterations per millisecond, making it more than 2200 times faster than the C\# version.
+The highest performance with double precision was at 25.97 iterations per millisecond, making it more than 650 times faster than the C\# version.
+%The double precision version, while respectable, was a good bit slower than could be expected and could most likely be optimized to a rate where it would be about half as fast as the float precision equivalent.
 
 For the full float results see table \ref{table:cudacfloattime} and for double results see table \ref{table:cudacdoubletime}.
-What may be of special interest is the diagonals where the total thread amount ($blocks \cdot threads$) is the same.
+Looking at the full CUDA C performance comparisons available in appendix \ref{app:cuda_runtimes}, it is quite clear that there is little point in using configuration with less than 14 blocks (the number of SMs) and 32 threads (the size of a warp).
+What may also be of special interest is the diagonals where the total thread amount ($blocks \cdot threads$) is the same.
 Here a trend can be spotted where increasing the number of threads appears to be preferable to increasing the number of blocks, though not by a large factor.
 
 For the full CUDA C performance comparisons, see appendix \ref{app:cuda_runtimes}.
 For comparison of results with the original C\# solution, see section \ref{subsec:result_comparison}.
 
-
 \begin{table}[h!]
 \centering
 {\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
-\begin{tabular}{ | c | c | c | c | c | c | c | c | }
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
   \hline
 \diaghead{Threads/Blocks}{Threads}{Blocks}
-           & 1     &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
-  1        & 0,02  & 0,33  & 1,55  & 1,56  & 2,00  & 1,92  & 2,17  \\ \hline
-  8        & 0,19  & 2,65  & 12,39 & 12,45 & 15,94 & 15,35 & 17,35 \\ \hline
-  16       & 0,38  & 5,28  & 24,69 & 24,81 & 31,58 & 30,59 & 34,61 \\ \hline
-  32       & 0,75  & 10,48 & 49,02 & 49,26 & 63,16 & 60,76 & 68,91 \\ \hline
-  64       & 1,47  & 20,58 & 64,17 & 70,13 & 81,71 & 80,77 & 86,85 \\ \hline
-  128      & 2,62  & 35,83 & 72,14 & 80,42 & 83,14 & 85,78 & 85,69 \\ \hline
-  256      & 3,20  & 44,15 & 78,57 & 90,82 & 91,07 & 88,55 & 89,01 \\ \hline
-  512      & 12,16 & 45,49 & 91,03 & 91,35 & 91,41 & 91,40 & 91,43 \\ \hline
+		&	1		&	14		&	14*5	&	14*10	&	14*20	&	14*25	&	14*30	\\ \hline
+ 1		&	0.02	&	0.33 	&	1.55	&	1.56 	&	2.00 	&	1.92 	&	2.17	\\ \hline
+ 8		&	0.19	&	2.65 	&	12.39	&	12.45	&	15.94	&	15.35	&	17.35	\\ \hline
+ 16		&	0.38	&	5.28 	&	24.69	&	24.81	&	31.58	&	30.59	&	34.61	\\ \hline
+ 32		&	0.75	&	10.48	&	49.02	&	49.26	&	63.16	&	60.76	&	68.91	\\ \hline
+ 64		&	1.50	&	20.58	&	64.17	&	70.13	&	81.71	&	80.77	&	86.85	\\ \hline
+ 128 	&	2.95	&	35.83	&	72.14	&	80.42	&	83.14	&	85.78	&	85.69	\\ \hline
+ 256	&	5.24 	&	44.15	&	78.57	&	90.82	&	91.07	&	88.55	&	89.01	\\ \hline
+ 512	&	6.40	&	45.49	&	91.03	&	91.35	&	91.41	&	91.40	&	91.43	\\ \hline
+1024	&	6.47	&	90.15	&	90.52	&	90.58	&	90.61	&	90.62	&	90.63	\\ \hline
 \end{tabular}}}
 \caption{CUDA C calculations per ms with float precision\label{table:cudacfloattime}}
 \end{table}
@@ -72,18 +76,19 @@ For comparison of results with the original C\# solution, see section \ref{subse
 \begin{table}[h!]
 \centering
 {\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
-\begin{tabular}{ | c | c | c | c | c | c | c | c | }
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
   \hline
 \diaghead{Threads/Blocks}{Threads}{Blocks}
-           &  1   &   14  & 14*5  & 14*10 & 14*20 & 14*25 & 14*30 \\ \hline
-  1        & 0,01 & 0,11  & 0,51  & 0,50  & 0,65  & 0,61  & 0,69  \\ \hline
-  8        & 0,06 & 0,90  & 4,06  & 4,01  & 5,16  & 4,89  & 5,50  \\ \hline
-  16       & 0,13 & 1,79  & 8,11  & 8,02  & 10,33 & 9,77  & 11,01  \\ \hline
-  32       & 0,26 & 3,59  & 16,22 & 16,03 & 20,65 & 19,53 & 22,01 \\ \hline
-  64       & 0,51 & 6,94  & 18,49 & 21,71 & 23,59 & 24,10 & 25,12 \\ \hline
-  128      & 1,00 & 11,52 & 22,74 & 25,00 & 25,30 & 25,25 & 25,69 \\ \hline
-  256      & 1,67 & 12,98 & 25,55 & 25,59 & 25,93 & 25,88 & 25,97 \\ \hline
-  512      & 1,85 & 25,95 & 25,96 & 25,97 & 25,97 & 25,97 & 25,97 \\ \hline
+						&	 1		&	  14		&	14*5 	&	14*10	&	14*20	&	14*25	&	14*30	 \\ \hline
+1						&	0.01	&	0.11 	&	0.51 	&	0.50 	&	0.65 	&	0.61 	&	0.69 	 \\ \hline
+8						&	0.06	&	0.90 	&	4.06 	&	4.01 	&	5.16 	&	4.89 	&	5.50 	 \\ \hline
+16						&	0.13	&	1.79 	&	8.11 	&	8.02 	&	10.33	&	9.77 	&	11.01 	 \\ \hline
+32						&	0.26	&	3.59 	&	16.22	&	16.03	&	20.65	&	19.53	&	22.01	 \\ \hline
+64						&	0.51	&	6.94 	&	18.49	&	21.71	&	23.59	&	24.10	&	25.12	 \\ \hline
+128						&	1.00	&	11.52	&	22.74	&	25.00	&	25.30	&	25.25	&	25.69	 \\ \hline
+256						&	1.67	&	12.98	&	25.55	&	25.59	&	25.93	&	25.88	&	25.97	 \\ \hline
+512						&	1.85	&	25.95	&	25.96	&	25.97	&	25.97	&	25.97	&	25.97	 \\ \hline
+1024 (forced registers)	&	1.79	&	24.98	&	25.00	&	25.00	&	25.00	&	25.00	&	25.00	 \\ \hline
 \end{tabular}}}
 \caption{CUDA C calculations per ms with double precision\label{table:cudacdoubletime}}
 \end{table}

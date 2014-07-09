@@ -2,11 +2,11 @@
 \subsection{F\# Alea.cuBase Solution}
 The F\# Alea.cuBase solution has many similarities to the CUDA C implementation.
 One key factor is that the Runge-Kutta 4 kernel is implemented using Code Quotations, as are the plan-specific $dV$ and $bj\_ii$ methods.
-As the plan-specific $dV$ and $bj\_ii$ typically refer to helper-methods, you would often define them in terms of Quotations and use the splicing operators to mix them together.
-This is possible, but F\# also allows one to use the \textit{[\textless{}ReflectedDefinition\textgreater{}]} attribute on method calls to make most regular methods accessible in Quotations.
+As the plan-specific $dV$ and $bj\_ii$ typically include references to helper-methods, you could define them in terms of Quotations and use the splicing operators to mix them together.
+Another option is to use use the \textit{[\textless{}ReflectedDefinition\textgreater{}]} F\# attribute on method calls which makes most regular methods accessible in Quotations.
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
 The various plans are in this case not implemented using classes, so each method name is prepended with a plan acronym ($pe\_$).
-It also refers to come common constants and methods not defined in the class, much like the previous implementations.
+It also refers to come common constants and methods not defined in the class much like the previous implementations.
 
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
 [<ReflectedDefinition>] 
@@ -27,7 +27,7 @@ let pe_bj_ii =
 
 To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. For the full implementation see appendix \ref{app:cubase_rk4_n}
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which function very similarly to pointers in C.
-The temporary arrays may also be of interest. They are simply initiated using Alea.cuBase and then transformed into $deviceptr$'s themselves.
+The temporary arrays may also be of interest. They are initiated using Alea.cuBase and then transformed into the generic $deviceptr$ type representations that work similarly to C pointers.
 
 \begin{lstlisting}[language=FSharp, caption=The Runge-Kutta 4 solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
 let RK4_n dV bj_ii states = cuda {
@@ -59,7 +59,7 @@ let RK4_n dV bj_ii states = cuda {
         fun a b steps ->
             //Calculate size of result array
             let n = (a + 1) * states * blocks * threads
-			//Allocate memory on device
+            //Allocate memory on device
             use Va = worker.Malloc(Array.zeroCreate<floatP> states)
             use result = worker.Malloc(Array.zeroCreate<floatP> n)
 
@@ -67,7 +67,7 @@ let RK4_n dV bj_ii states = cuda {
             ...Timing mechanism start
             //Launch kernel with parameters
             kernel.Launch lp a b steps Va.Ptr result.Ptr
-            ...Timing mechanism end, save kernel execution time in ms
+            ...Timing mechanism end, save kernel execution time in ms1
             //Gather and return device results and kernel execution time
             let result = result.Gather()
             result, ms
@@ -75,11 +75,11 @@ let RK4_n dV bj_ii states = cuda {
 }
 \end{lstlisting}
 
-As the CUDA code is generated at runtime, a lot of the compile-time-limitations of CUDA disappear.
-While the kernels may not take all types of parameters at launch-time, during kernel-compilation they can generally be used.
+As the GPU code is generated at runtime, a lot of the compile-time-limitations of CUDA C disappear.
+While the kernels may not take all types of parameters at launch-time, during kernel-compilation they can often be used.
 The code is not making much use of the functional paradigm and memory-allocation for the device is still required, but lots of small changes like the $use$ keyword still make it faster and safer to program in F\# as opposed to CUDA C.
 
-The solution also makes use of a method to compile the kernels for future use and another to execute them, as can be seen in code sample \ref{cubase_compileandrun}. 
+The solution also makes use of a method to compile the kernels for reuse and another to execute them, as can be seen in code sample \ref{cubase_compileandrun}. 
 
 \begin{lstlisting}[language=FSharp, caption=Kernel compilation and execution methods in F\# Alea.cuBase, label=cubase_compileandrun]
 let compile dV bj_ii states = RK4_n dV bj_ii states |> Compiler.load Worker.Default
@@ -87,20 +87,85 @@ let compile dV bj_ii states = RK4_n dV bj_ii states |> Compiler.load Worker.Defa
 let runKernel (program:Program<int->int->int->floatP[]*float>) a b = program.Run a b steps
 \end{lstlisting}
 
-The results of running the F\# Alea.cuBase solution shows that the highest number of calculations per ms were xx.xx for float precision or xx.xx ms for double precisions.
-This is about identical to the CUDA C solution for floats but almost twice as fast for doubles.
-The results were identical to the CUDA C solutions. For more information on result comparison see section \ref{subsec:result_comparison}.
+The results of running the F\# Alea.cuBase solution shows that the highest number of calculations per ms were 98.33 for float precision and 25.30 ms for double precision.
+For the full float results table \ref{table:cubaseManualfloattime} and for double results see table \ref{table:cubaseManualdoubletime}.
+This is a slight improvement for the float version while being nearly identical for the double version.
+Unlike the CUDA C version, I was not able to limit the maximum amount of registers used, making  it impossible to test configurations with 1024 threads.
 
-other todo: 
-	Add RK4\_n step-image like other reports? 
-	show visual abstract syntax tree? 
-	write more about delta-function (how it is a bad idea numerically, bj\_ii instead)
+For more information on result comparison see section \ref{subsec:result_comparison}.
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks} &
+1       & 	14 	 &	14*5 	& 	14*10 	& 14*20 & 14*25 & 14*30 \\ \hline
+1       & 	0.02 &	0.34 	&	1.61	&	1.67	&	2.15	&	2.04	&	2.36	\\ \hline
+8       & 	0.19 &	2.72 	&	12.87	&	13.33	&	17.13	&	16.28	&	18.80	\\ \hline
+16     &	0.38 &	5.43	&	25.60	&	26.53	&	34.05	&	32.35	&	37.47	\\ \hline
+32     &	0.76 &	10.78	&	50.58	&	52.59	&	67.61	&	64.27	&	74.51	\\ \hline
+64     &	1.37 &	21.12	&	67.15	&	70.75	&	88.71	&	85.95	&	95.53	\\ \hline
+128   &	1.69 &	37.36	&	77.74	&	84.81	&	85.36	&	88.89	&	92.55	\\ \hline
+256   &	1.73 &	46.54	&	95.53	&	97.41	&	97.92	&	94.80	&	95.49	\\ \hline
+512   &	6.75 &	48.20	&	97.44	&	98.01	&	98.23	&	96.28	&	98.31	\\ \hline
+1024 &	6.93 &	96.11	&	97.94	&	98.16	&	98.31	&	98.33	&	98.29	\\ \hline
+\end{tabular}}}
+\caption{F\# Alea.cuBase calculations per ms with float precision\label{table:cubaseManualfloattime}}
+\end{table}
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks} &
+			1     &	14	      &	14*5	&	14*10	&	14*20	&	14*25	&	14*30	\\ \hline
+1     &	0.01	&	0.11	&	0.49	&	0.49	&	0.63	&	0.59	&	0.69	\\ \hline
+8     &	0.06	&	0.87	&	3.93	&	3.91	&	5.01	&	4.74	&	5.51	\\ \hline
+16   &	0.12	&	1.73	&	7.83		&	7.88		&	10.05	&	9.48	&	11.01	\\ \hline
+32   &	0.25	&	3.46	&	15.63	&	15.75	&	20.06	&	18.94	&	22.02	\\ \hline
+64   &	0.49	&	6.73	&	19.96	&	21.67	&	24.42	&	23.22	&	25.22	\\ \hline
+128 &	0.96	&	11.26	&	20.31	&	25.18	&	24.10	&	24.94	&	25.34	\\ \hline
+256 &	1.61	&	12.53	&	24.84	&	25.12	&	25.27	&	25.35	&	25.42	\\ \hline
+512 &	1.79	&	25.03	&	25.26	&	25.28	&	25.30	&	25.30	&	25.25	\\ \hline
+\end{tabular}}}
+\caption{F\# Alea.cuBase calculations per ms with double precision\label{table:cubaseManualdoubletime}}
+\end{table}
 
 
 
 \subsection{Insurance plan parameters}
+So far the parallelized versions have been running the same static plans over and over again.
+This is of course not useful in practical scenarios.
+To make parallellisation practical the ability to make constants parameterized is required.
+Some of these constants could for example be the interest rate or the age of the insured.
+
+To achieve this, the $dV$ and $bj\_ii$ signatures were changed to include an additional array containing parameters.
+The plans were then made responsible for knowing how many variables there were and which variables where which. 
+The RK4\_n kernel was also altered to provide the thread-specific pointer to the array and pass them to the updated $dV$ and $bj\_ii$ methods.
+
+%insert visualisation of the parameter array
+
+Results the same for double, much better for double for some inexplicable reason. Memory is a bitch :||
+
+
+
+
+In a real-world scenario, this is of course not very interesting or useful.
+For parallelization to be useful in the context of life insurance reserve estimation, the plans must contain variable parameters.
+These can include the age of the insured, the interest rate and the like.
+
+
+
 Talk about how running the same thing over and over again is not a very good idea, and how user and pension plan parameters are handled and their effect on performance.
 
 Changed the dV, bj\_ii and RK4\_n signatures to include params array, setting old constants to variable number.
 
 Talk about parameter generation and division of work (or wait until calcspec? dunno)
+
+
+todo:?
+RK4 step image
+delta numerical critique
+visual ast of quotation?
