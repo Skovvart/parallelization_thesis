@@ -9,3 +9,5 @@
 \contentsline {lstlisting}{\numberline {1.9}The pure endowment insurance plan expressed in F\# Alea.cuBase}{17}{lstlisting.1.9}
 \contentsline {lstlisting}{\numberline {1.10}The Runge-Kutta 4 solver expressed in F\# Alea.cuBase}{18}{lstlisting.1.10}
 \contentsline {lstlisting}{\numberline {1.11}Kernel compilation and execution methods in F\# Alea.cuBase}{19}{lstlisting.1.11}
+\contentsline {lstlisting}{\numberline {1.12}Parameterized pure endowment life insurance plan in F\# Alea.cuBase}{20}{lstlisting.1.12}
+\contentsline {lstlisting}{\numberline {1.13}Parameterized RK4\_n kernel in F\# Alea.cuBase}{21}{lstlisting.1.13}

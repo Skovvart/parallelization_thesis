@@ -25,7 +25,8 @@ let pe_bj_ii =
 		res.[0] <- pe_bj_00 t @>
 \end{lstlisting}
 
-To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. For the full implementation see appendix \ref{app:cubase_rk4_n}
+To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. 
+For the full implementation see appendix \ref{app:cubase_rk4_n}. 
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which function very similarly to pointers in C.
 The temporary arrays may also be of interest. They are initiated using Alea.cuBase and then transformed into the generic $deviceptr$ type representations that work similarly to C pointers.
 
@@ -133,34 +134,115 @@ For more information on result comparison see section \ref{subsec:result_compari
 \caption{F\# Alea.cuBase calculations per ms with double precision\label{table:cubaseManualdoubletime}}
 \end{table}
 
-
-
 \subsection{Insurance plan parameters}
-So far the parallelized versions have been running the same static plans over and over again.
-This is of course not useful in practical scenarios.
-To make parallellisation practical the ability to make constants parameterized is required.
-Some of these constants could for example be the interest rate or the age of the insured.
+The parallelized versions have so far been running the same static plans over and over again which is not very useful in practical scenarios.
+To make parallellisation useful, the ability to make constants parameterized is required.
+These constants could for example be the interest rate or the age of the insured.
 
-To achieve this, the $dV$ and $bj\_ii$ signatures were changed to include an additional array containing parameters.
+To achieve this, the $dV$ and $bj\_ii$ signatures were changed to include an additional array containing parameters for the insurance plan.
+The parameters were shaped so each thread would have its own unique set of parameters laid in sequence. 
+See figure \ref{} for an example of this.
 The plans were then made responsible for knowing how many variables there were and which variables where which. 
-The RK4\_n kernel was also altered to provide the thread-specific pointer to the array and pass them to the updated $dV$ and $bj\_ii$ methods.
+They also had to pass the parameters to where they were needed, for example age to the mortality functions.
+This iteration of the code also switched to using classes eliminating the need for prefixes for the different plan methods.
+For an example of this, see code sample \ref{cubase_pureendowmentparams}.
+The RK4\_n kernel was also altered to provide the thread-specific pointer to the plan parameter array and pass this to the updated $dV$ and $bj\_ii$ methods.
+This position would be the position of the thread times the number of plan parameters.
+For a brief overview of the changes to the RK4\_n kernel, see code sample \ref{cubase_rk4nparams}.
 
+\begin{lstlisting}[language=FSharp, caption=Parameterized pure endowment life insurance plan in F\# Alea.cuBase, label=cubase_pureendowmentparams]
+type PureEndowment (planParams, paramCount) =
+    inherit Plan<floatP>(40, 0, 1, planParams, paramCount) with
+        [<ReflectedDefinition>]
+        let b_0 t = conv 0
+    
+        [<ReflectedDefinition>]
+        let mu_01 t age = GM t age
+    
+        [<ReflectedDefinition>]
+        let bj_00 t pensiontime bpension = if t = pensiontime then bpension else conv 0
+
+        [<ReflectedDefinition>]
+        let bj_01 t = conv 0
+
+        override this.dV = <@ fun t (V:deviceptr<'T>) (planParams:deviceptr<'T>) (res:deviceptr<'T>) -> 
+                let age = planParams.[0]
+                res.[0] <- (r t) * V.[0] - (b_0 t) - (mu_01 t age) * (conv 0 - V.[0] + (bj_01 t))
+            @>
+        override this.bj_ii = <@ fun t (planParams:deviceptr<'T>) (res:deviceptr<'T>) -> 
+		    let bpension = planParams.[1]                
+                 let pensiontime = planParams.[2]
+                res.[0] <- bj_00 t pensiontime bpension
+            @>
+\end{lstlisting}
 %insert visualisation of the parameter array
 
-Results the same for double, much better for double for some inexplicable reason. Memory is a bitch :||
+Results were nearly identical for floats with the highest being xx.xx calculations per ms, but almost twice as fast for doubles with xx.xx calculations per ms. 
+For the full results see tables \ref{table:cubaseManualParamsfloattime} and \ref{table:cubaseManualParamsdoubletime} below.
+The increase in the double results must be because of \emph{...speculate...}.
 
+This shows that parameters not only barely affect the running time and are therefore more than viable, it also shows that the double results can be optimized a good bit which is hopeful.
 
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks} &
+\end{tabular}}}
+\caption{F\# Alea.cuBase calculations per ms with float precision and parameters\label{table:cubaseManualParamsfloattime}}
+\end{table}
 
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks} &
+\end{tabular}}}
+\caption{F\# Alea.cuBase calculations per ms with double precision and parameters\label{table:cubaseManualParamsdoubletime}}
+\end{table}
 
-In a real-world scenario, this is of course not very interesting or useful.
-For parallelization to be useful in the context of life insurance reserve estimation, the plans must contain variable parameters.
-These can include the age of the insured, the interest rate and the like.
+\begin{lstlisting}[language=FSharp, caption=Parameterized RK4\_n kernel in F\# Alea.cuBase, label=cubase_rk4nparams]
+let inline RK4_n (plan:Plan<_>) = cuda {
+    let states = plan.states
+    let! kernel =
+        <@ fun (a:int) b steps (Va:deviceptr<floatP>) (d_params:deviceptr<floatP>) (result:deviceptr<floatP>) ->
+            let offset = (blockIdx.x * blockDim.x + threadIdx.x) * states * (a + 1)
+            if blockIdx.x * blockDim.x + threadIdx.x > plan.planParams.Length/plan.paramCount then () else
 
+            let localParams = d_params.Ptr ((threadIdx.x + blockIdx.x*blockDim.x)*plan.paramCount)
+            let dV = %plan.dV
+            let bj_ii = %plan.bj_ii
+            ...
+            while y > b do
+                bj_ii (conv y) localParams v
+                saxpy (conv 1) v (result.Ptr (offset + y * states)) v states
+                for s = 0 to steps - 1 do // Integrate backwards over [y, y-1]
+                    ....
+                    dV (if s = 0 then t - limit else t) v localParams k1
+                    ...
+                    dV (t + h / conv 2) tmp localParams k2
+                    ...
+                    dV (t + h / conv 2) tmp localParams k3
+                    ...
+                    dV (if s = steps - 1 then t + h + limit else t + h) tmp localParams k4
+                    ...
+                arrayCopy v (result.Ptr (offset + y*states - states)) states
+                y <- y - 1
+        @> |> Compiler.DefineKernel 
 
-
-Talk about how running the same thing over and over again is not a very good idea, and how user and pension plan parameters are handled and their effect on performance.
-
-Changed the dV, bj\_ii and RK4\_n signatures to include params array, setting old constants to variable number.
+    return Entry(fun program ->
+        ...
+        fun a b steps blocks threadsPerBlock ->
+            ...
+            use planParams = worker.Malloc<'T>(plan.planParams)
+            ...
+            let msec, _ = time false "" (fun () -> kernel.Launch lp a b steps Va.Ptr planParams.Ptr result.Ptr)
+            ...
+        )
+}
+\end{lstlisting}
 
 Talk about parameter generation and division of work (or wait until calcspec? dunno)
 
