@@ -1,6 +1,63 @@
 % !TeX root = ../thesis.tex
-%The required reserve will increase with age, and likelihood of death, until retirement is reached in which no reserve will be needed.
-\subsection{Result comparison}\label{subsec:result_comparison}
-Write about how other solutions were compared to the C\# solution, discuss rate of error etc.
+\subsection{Result discussion}\label{subsec:result_comparison}
+Results of running the 6 plans described in section \ref{subsubsec:background:insuranceplans} using the Runge-Kutta 4 solver were gathered for both single and double floating point precision using the initial C\# solution.
+It was then the goal for further solutions to match these results with a low margin of error.
 
-Also discuss how times are just the kernel, not memory allocation or compilation of kernel.
+The 6 plans in total output 398 numbers that are compared. 
+Many of them are always zero, making the total number of actual comparisons 255.
+It is worth noting that all results are printed with a decimal component of 16 digits, though .NET single-precision floats when printed will only show up to 7 decimal digits with trailing zeros for the remaining digits.
+The CUDA C solution however prints digits for all 16 decimal digits even for single-precision floats.
+This means that the lowest error tolerance possible for comparisons where both results are doubles is 1e-16 (to the 16th digit) and 1e-7 if comparing floats.
+It is also important to note that number of errors is often inflated as one error in a plan will typically propagate to the rest of the output of the plan.
+
+A tool was created to report the number of errors between two result-outputs with a certain error tolerance.
+See table \ref{table:errorComparison} for the results of running this tool.
+
+All the solutions are identical down to the 4th decimal digit, all doubles down to the 13th and all singles down to the 5th.
+It also seems that the two .NET solutions (C\# and F\# Alea.cuBase) are a lot more similar than the CUDA C solution.
+This indicates that a very potential source of error could be different representations of floating point numbers in the .NET and CUDA C languages that are then passed to the kernels executed on the GPU.
+
+The .NET solutions are practically identical for double precision, and for single precision the rate of error at the 6th decimal digit is also a lot lower than the CUDA C solution.
+
+The double to single comparison shows that the relative error of the results seem very similar between the different floating point number precisions.
+
+%mål standard afvigelse?
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | l | r | r | r | r | r | r | r | r | } \hline
+\diaghead{Errors/Tolerance}{Errors}{Tolerance}
+							&	1e-16	&	1e-15	&	1e-14	&	1e-13	&	1e-7	&	1e-6	&	1e-5	&	1e-4	\\ \hline
+double-C\# double-CUDA-C	&	190		&	97		&	36		&	0		&	0		&	0		&	0		&	0		\\ \hline
+double-C\# double-cuBase	&	2		&	0		&	0		&	0		&	0		&	0		&	0		&	0		\\ \hline
+double-cuBase double-CUDA-C	&	190		&	97		&	36		&	0		&	0		&	0		&	0		&	0		\\ \hline
+							&			&			&			&			&			&			&			&			\\ \hline
+double-C\# float-C\#		&			&			&			&			&	205		&	120		&	24		&	0		\\ \hline
+double-cuBase float-cuBase	&			&			&			&			&	202		&	122		&	24		&	0		\\ \hline
+double-CUDA-C float-CUDA-C	&			&			&			&			&	198		&	120		&	25		&	0		\\ \hline
+							&			&			&			&			&			&			&			&			\\ \hline
+float-C\# float-CUDA-C		&			&			&			&			&	118		&	34		&	0		&	0		\\ \hline
+float-C\# float-cuBase		&			&			&			&			&	34		&	14		&	0		&	0		\\ \hline
+float-cuBase float-CUDA-C	&			&			&			&			&	103		&	34		&	0		&	0		\\ \hline
+\end{tabular}}}
+\caption{Number of unequal results with various error tolerances\label{table:errorComparison}}
+\end{table}
+
+\subsubsection{Timing}
+All of the previous timing results are based on a 100-iteration average of the execution time.
+They are however only measuring the time the kernel took to execute.
+This does not include initialization and copying of memory from and to the device, nor the time it takes to do run-time compilation of the kernels.
+The memory aspect seems to be fairly negligible, as the highest recorded time was 779.5 ms for a parameterized kernel execution with 1024 threads and 350 blocks.
+For the full memory copying timing results, see appendix \ref{}.
+
+The compilation of kernels also takes some time, though it is a one-time operation that leads to a reusable kernel.
+Compilation of the parameterized kernels takes about 1560 ms.
+As compilation is a one-time operation, this result is not based on a 100 iteration average, but should be fairly reflective of the time required.
+
+The last aspect that is not timed is the generation of parameters.
+As this is something that can be expected to be provided rather than generated and would take the same time to generate even if not provided, this has not been formally timed.
+
+\subsubsection{Parameterization}
+Parameterization was tested by altering constants in the original C\# solution and comparing the output to the output of a parameterized kernel. 
+No deviations were detected.

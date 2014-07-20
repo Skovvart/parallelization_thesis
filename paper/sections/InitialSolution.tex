@@ -6,10 +6,10 @@ It features the 6 life insurance plans described in section \ref{subsubsec:backg
 The plans are implemented using C\# classes without inheritance or the like, as they attempt to stay relatively similar to a potential C-solution.
 
 The Runge-Kutta 4 solver introduced last is the fastest and is an imperative version which reuses intermediary arrays.
-It has the following signature: \textit{static double[][] RK4\_n(Action\textless{}double, double[], double[]\textgreater{}dV, Action\textless{}double, double[]\textgreater{}bj\_ii, int a, int b, int steps, double[] Va)}.
+It has the following signature: \textit{static double[][] RK4\_n(Action\textless{}double, double[], double[]\textgreater{} dV, Action\textless{}double, double[]\textgreater{} bj\_ii, int a, int b, int steps, double[] Va)}.
 The $dV$ function implements an arbitrary amount of derivatives.
 The $bj\_ii$ function is used for lump-sum payments.
-$a$ and $b$ are start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta 4 and \textit{Va} is the initial reserve (at time $a$).
+$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta 4 and \textit{Va} is the initial reserve (at time $a$).
 
 An example implementation of the Pure Endowment life insurance plan can be seen below in code sample \ref{csharp_pureendowment}. 
 Note that it does refer to some shared constants and methods defined outside the class itself.

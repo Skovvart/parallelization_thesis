@@ -4,7 +4,7 @@ A CUDA C solution was implemented to be used as a base-line comparison for the o
 It is intended to make full use of parallelization and it should be fairly efficient but not much time has been spent optimizing it.
 It is based on the initial C\# solution but features differences due to language-restrictions and the paradigm-switch to parallel computing.
 It features the same 6 life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta 4 kernel which is identical but for references to implementations of different $dV$ and $bj\_ii$ functions and the number of states used by the plan.
-This is due to the CUDA C kernels not allowing references to objects or methods. %unless certain version of cuda?
+This is due to the fact that CUDA C kernels do not allow references to objects or methods. %unless certain version of cuda?
 Another difference is that all of the kernel code is required to be in the same file as no cross-referencing is possible unlike the C\# version.
 
 See code sample \ref{cuda_pureendowment} for an implementation of the Pure Endowment insurance plan in CUDA C.

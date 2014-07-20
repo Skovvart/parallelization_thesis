@@ -1,4 +1,5 @@
 let RK4_n dV bj_ii states = cuda {
+    //do! Compiler.UpdateOptions(fun options -> { options with JITMaxRegisters = Some 32 }) //Doesn't work apparently
     let! kernel =
         <@ fun a b steps (Va:deviceptr<floatP>) (result:deviceptr<floatP>) ->
             //Calculate unique thread id
@@ -7,9 +8,8 @@ let RK4_n dV bj_ii states = cuda {
             //Splice in other quotation expressions
             let dV = %dV
             let bj_ii = %bj_ii
-            let limConv = %limConv
 
-            let h   = -one / conv steps
+            let h   = -conv 1 / conv steps
             let k1  = __local__.Array<floatP>(states) |> __array_to_ptr
             let k2  = __local__.Array<floatP>(states) |> __array_to_ptr
             let k3  = __local__.Array<floatP>(states) |> __array_to_ptr
@@ -21,11 +21,11 @@ let RK4_n dV bj_ii states = cuda {
             let mutable y = a
             while y > b do
                 bj_ii (conv y) v
-                saxpy one v (result.Ptr (offset + y * states)) v states
+                saxpy (conv 1) v (result.Ptr (offset + y * states)) v states
                 for s = 0 to steps - 1 do // Integrate backwards over [y, y-1]
                     let t = conv y - conv s / conv steps
                     // Hack: Fake limit from left
-                    dV (if s = 0 then t - limConv 1e-5 else t) v k1
+                    dV (if s = 0 then t - limit else t) v k1
                     sax h k1 k1 states
                     saxpy (conv 0.5) k1 v tmp states
                     dV (t + h / conv 2) tmp k2
@@ -33,26 +33,28 @@ let RK4_n dV bj_ii states = cuda {
                     saxpy (conv 0.5) k2 v tmp states
                     dV (t + h / conv 2) tmp k3
                     sax h k3 k3 states
-                    saxpy one k3 v tmp states
+                    saxpy (conv 1) k3 v tmp states
                     // Hack: Fake limit from right
-                    dV (if s = steps - 1 then t + h + limConv 1e-5 else t + h) tmp k4
+                    dV (if s = steps - 1 then t + h + limit else t + h) tmp k4
                     sax h k4 k4 states
-                    saxpy (one / conv 6) k4 v tmp states
-                    saxpy (one / conv 3) k3 tmp tmp states
-                    saxpy (one / conv 3) k2 tmp tmp states
-                    saxpy (one / conv 6) k1 tmp v states
+                    saxpy (conv 1 / conv 6) k4 v tmp states
+                    saxpy (conv 1 / conv 3) k3 tmp tmp states
+                    saxpy (conv 1 / conv 3) k2 tmp tmp states
+                    saxpy (conv 1 / conv 6) k1 tmp v states
                 arrayCopy v (result.Ptr (offset + y*states - states)) states
                 y <- y - 1
-        @> |> Compiler.DefineKernel 
+        @> |> Compiler.DefineKernel
 
     return Entry(fun program ->
         let worker = program.Worker
         let kernel = program.Apply kernel
-        fun a b steps ->
+
+        printfn "Kernel{NumRegs:%d; SharedSizeBytes:%d; ConstSizeBytes:%d; LocalSizeBytes:%d;}" kernel.NumRegs kernel.SharedSizeBytes kernel.ConstSizeBytes kernel.LocalSizeBytes 
+        fun a b steps blocks threads ->
             //Calculate size of result array
             let n = (a + 1) * states * blocks * threads
-            use Va = worker.Malloc(Array.zeroCreate<floatP> states)
-            use result = worker.Malloc(Array.zeroCreate<floatP> n)
+            use Va = worker.Malloc<floatP>(Array.zeroCreate states)
+            use result = worker.Malloc<floatP>(Array.zeroCreate n)
             let lp = LaunchParam (blocks, threads)
             //Start timing mechanism
             use start = worker.CreateEvent()

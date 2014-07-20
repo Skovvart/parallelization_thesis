@@ -13,7 +13,7 @@ Quotations are used to generate CPU code by the language-integrated compiler Ale
 Section \ref{subsec:background:calcspec} will briefly introduce the syntax of the Actulus Calculation Specification (CalcSpec).
 In section \ref{subsec:background:hardware} the hardware the project has been tested on will be presented.
 
-\subsection{Life Insurance Policies and Markov-models}\label{subsec:background:lifeinsurance}
+\subsection{Life Insurance Policies and the Markov-model}\label{subsec:background:lifeinsurance}
 A life insurance policy is a contract stating the obligations an insuring party has to an insured party in and transitioning between a finite set of states over many years.
 Such states can include being alive and well (active), disabled, dead and more.
 Transitions between states will have a certain probability, for example mortality rates for transitions between the active and dead state.
@@ -67,7 +67,7 @@ The equation is expressed below in equation \ref{eq:thiele}. It assumes continui
 \item $V_s(t)$ is the reserve at time $t$ in state $s$
 \item $r_s(t)$ is interest-rate at time $t$ in state $s$
 \item $b_s(t)$ is the benefit paid by the insurer at time $t$ in state $s$
-\item $T_s(t)$ is the possible transition-states from state $s$
+\item $T_s$ is the set of states which can be transitioned to from state $s$
 \item $\mu_{s,ts}(t)$ is the transition intensity from state $s$ to state $ts$
 \item $b_{s,ts}(t)$ is the transition cost from state $s$ to state $ts$
 \end{itemize}
@@ -312,8 +312,10 @@ Following this, the compiled kernel is run using the parameters defined in the r
 In this example is it simply printed to the console. 
 
 \subsection{Actulus Calculation Specification language}\label{subsec:background:calcspec}
+The Actulus project is a collaboration between Mogens Steffensen of the University of Copenhagen, Peter Sestoft of the IT University of Copenhagen and the Danish insurance and pension software house Edlund.
+
 The Actulus Calculation Specification language (CalcSpec) is a domain-specific language for defining the differential equations that make up an insurance plan.
-The main purpose of the language is to define various coefficient used in the Markov-model defining the life insurance policy.
+The main purpose of the language is to define various coefficients used in the Markov-model defining the life insurance policy.
 The overall structure of the language can be seen in code sample \ref{calcspecstructure}.
 
 \begin{lstlisting}[caption=CalcSpec structure, label=calcspecstructure, language=calcspec]

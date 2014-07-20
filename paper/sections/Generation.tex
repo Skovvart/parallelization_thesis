@@ -1,3 +1,38 @@
 % !TeX root = ../thesis.tex
 \section{Actulus CalcSpec parsing and code generation}
-Describe how Actulus CalcSpec is translated to F\# and its effect on performance
+The previous implementations have been useful enough for comparisons, but can be considered tedious to implement especially when plans are identical but for different constants.
+Being able to generate specific insurance kernels from textual specifications such as Actulus CalcSpec would be much more convenient and efficient.
+The Actulus project provided lexer and parser definitions for Actulus CalcSpec for use with FsLex and FsYacc\cite{fslexfsyacc} which meant no work was spent on transforming the textual representation of CalcSpec to an abstract syntax tree (AST).
+
+To generate a kernel given an abstract syntax tree, all that is required is to convert the Actulus AST to an F\# quotation AST.
+This is however not completely straightforward.
+CalcSpec focuses on specifying the various coefficients used in the differential equation where as the $dV$ and $bj\_ii$ need to actually build the equation and assign the result for all relevant states.
+
+To perform the transformation, a series of steps are performed.
+At first all of the \emph{expressions} of the CalcSpec are converted to a quotation expression with nested $Let$ definitions.
+This is fairly straightforward as it deals strictly with method and lambda declarations (essentially the same thing), constant variables and algebraic expressions.
+
+
+The $dV$ and $bj\_ii$ lambda-signatures are then added within the finale Let-declaration of the expressions.
+For the $dV$ method the signature added is \textit{(t:floatP)-\textgreater{}(V:deviceptr\textless{}floatP\textgreater{})-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})} and for $bj\_ii$ the signature is \textit{(t:floatP)-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})}.
+
+The Markov-model is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
+If any calls to a delta-function is spotted in $b\_j$, the entire factor is removed and instead added to the transition cost map from the current state to the current state.
+Thiele's differential equation is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
+Finally, the entire quotation AST is reduced using an optimizer method that for example performs arithmetic reductions (+-0, */1).
+
+Example actulus ast example quotation ast. Appendix all example calcspec plans.
+
+
+It is this fast xx.xx ms. Discuss.
+
+
+
+\subsection{Parameterization}
+Changed signatures again.
+Moved expr let's after lambda-defs.
+Overrode constants with parameter position
+
+
+
+This fast xx.xx ms.
