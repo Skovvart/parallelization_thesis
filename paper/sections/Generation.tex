@@ -6,7 +6,7 @@ The Actulus project provided lexer and parser definitions for Actulus CalcSpec f
 
 To generate a kernel given an abstract syntax tree, all that is required is to convert the Actulus AST to an F\# quotation AST.
 This is however not completely straightforward.
-CalcSpec focuses on specifying the various coefficients used in the differential equation where as the $dV$ and $bj\_ii$ need to actually build the equation and assign the result for all relevant states.
+CalcSpec focuses on specifying the various coefficients used in the differential equation where as the $dV$ and $bj\_ii$ methods need to actually build the equation and assign the result for all relevant states.
 
 To perform the transformation, a series of steps are performed.
 At first all of the \emph{expressions} of the CalcSpec are converted to a quotation expression with nested $Let$ definitions.
@@ -19,16 +19,101 @@ For the $dV$ method the signature added is \textit{(t:floatP)-\textgreater{}(V:d
 The Markov-model is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
 If any calls to a delta-function is spotted in $b\_j$, the entire factor is removed and instead added to the transition cost map from the current state to the current state.
 Thiele's differential equation is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
-Finally, the entire quotation AST is reduced using an optimizer method that for example performs arithmetic reductions (+-0, */1).
+Finally, the entire quotation AST is reduced using an optimizer method that for example performs arithmetic reductions (like removing +-0 and */1).
 
-Example actulus ast example quotation ast. Appendix all example calcspec plans.
-
-
-It is this fast xx.xx ms. Discuss.
+\emph{Example Actulus AST, example quotation AST.}
 
 
+The highest number of calculation per ms in the single-precision version for all plans was was \emph{98.32}.
+See table \ref{table:cubaseGeneratedfloattime} for the full single-precision results. 
+The highest number of calculations per ms for double precision was \emph{25.56}.
+See table \ref{table:cubaseGenerateddoubletime} for the full double-precision results. 
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks}
+		&	1		&	14		&	14*5	&	14*10	&	14*20	&	14*25	&	14*30	\\ \hline
+1		&	0,02	&	0,33	&	1,57	&	1,63	&	2,13	&	2,02	&	2,34	\\ \hline
+8		&	0,19	&	2,65	&	12,56	&	12,99	&	16,96	&	16,13	&	18,67	\\ \hline
+16		&	0,38	&	5,28	&	25,01	&	25,81	&	33,97	&	32,08	&	37,15	\\ \hline
+32		&	0,75	&	10,50	&	49,54	&	51,09	&	66,98	&	63,73	&	73,85	\\ \hline
+64		&	1,49	&	20,68	&	66,79	&	70,38	&	89,60	&	85,59	&	95,05	\\ \hline
+128		&	2,96	&	36,42	&	77,60	&	78,88	&	85,01	&	89,53	&	92,46	\\ \hline
+256		&	5,35	&	46,03	&	95,02	&	91,57	&	97,84	&	95,32	&	95,63	\\ \hline
+512		&	6,66	&	47,92	&	97,20	&	97,89	&	98,18	&	96,17	&	98,26	\\ \hline
+1024	&	6,88	&	95,69	&	97,83	&	98,13	&	98,26	&	98,29	&	98,32	\\ \hline
+\end{tabular}}}
+\caption{CalcSpec generated F\# Alea.cuBase calculations per ms with single precision\label{table:cubaseGeneratedfloattime}}
+\end{table}
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks}
+	&	1		&	14		&	14*5	&	14*10	&	14*20	&	14*25	&	14*30	\\ \hline
+1	&	0,01	&	0,10	&	0,47	&	0,48	&	0,61	&	0,58	&	0,67	\\ \hline
+8	&	0,06	&	0,84	&	3,79	&	3,82	&	4,86	&	4,65	&	5,35	\\ \hline
+16	&	0,12	&	1,67	&	7,56	&	7,67	&	9,71	&	9,29	&	10,68	\\ \hline
+32	&	0,24	&	3,34	&	15,10	&	15,34	&	19,41	&	18,57	&	21,38	\\ \hline
+64	&	0,48	&	6,47	&	20,30	&	21,52	&	23,99	&	22,91	&	24,60	\\ \hline
+128	&	0,93	&	11,01	&	22,45	&	24,48	&	24,82	&	24,71	&	25,30	\\ \hline
+256	&	1,58	&	12,54	&	24,96	&	24,30	&	25,51	&	25,11	&	25,56	\\ \hline
+512	&	1,80	&	25,18	&	25,44	&	25,48	&	25,50	&	25,50	&	25,50	\\ \hline
+\end{tabular}}}
+\caption{CalcSpec generated F\# Alea.cuBase calculations per ms with double precision\label{table:cubaseGenerateddoubletime}}
+\end{table}
+
+The single-precision results show results similar to the manual solutions but slightly better, both with and without parameters. 
+The double-precision results show results that are a negligible amount better than the parameter-less manual solution, but significantly worse than the solution with parameters.
+This makes sense as the generated $dV$ and $bj\_ii$ methods end up being very similar to the manual parameter-less solution.
 
 \subsection{Parameterization}
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks}
+	&	1		&	14		&	14*5	&	14*10	&	14*20	&	14*25	&	14*30	\\ \hline
+1	&	0,02	&	0,33	&	1,55	&	1,64	&	2,11	&	2,01	&	2,33	\\ \hline
+8	&	0,19	&	2,63	&	12,41	&	13,08	&	16,79	&	16,07	&	18,78	\\ \hline
+16	&	0,37	&	5,24	&	24,72	&	25,78	&	33,36	&	32,01	&	37,52	\\ \hline
+32	&	0,74	&	10,39	&	48,76	&	50,69	&	66,18	&	63,31	&	74,14	\\ \hline
+64	&	1,48	&	20,43	&	65,31	&	69,70	&	87,92	&	86,67	&	95,34	\\ \hline
+128	&	2,93	&	35,94	&	74,53	&	82,03	&	91,19	&	91,34	&	93,82	\\ \hline
+256	&	5,28	&	45,44	&	89,98	&	92,04	&	96,83	&	94,90	&	97,53	\\ \hline
+512	&	6,61	&	62,37	&	97,11	&	97,82	&	98,12	&	98,15	&	98,23	\\ \hline
+\end{tabular}}}
+\caption{CalcSpec generated F\# Alea.cuBase calculations per ms with single precision and parameters\label{table:cubaseGeneratedParamfloattime}}
+\end{table}
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | r | r | r | r | r | r | r | r | }
+  \hline
+\diaghead{Threads/Blocks}{Threads}{Blocks}
+	&	1		&	14		&	14*5	&	14*10	&	14*20	&	14*25	&	14*30	\\ \hline
+1	&	0,01	&	0,10	&	0,48	&	0,48	&	0,62	&	0,59	&	0,68	\\ \hline
+8	&	0,06	&	0,84	&	3,82	&	3,85	&	4,99	&	4,69	&	5,45	\\ \hline
+16	&	0,12	&	1,68	&	7,61	&	7,74	&	9,96	&	9,37	&	10,90	\\ \hline
+32	&	0,24	&	3,35	&	15,19	&	15,48	&	19,92	&	18,73	&	21,78	\\ \hline
+64	&	0,48	&	6,50	&	20,29	&	21,80	&	25,19	&	23,65	&	25,78	\\ \hline
+128	&	0,93	&	11,11	&	19,50	&	25,60	&	25,93	&	25,62	&	25,91	\\ \hline
+256	&	1,60	&	12,78	&	25,26	&	25,93	&	25,98	&	25,97	&	26,00	\\ \hline
+512	&	1,83	&	25,54	&	25,84	&	25,88	&	25,90	&	25,91	&	25,91	\\ \hline
+\end{tabular}}}
+\caption{CalcSpec generated F\# Alea.cuBase calculations per ms with double precision and parameters\label{table:cubaseGeneratedParamdoubletime}}
+\end{table}
+
+\subsubsection{Parameter generation}
+
 Changed signatures again.
 Moved expr let's after lambda-defs.
 Overrode constants with parameter position
