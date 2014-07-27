@@ -17,19 +17,92 @@ The $dV$ and $bj\_ii$ lambda-signatures are then added within the final Let-decl
 For the $dV$ method the signature added is \textit{(t:floatP)-\textgreater{}(V:deviceptr\textless{}floatP\textgreater{})-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})} and for $bj\_ii$ the signature is \textit{(t:floatP)-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})}.
 
 The Markov-model is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
-If any calls to a delta-function is spotted in $b\_j$, the entire factor is removed and instead added to the transition cost map from the current state to the current state.
+If any calls to a delta-function is spotted in $b\_j$, the entire factor is removed and instead added to the transition cost map from and to the state.
 Thiele's differential equation is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
 Finally, the entire quotation AST is reduced using an optimizer method that for example performs arithmetic reductions (like removing +-0 and */1).
 
-\emph{Example Actulus AST, example quotation AST.}
+The steps the CalcSpec goes through can be seen in code samples \ref{pe_cs} to \ref{pe_quote_format}.
+
+\begin{lstlisting}[language=calcspec, caption=Pure endowment in CalcSpec, label=pe_cs]
+calculation = {
+  name = 'Pure endowment',
+  algorithm = { type = 'Runge Kutta 4', parameters = { stepsize = 0.01 } },
+  equations = {
+    0 = { r_j = r, b_j = b0, mu_jk = { 1 = GM }, b_jk = { } },
+    1 = { },
+  },
+  range = { from = 40, to = 0 },
+  boundaryvalues = { 0 = 0 , 1 = 0 },
+  expressions = {
+    interestrate = 0.05,
+    bpension = 1,
+    pensiontime = 35,
+    age = 30,
+    r(t) = interestrate,
+    b0(t) = bpension * delta(t - pensiontime),
+    GM(t) = 0.0005 + 10 ˆ (5.728 - 10 + 0.038*(age + t))
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=fsharp, caption=CalcSpec AST, label=pe_ast]
+( Key.Id("calculation"), Value.Structured(
+    (Key.Id("name"), Value.String("Pure endowment"))::
+    (Key.Id("algorithm"), Value.Structured(
+        (Key.Id("type"), Value.String("Runge Kutta 4"))::
+        (Key.Id("parameters"), Value.Structured((Key.Id("stepsize"), Value.Expr(Expr.Number(0.01)))::[])))::[])::
+    (Key.Id("equations"), Value.Structured((Key.Number(0), Value.Structured(...:[]))::[]))::
+    ...::
+    (Key.Id("expressions"), Value.Structured(
+      (Key.Id("interestrate"), Value.Expr(Expr.Number(0.05)))::
+      ...::
+      (Key.Function("r", "t"), Value.Expr(Expr.Id("interesterate")))::
+      ...::[]))
+    ::[])
+)
+\end{lstlisting}
+
+\begin{lstlisting}[language=fsharp, caption=Quotation AST generated from CalcSpec AST, label=pe_quote]
+Let("interestrate", Value(0.05), //values converted to the current floatP type
+  Let("bpension", Value(1.0), 
+    Let("pensiontime", Value(35.0), 
+      Let("age", Value(30.0), 
+        Let("r", Lambda("t", Var("interesterate")), 
+          Let("b0", Lambda("t", Call (None, op_Multiply, Var("bpension")::[Application(Var("delta"), Call (None, op_Subtraction, Var("t")::[Var("pensiontime")]))])), 
+            Let("GM", Lambda("t", Call (None, op_Addition, Value(0.0005)::[...])), 
+              Lambda("t", Lambda("V", Lambda("res", PropertySet (Var("res"), Item, [Value (0),
+                      Call (None, op_Subtraction,
+                        [Call (None, op_Multiply, [
+                          Application(Var("r"), [Var("t")]),
+                          PropertyGet (Some (V), Item, [Value (0)])]),
+                        Call (None, op_Multiply, [
+                          Application(Var("GM"), [Var("t")]),
+                          PropertyGet (Some (Var("V")), Item, [Value (0)])])])]))))))))))))
+\end{lstlisting}
+
+\begin{lstlisting}[language=fsharp, caption=Formatted quotation AST, label=pe_quote_format]
+let dV = 
+  <@
+    let interestrate = 0.05
+    let bpension = 1.0
+    let pensiontime = 35.0
+    let age = 30.0
+    let r = fun t -> interestrate
+    let b0 = fun t -> 0.0 //bpension * delta (t - pensiontime) transformed into bj_ii value
+    let GM = fun t -> 0.0005 + exp (ln10 * (5.728.0 - 10.0 + 0.038*(age + t))) // power expression converted to exponential function expressions
+    fun t V res ->
+      res.[0] <- r t * V.[0] - GM t * V.[0]
+  @>
+\end{lstlisting}
 
 
 The generated kernels used up to 34 registers making 1024 threads impossible. 
-It may be possible to fix this at a later point.
-The highest number of calculation per ms in the single-precision version for all plans was was \emph{98.32}.
+It may be possible to optimize this at a later point.
+The highest number of calculation per ms in the single precision version for all plans was was \emph{98.32}.
 See table \ref{table:cubaseGeneratedfloattime} for the full single-precision results. 
 The highest number of calculations per ms for double precision was \emph{25.56}.
 See table \ref{table:cubaseGenerateddoubletime} for the full double-precision results. 
+For the full generated results see appendix \ref{app:cuBase_calcspec_runtimes}.
 
 \begin{table}[h!]
 \centering
@@ -70,22 +143,17 @@ See table \ref{table:cubaseGenerateddoubletime} for the full double-precision re
 \caption{CalcSpec generated F\# Alea.cuBase calculations per ms with double precision\label{table:cubaseGenerateddoubletime}}
 \end{table}
 
-The single-precision results show results are very similar to the manual implementation.
-The double-precision results show results that are a negligible amount better than the manual implementation without parameters, but significantly worse than the solution with parameters.
+The single-precision results show results that are very similar to the manual implementation.
+The double-precision results show results that are a negligible amount better than the manual implementation without parameters, but significantly worse than the manual solution with parameters.
 This makes sense as the generated $dV$ and $bj\_ii$ methods end up being very similar to the manual implementations without parameters.
 
 \subsection{Parameterization}
 To parameterize the kernels generated from CalcSpec, the lambda signatures have to re-add the parameter array.
 The \emph{expression} $Let$ bindings are then moved inside the lambda-declaration, and based on a parameter specification, named constants are replaced with positions in the parameter array.
 
-Singles could perform up to 98.23 calculations per ms while doubles could perform up to 25.91.
-
-Changed signatures again.
-Moved expr let's after lambda-defs.
-Overrode constants with parameter position
-
-This fast xx.xx ms.
-
+Singles could perform up to \emph{98.23} calculations per ms while doubles could perform up to \emph{25.91}.
+See tables \ref{table:cubaseGeneratedParamfloattime} and \ref{table:cubaseGeneratedParamdoubletime} for the remaining results.
+For the full generated parameterized results see appendix \ref{app:cuBase_calcspec_params_runtimes}.
 
 \begin{table}[h!]
 \centering
@@ -126,4 +194,4 @@ This fast xx.xx ms.
 \end{table}
 
 \subsubsection{Parameter generation}
-Spec, cartesian product, suggested run-configuration
+Parameter spec, cartesian product, suggested run-configuration

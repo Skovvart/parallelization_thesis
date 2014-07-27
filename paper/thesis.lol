@@ -10,4 +10,8 @@
 \contentsline {lstlisting}{\numberline {1.10}The Runge-Kutta 4 solver expressed in F\# Alea.cuBase}{18}{lstlisting.1.10}
 \contentsline {lstlisting}{\numberline {1.11}Kernel compilation and execution methods in F\# Alea.cuBase}{19}{lstlisting.1.11}
 \contentsline {lstlisting}{\numberline {1.12}Parameterized pure endowment life insurance plan in F\# Alea.cuBase}{20}{lstlisting.1.12}
-\contentsline {lstlisting}{\numberline {1.13}Parameterized RK4\_n kernel in F\# Alea.cuBase}{21}{lstlisting.1.13}
+\contentsline {lstlisting}{\numberline {1.13}Parameterized RK4\_n kernel in F\# Alea.cuBase}{22}{lstlisting.1.13}
+\contentsline {lstlisting}{\numberline {1.14}Pure endowment in CalcSpec}{26}{lstlisting.1.14}
+\contentsline {lstlisting}{\numberline {1.15}CalcSpec AST}{26}{lstlisting.1.15}
+\contentsline {lstlisting}{\numberline {1.16}Quotation AST generated from CalcSpec AST}{27}{lstlisting.1.16}
+\contentsline {lstlisting}{\numberline {1.17}Formatted quotation AST}{27}{lstlisting.1.17}

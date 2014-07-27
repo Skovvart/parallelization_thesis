@@ -209,15 +209,15 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
-OUTPUT thesis.toc
-INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
-INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
+OUTPUT thesis.toc
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
 OUTPUT thesis.lol
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
@@ -346,6 +346,36 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/a
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_Manual_Params_memcpy.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/cuBase_CalcSpec_Params.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/CSharp-RK4_n.txt
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/CSharp-RK4_n.txt
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/CSharp-RK4_n.txt
