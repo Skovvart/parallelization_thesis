@@ -194,4 +194,28 @@ For the full generated parameterized results see appendix \ref{app:cuBase_calcsp
 \end{table}
 
 \subsubsection{Parameter generation}
-Parameter spec, cartesian product, suggested run-configuration
+A helper method was written to generate the parameter arrays for the parameterized solutions.
+As input it takes a parameter specification consisting of a list of tuples containing the constant variable to be parameterized, a start and end value as well as the step size of the parameters.
+For every parameter in the specification, a list of numbers going from the start to the end value in intervals of the step size is generated.
+To generate the final parameter array the cartesian product of all these lists is then computed.
+A map from variable name to relative position in the parameter array based on the list-position in the parameter specification is also returned.
+For an example of the generation, see code sample \ref{gen_params}.
+
+\begin{lstlisting}[language=fsharp, caption=Parameter generation with the age variable ranging from 40 to 43 and the interest rate variable ranging from 8\% to 10\%, label=gen_params]
+mkParams (("age", 40.0, 43.0, 1.0)::("interestrate", 0.08, 0.10, 0.01)::[]);;
+//returns parameter array [40.0; 0.08; 40.0; 0.09; 40.0; 0.1; 41.0; 0.08; 41.0; 0.09; 41.0; 0.1; 42.0; 0.08; 42.0; 0.09; 42.0; 0.1; 43.0; 0.08; 43.0; 0.09; 43.0; 0.1]
+//total of 24 values with 2 parameters equals 12 iterations needed
+\end{lstlisting}
+
+Finally, a runtime configuration (number of blocks and number of threads per block) is suggested based on the total number of iterations.
+A runtime configuration should ideally have the number of threads be a multiple of the warp-size (32) and ideally at least the amount of SMs as the number of blocks.
+The generated parameters might require way less than this number of iterations (14*32 = 448).
+The suggestion is based off a few factors that attempt to make sure that at least a warp and the number of SMs is used.
+First it is checked if the number of iterations is less than a warp in which case one block and the number of iterations as the number of threads per block will be suggested.
+If higher than a warp but less than a warp times the number of SMs, the rounded up number of the iterations divided by 32 as blocks and 32 threads per block.
+In case the number of iterations is higher than this, it will try continually increasing the number of threads per block by 32 until it reaches 512 or the iterations are less than or equal to the found number of threads times the number of SMs.
+If this is still not enough, the number of blocks will be increased until it can satisfy iterations enough for all the parameters.
+Further work could very well improve this by viewing it as as an optimization problem.
+
+This will still potentially leave us in the situation than the total number of iterations is less than the number of threads per block times blocks.
+This is fairly unavoidable, so the RK4\_n kernel was altered to skip thread-IDs greater than the total number of parameterized iterations.
