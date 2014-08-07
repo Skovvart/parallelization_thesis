@@ -209,18 +209,18 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.toc
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxr.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
 OUTPUT thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
 OUTPUT thesis.lol
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
 OUTPUT thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lot
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lot

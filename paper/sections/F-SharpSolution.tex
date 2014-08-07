@@ -1,11 +1,11 @@
 % !TeX root = ../thesis.tex
 \subsection{F\# Alea.cuBase Solution}
 The F\# Alea.cuBase solution has many similarities to the CUDA C implementation.
-One key factor is that the Runge-Kutta 4 kernel is implemented using Code Quotations, as are the plan-specific $dV$ and $bj\_ii$ methods.
+One key factor is that the Runge-Kutta 4 kernel is implemented using Code Quotations (see section \ref{subsec:background:codequotations}), as are the plan-specific $dV$ and $bj\_ii$ methods.
 As the plan-specific $dV$ and $bj\_ii$ typically include references to helper-methods, they could be defined in terms of Quotations and referenced using the splicing operators.
 Another option is to use use the \textit{[\textless{}ReflectedDefinition\textgreater{}]} F\# attribute on method calls which makes most regular methods accessible in Quotations.
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
-The various plans are in this case not implemented using classes (though they could), so each method name is prepended with a plan acronym ($pe\_$).
+The various plans are in this case not implemented using classes (though they could have been), so each method name is prepended with a plan acronym ($pe\_$).
 It also refers to come common constants and methods not defined in the class much like the previous implementations.
 
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
@@ -85,10 +85,10 @@ let compile dV bj_ii states = RK4_n dV bj_ii states |> Compiler.load Worker.Defa
 let runKernel (program:Program<int->int->int->int->int->floatP[]*float>) a b blocks threads = program.Run a b steps blocks threads
 \end{lstlisting}
 
-The results of running the F\# Alea.cuBase solution shows that the highest number of calculations per ms were \emph{98.33} for single precision and \emph{25.30} ms for double precision.
+The results of running the F\# Alea.cuBase solution shows that the highest number of calculations per ms were \emph{98.33} for single precision and \emph{25.30} per ms for double precision.
 For the full single-precision results table \ref{table:cubaseManualfloattime} and for double precision results see table \ref{table:cubaseManualdoubletime}.
 For the entire results, see appendix \ref{app:cuBase_manual_runtimes}.
-This is a slight improvement over the single-precision version while being nearly identical for double precision.
+This is a slight improvement over the CUDA single precision version while being nearly identical for double precision.
 %Unlike the CUDA C version, I was not able to limit the maximum amount of registers used, making it impossible to test configurations with more than 512 threads.
 The documented way to limit the maximum number of registers in Alea.cuBase did not work, so it was impossible to run double-precision configurations with more than 512 threads.
 
@@ -139,7 +139,7 @@ To make parallellisation useful, the ability to make constants parameterized is 
 These constants could for example be the interest rate or the age of the insured.
 
 To add this parameterization, the $dV$ and $bj\_ii$ method signatures were changed to include an additional array containing parameters for the insurance plan.
-The plans were then made responsible for knowing how many variables there were and which variables mapped to which parameter. 
+The plans were then made responsible for knowing how many variables there were and which variables mapped to which position in the parameter array. 
 They also had to pass the parameters to the methods that required them, for example the age to the mortality functions.
 This iteration of the code also switched to using classes eliminating the need for prepending prefixes to the various plan methods.
 For an example of this, see code sample \ref{cubase_pureendowmentparams}.
@@ -182,8 +182,8 @@ See figure \ref{fig:ParameterizationVisualization} for a visualized example of t
 \end{figure}
 
 Results were slightly slower for floats with the highest number of calculations per second being \emph{95.26} calculations per ms, but almost twice as fast for doubles with \emph{54.53} calculations per ms. 
-For the full results see tables \ref{table:cubaseManualParamsfloattime} and \ref{table:cubaseManualParamsdoubletime} for single and double precision respectively.
-For the entire results, see appendix \ref{app:cuBase_manual_params_runtimes}.
+For the remaining iterations per ms results see tables \ref{table:cubaseManualParamsfloattime} and \ref{table:cubaseManualParamsdoubletime} for single and double precision respectively.
+For the runtimes see appendix \ref{app:cuBase_manual_params_runtimes}.
 The performance increase in the double results are likely because less of the functions rely on constants defined outside the functions themselves, instead using parameter marshaling. %this explanation is still shit
 This is likely something that can be used for further projects. %test this
 

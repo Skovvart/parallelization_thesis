@@ -29,19 +29,19 @@ The double to single comparison shows that the relative error of the results see
 \begin{tabular}{ | l | r | r | r | r | r | r | r | r | } \hline
 \diaghead{Errors/Tolerance}{Errors}{Tolerance}
 							&	1e-16	&	1e-15	&	1e-14	&	1e-13	&	1e-7	&	1e-6	&	1e-5	&	1e-4	\\ \hline
-double-C\# double-CUDA-C	&	190		&	97		&	36		&	0		&	0		&	0		&	0		&	0		\\ \hline
-double-C\# double-cuBase	&	2		&	0		&	0		&	0		&	0		&	0		&	0		&	0		\\ \hline
-double-cuBase double-CUDA-C	&	190		&	97		&	36		&	0		&	0		&	0		&	0		&	0		\\ \hline
-							&			&			&			&			&			&			&			&			\\ \hline
-double-C\# float-C\#		&			&			&			&			&	205		&	120		&	24		&	0		\\ \hline
-double-cuBase float-cuBase	&			&			&			&			&	202		&	122		&	24		&	0		\\ \hline
-double-CUDA-C float-CUDA-C	&			&			&			&			&	198		&	120		&	25		&	0		\\ \hline
-							&			&			&			&			&			&			&			&			\\ \hline
-float-C\# float-CUDA-C		&			&			&			&			&	118		&	34		&	0		&	0		\\ \hline
-float-C\# float-cuBase		&			&			&			&			&	34		&	14		&	0		&	0		\\ \hline
-float-cuBase float-CUDA-C	&			&			&			&			&	103		&	34		&	0		&	0		\\ \hline
+C\# 64 versus CUDA C 64		&	190		&	97		&	36		&	0		&	0		&	0		&	0		&	0		\\ \hline
+C\# 64 versus cuBase 64		&	2		&	0		&	0		&	0		&	0		&	0		&	0		&	0		\\ \hline
+cuBase 64 versus CUDA C 64	&	190		&	97		&	36		&	0		&	0		&	0		&	0		&	0		\\ \hline
+%							&			&			&			&			&			&			&			&			\\ \hline
+C\# 64 versus C\# 32		&			&			&			&			&	205		&	120		&	24		&	0		\\ \hline
+cuBase 64 versus cuBase 32	&			&			&			&			&	202		&	122		&	24		&	0		\\ \hline
+CUDA C 64 versus CUDA C 32	&			&			&			&			&	198		&	120		&	25		&	0		\\ \hline
+%							&			&			&			&			&			&			&			&			\\ \hline
+C\# 32 versus CUDA C 32		&			&			&			&			&	118		&	34		&	0		&	0		\\ \hline
+C\# 32 versus cuBase 32		&			&			&			&			&	34		&	14		&	0		&	0		\\ \hline
+cuBase 32 versus CUDA C 32	&			&			&			&			&	103		&	34		&	0		&	0		\\ \hline
 \end{tabular}}}
-\caption{Number of unequal results with various error tolerances\label{table:errorComparison}}
+\caption{Number of unequal results with various error tolerances. 32 = single precision, 64 = double precision \label{table:errorComparison}}
 \end{table}
 
 \subsubsection{Timing}

@@ -12,7 +12,9 @@
 \contentsline {lstlisting}{\numberline {1.12}Parameterized pure endowment life insurance plan in F\# Alea.cuBase}{20}{lstlisting.1.12}
 \contentsline {lstlisting}{\numberline {1.13}Parameterized RK4\_n kernel in F\# Alea.cuBase}{22}{lstlisting.1.13}
 \contentsline {lstlisting}{\numberline {1.14}Pure endowment in CalcSpec}{26}{lstlisting.1.14}
-\contentsline {lstlisting}{\numberline {1.15}CalcSpec AST}{26}{lstlisting.1.15}
-\contentsline {lstlisting}{\numberline {1.16}Quotation AST generated from CalcSpec AST}{27}{lstlisting.1.16}
-\contentsline {lstlisting}{\numberline {1.17}Formatted quotation AST}{27}{lstlisting.1.17}
-\contentsline {lstlisting}{\numberline {1.18}Parameter generation with the age variable ranging from 40 to 43 and the interest rate variable ranging from 8\% to 10\%}{29}{lstlisting.1.18}
+\contentsline {lstlisting}{\numberline {1.15}Abstract Syntax Tree for the Pure endowment CalcSpec}{26}{lstlisting.1.15}
+\contentsline {lstlisting}{\numberline {1.16}Quotation AST for dV method generated from CalcSpec AST}{27}{lstlisting.1.16}
+\contentsline {lstlisting}{\numberline {1.17}Formatted quotation AST for dV and bj\_ii methods}{27}{lstlisting.1.17}
+\contentsline {lstlisting}{\numberline {1.18}Parameter generation with the age variable ranging from 40 to 43 and the interest rate variable ranging from 8\% to 10\%}{30}{lstlisting.1.18}
+\contentsline {lstlisting}{\numberline {1.19}GF820 CalcSpec}{33}{lstlisting.1.19}
+\contentsline {lstlisting}{\numberline {1.20}GF820 CalcSpec}{34}{lstlisting.1.20}

@@ -35,13 +35,13 @@ Dynamic memory allocation and deallocation of the temporary arrays could be used
 The single version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double version used too many registers and could only use 512 threads. 
 It is possible to limit the amount of registers during compilation and make the remaining registers spill to local (global) memory, but this is often not preferable as global memory is a lot slower than registers.
 
-The results of running one iteration with single-precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
-The double-precision took \emph{124.48} ms making it about 500\% times slower than the C\# equivalent.
+Running one iteration with single-precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
+The double-precision took \emph{124.48} ms making it about five times slower than the C\# equivalent.
 The key factor to consider is the fact that the parallelized version was never intended to be faster with a single iteration.
-Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales exponentially to a point and then linearly at a much higher rate.
+Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales greatly until the resources of all the multiprocessors are used and then linearly at a much higher rate than the single-threaded version afterwards.
 
-The highest performance tested with single precision was \emph{91.43} iterations per millisecond, making it more than 2200 times faster than the C\# version.
-The highest performance with double precision was \emph{25.97} iterations per millisecond, making it more than 650 times faster than the C\# version.
+The highest performance obtained with single precision was \emph{91.43} iterations per millisecond, making it more than 2200 times faster than the C\# single precision version.
+The highest performance with double precision was \emph{25.97} iterations per millisecond, making it more than 650 times faster than the C\# double precision version.
 %The double precision version, while respectable, was a good bit slower than could be expected and could most likely be optimized to a rate where it would be about half as fast as the float precision equivalent.
 
 For the full single-precision results see table \ref{table:cudacfloattime} and for double-precision results see table \ref{table:cudacdoubletime}.
