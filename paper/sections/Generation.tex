@@ -28,7 +28,7 @@ The steps the CalcSpec goes through can be seen in code samples \ref{pe_cs} to \
 \begin{lstlisting}[language=calcspec, caption=Pure endowment in CalcSpec, label=pe_cs]
 calculation = {
   name = 'Pure endowment',
-  algorithm = { type = 'Runge Kutta 4', parameters = { stepsize = 0.01 } },
+  algorithm = { type = 'Runge Kutta 4', parameters={ stepsize = 0.01 }},
   equations = {
     0 = { r_j = r, b_j = b0, mu_jk = { 1 = GM }, b_jk = { } },
     1 = { },
@@ -65,7 +65,7 @@ calculation = {
 \end{lstlisting}
 
 \begin{lstlisting}[language=fsharp, caption=Quotation AST for dV method generated from CalcSpec AST, label=pe_quote]
-Let("interestrate", Value(0.05), //values converted to the current floatP type
+Let("interestrate", Value(0.05), //values converted to type of floatP
   Let("bpension", Value(1.0), 
     Let("pensiontime", Value(35.0), 
       Let("age", Value(30.0), 
@@ -89,10 +89,11 @@ let dV =
     let bpension = 1.0
     let pensiontime = 35.0
     let age = 30.0
-    let r = fun t -> interestrate
-    let b0 = fun t -> 0.0 //bpension * delta (t - pensiontime) transformed into bj_ii value
-    let GM = fun t -> 0.0005 + exp (ln10 * (5.728.0 - 10.0 + 0.038*(age + t))) // power expression converted to exponential function expressions
-    fun t V res ->
+    let r = fun t-> interestrate
+    let b0 = fun t-> 0.0 //transformed into bj_ii
+    let GM = fun t-> 0.0005+exp(2.30258512*(5.728-10.0+0.038*(age+t))) 
+    // power expression converted to exponential expression
+    fun t V res->
       res.[0] <- r t * V.[0] - GM t * V.[0]
   @>
 
@@ -102,13 +103,12 @@ let bj_ii =
     let bpension = 1.0
     let pensiontime = 35.0
     let age = 30.0
-    let r = fun t -> interestrate
-    let b0 = fun t -> 0.0
-    let GM = fun t -> 0.0005 + exp (2.30258512 * (5.728 - 10 + 0.038 * (age + t)))
-    fun t res ->
+    let r = fun t-> interestrate
+    let b0 = fun t-> 0.0
+    let GM = fun t-> 0.0005+exp(2.30258512*(5.728-10.0+0.038*(age+t)))
+    fun t res->
       res.[0] <- if t-pensiontime = zero then bpension else zero
   @>
-
 \end{lstlisting}
 
 
