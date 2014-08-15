@@ -1,3 +1,39 @@
 % !TeX root = ../thesis.tex
+\section{Future Work}
+There is much potential future work that could be done, some of which has been mentioned briefly already.
+For example, the manual parameterized implementation of the life insurance plans seen in section \ref{sub:manual_parameterization} showed almost a doubling of performing with double precision floats compared to CUDA C and subsequently the parameterized CalcSpec-generated life insurance plans.
+The main difference is the fact that parameters such as and interest rate where passed down as method parameters and it was speculated that the difference in speed is due to this, but as of yet it is untested.
+
+There are also minor improvements that could be made for CalcSpec such as variables being made usable in the \lstinline$range$ section of CalcSpec and respecting the values in \lstinline$output$ and \lstinline$boundaryvalues$.
+The current type system used during conversion of CalcSpec to quotations is also too simplistic and does not natively support multi-parameter methods requiring hacks to support methods such as $\mu_{ai}$ and $\mu_{id}$ shown in section \ref{subsubsec:gf810parallelized}.
+The limitations of the current type systems also makes implementing the parameter passing.
+There are also many limitations on how the \lstinline$delta$ method can be used which are not all currently being checked, nor are the requirements communicated very well.
+
+The expression reduction seen in section \ref{subsec:exprReduction} was also shown to have a small impact on performance but is still very simplistic, and more work could likely be done to even greater effect.
+
+If not fixed by the authors of Alea.cuBase QuantAlea, more work should be done to allow for more states such as in the GF810 plan mentioned in section \ref{sub:gf810}.
+When possible, performance implications of various types of memory should also be tested.
+
+Variable shared memory also looks interesting. For low-register plans shared memory seems to be a detriment to the performance, but as an alternative to local memory it is much preferable.
+Shared memory is however a limited resource and it is especially limited by the number of states in the life insurance model.
+Intelligently selecting elements of the Runge-Kutta 4 solver to be moved to shared memory should provide a respectable increase in performance.
+
+An interesting prospect would be moving the architecture to the cloud.
+This would allow for parallelization utilizing multiple virtualized GPUs on an on-demand basis lessening the capital investment needed for intense parallel computing.
+Whether the current cloud providers provide adequate virtualized GPU instances is the question and the performance impact is of great interest.
+
 \section{Conclusion}
-Conclude stuff
+usable: parameterized calcspec generated
+Fastest floats: 2487 times faster
+Fastest usable floats: 2485 times faster
+Fastest doubles: 1335 times faster
+Fastest usable doubles: 634 times faster
+
+Parallelization is fast (xx times for double and xx times for single) and results are still good enough.
+Alea.cuBase allows for optimized kernels with all the benefits of working with a modern language, but has some issues such as register limitation and weird crashes.
+CalcSpec is a good idea to avoid manual implementations.
+GF810 parallelized method works and is blazingly fast, but can not be used on the GPU for unknown reasons.
+
+
+
+

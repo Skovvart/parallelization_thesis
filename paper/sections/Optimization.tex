@@ -25,7 +25,7 @@ It also reduces the number of registers a more significant number for doubles, a
 {\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
 \begin{tabular}{ | l | r | r | r | r | r | r | }
   \hline
-								&	Local32	&	Shared32	&	Shared32v	&	Local64	&	Shared64	&	Shared64v	\\ \hline
+								&	L32		&	S32			&	S32v		&	L64		&	S64			&	S64v	\\ \hline
 Pure Endowment					&	20		&	22			&	22			&	32		&	33			&	29			\\ \hline
 Deferred Temporary Life Annuity	&	19		&	24			&	23			&	34		&	35			&	30			\\ \hline
 Temporary Life Annuity Premium	&	19		&	24			&	23			&	34		&	35			&	30			\\ \hline
@@ -33,7 +33,7 @@ Term Insurance					&	20		&	24			&	24			&	34		&	35			&	30			\\ \hline
 Disability Annuity				&	25		&	26			&	25			&	45		&	46			&	34			\\ \hline
 Disability Term Insurance		&	25		&	27			&	26			&	46		&	46			&	34			\\ \hline
 \end{tabular}}}
-\caption{Register usage using various types of memory for the temporary arrays in the parameter-less Runge-Kutta 4 solver. 32=single precision floats, 64 = double precision float. v = volatile memory.\label{table:tempArraysSharedMemory}}
+\caption{Register usage using various types of memory for the temporary arrays in the parameter-less Runge-Kutta 4 solver. L = local memory, S = shared memory, 32 = single precision floats, 64 = double precision float, v = volatile memory.\label{table:tempArraysSharedMemory}}
 \end{table}
 
 Another aspect is the range to which shared memory can be used.
@@ -43,7 +43,7 @@ With a hard limit of 48KiB of shared memory per SM, divided by these six tempora
 \item Double precision floats allow for 1024 states (for example 512 threads with two states).
 \end{itemize}
 
-This does limit the applicability of shared memory, especially as life insurance policies can use significantly more states (for example the GF820 plan, see section \ref{subsubsec:gf820parallelized}).
+This does limit the applicability of shared memory, especially as life insurance policies can use significantly more states (for example the GF810 plan, see section \ref{subsubsec:gf810parallelized}).
 To get around this, either runtime configurations with a low number of threads per block will have to be used, or only a subset of the temporary arrays can be moved to shared memory.
 
 The results of moving the temporary arrays to shared memory resulted in a 12.24\% increase in runtime for floats which more than doubles when also marking the arrays as volatile.
@@ -53,23 +53,16 @@ For double precision floats the situation is slightly different as it used a lot
 Marking the arrays as volatile turned this into a 7.72\% increase instead.
 All in all not very impressive for the simple example life insurance plans.
 
-If instead we turn to a more advanced life insurance plan such as the limited implementation of the GF820 which uses 50 states, the results look a bit different.
+If instead we turn to a more advanced life insurance plan such as the limited implementation of the GF810 (see section \ref{sub:gf810}) which uses 50 states, the results look a bit different.
 As there are nowhere near enough registers for 50 states, the remaining states need to be stored in local (global) memory which is slow.
 For double precision floats it ends up using all 63 available registers per thread and spills 8568 bytes to local memory.
 With 50 states, only up to 20 threads per block (less than a warp) worth of shared memory is available, regardless the results seem positive.
 Where execution using local memory takes about 5.52 seconds, using volatile shared memory takes only 3.97 seconds making it 27.66\% faster.
-Non-volatile memory is slightly slower at 4.30 seconds, but is still 21.53\% faster.
+Non-volatile memory is slightly slower at 4.30 seconds, but still with an improvement of 21.53\% compared to local memory.
 It is somewhat surprising that the volatile memory is faster, as the kernel claims to use more local memory and an identical amount of shared memory as the non-volatile.
 Why this is so is yet unknown.
 
 For all the shared memory results see appendix \ref{app:shared_memory}.
-
-%It is very much worth noting that these six life insurance plans are very simple, none using more than 3 states (2 non-final states).
-%Using a significantly more advanced life insurance plan, such as the (limited) GF820 (see section \ref{subsubsec:gf820parallelized}), may yield different results.
-
-
-%Mention gf820 impact.
-%48k memory
 
 \subsubsection{Occupancy}\label{subsubsec:occupancy}
 Occupancy is a term used to describe the ratio between the active and maximum active warps for a kernel.
@@ -138,11 +131,11 @@ As life insurance plans in CalcSpec can both be more advanced and unoptimized, t
 Further possible reductions could include removing unreferenced let-declarations as well as more numerical and arithmetic reductions.
 There are also more possible numerical reductions, as the first rule only works for the end of an expression ($... 5 - 10$) and otherwise not ($... 5 - 10 + t$).
 
-\subsection{Artificial Collective Spouse Pension}
-The artificial collective spouse pension (``grundform 820'' or GF820 in Danish) is a life insurance policy in which upon the death of the ensured, the spouse if one such exists, receives a potentially deferred life annuity.
+\subsection{Collective Spouse Pension}\label{sub:gf810}
+The collective spouse pension (``grundform 810'' or GF810 in Danish) is a life insurance policy in which upon the death of the ensured, the spouse receives a life annuity, if one such exists.
 
 \subsubsection{Traditional method of computation}
-GF820 is traditionally calculated as a 3-tier process with an outer, middle and inner model.
+GF810 is traditionally calculated as a 3-tier process with an outer, middle and inner model.
 
 The \emph{outer model} can be seen as a 2-state (active-dead) Markov-model where the transition cost to the death state is the \emph{middle model}, solved from 120 minus the age of the ensured to 0.
 The \emph{middle model} can be seen as another 2-state Markov-model, but rather than using Thiele's equation it calculates $-gp(tau) \cdot h(eta, tau) \cdot Inner(eta, k, t)$ where $gp$ is the marriage-probability of a $tau$-aged individual and $h$ is the probability that a $tau$-aged individual is married to an $eta$-aged individual given that the first individual is married.
@@ -152,42 +145,42 @@ The \emph{inner model} is another 2-state Markov-model with benefit paid being $
 It is a fairly complex method of computation as is also apparent in its runtime which takes up to two and a half minutes on the CPU.
 While the traditional method of computation can be run on the GPU as-is, it is not particularly suited for it as there is a lot of code branching making threads finish at very different times making them less efficient to execute in parallel.
 
-\subsubsection{Parallelized method of computation}\label{subsubsec:gf820parallelized}
-An alternative approach was suggested by Klaus Grue using a single-tier approach.
-The Markov-model contains the active state for the insured, 125 intermediary states signifying death of the insured when married to a spouse of an age difference from -62 to +62 and a final state signifying either death of the spouse or death of the ensured when unmarried, as depicted in figure \ref{fig:gf820}.
+\subsubsection{Parallelized method of computation}\label{subsubsec:gf810parallelized}
+An alternative approach was suggested by Klaus Grue of Edlund using a single-tier approach.
+The Markov-model contains the active state for the insured, 125 intermediary states signifying death of the insured when married to a spouse of an age difference from -62 to +62 and a final state signifying either death of the spouse or death of the ensured when unmarried, as depicted in figure \ref{fig:gf810}.
 
 \begin{figure}[h!]\centering
-\includegraphics[scale=0.5]{gf820.png}
-\caption{Markov-model for the parallelized GF820 Artificial Collective Spouse Pension plan.\label{fig:gf820}}
+\includegraphics[scale=0.5]{gf810.png}
+\caption{Markov-model for the parallelized GF810 Artificial Collective Spouse Pension plan.\label{fig:gf810}}
 \end{figure}
 
 The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the ensured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + diff$ year old where $diff$ is the age difference of the spouse and the ensured as well as the number of the state.
 The ensured to final state $\mu_{ad}$ probability is the mortality intensity of the ensured at time $t + age$ times the probability that the ensured is not married at time $t + age$ (1 minus the marriage probability at the time).
 The intermediary to final state $\mu_{id}$ probability is the mortality intensity of the spouse at the time (assuming the sexuality of the ensured does not change) of age $t + age + diff$.
 
-This does potentially lead to a lot of cases where the ensured will either be married to someone yet to be born or someone significantly older than the oldest person alive today, which is a problem for the Gompertz-Makeham mortality intensity methods.
-To lessen the impact of this, the result of these functions are constrained to the range 0 to 2 by adding a constraint method during the AST conversion.
+This does potentially lead to a lot of cases where the ensured will either be married to someone yet to be born or someone significantly older than the oldest person alive today, which can be a problem for the Gompertz-Makeham mortality intensity methods.
+To lessen the impact of this, the result of these functions is constrained to be no higher than 2 adding a constraint method.
 
 This model of calculation can already be expressed in CalcSpec as is, but is somewhat cumbersome to write as there is little variability in the model.
-The final CalcSpec should resemble code sample \ref{gf820cs}.
-Note: The $\\var.expr$ is CalcSpec syntax for lambdas.
+The final CalcSpec should resemble code sample \ref{gf810cs}.
+Note that the \lstinline$\var.expr$ is CalcSpec syntax for lambdas. 
+It is currently also required to update the $from$ value in the $range$ section to the value of 120-age, as this is currently not possible to have variable values for this in the current solution.
 
-\begin{lstlisting}[language=calcspec, caption=GF820 CalcSpec, label=gf820cs]
+\begin{lstlisting}[language=calcspec, caption=GF810 full CalcSpec, label=gf810cs]
 calculation = {
-  name = "GF820 - Collective artificial spouse pension", 
+  name = "GF810 - Collective spouse pension", 
   algorithm = { type="Runge Kutta 4", parameters={ stepsize = 0.01 }}, 
   equations = { 
     0 = { r_j = rate, b_j = 0, mu_jk = { 
-        1 = mu_ai(-62), 2 = mu_ai(-61), 
-        ...,
+        1 = mu_ai(-62), 2 = mu_ai(-61), ...,
         124 = mu_ai(61), 125 = mu_ai(62), 
-        126 = \t.(GM_f(t + age)) * (1 - gp(t + age))
+        126 = \t.(GM_f(t)) * (1 - gp(t + age))
       }, b_jk = {  } }, 
-    1 = { r_j = rate, b_j = 1, mu_jk = { 50 = mu_id(-62) }, b_jk = {}}, 
-    2 = { r_j = rate, b_j = 1, mu_jk = { 50 = mu_id(-61) }, b_jk = {}}, 
+    1 = { r_j = rate, b_j = 1, mu_jk = { 126 = mu_id(-62) }, b_jk = {}}, 
+    2 = { r_j = rate, b_j = 1, mu_jk = { 126 = mu_id(-61) }, b_jk = {}}, 
     ...,
-    124 = { r_j = rate, b_j = 1, mu_jk = { 50 = mu_id(61) }, b_jk = {}}, 
-    125 = { r_j = rate, b_j = 1, mu_jk = { 50 = mu_id(62) }, b_jk = {}}, 
+    124 = { r_j = rate, b_j = 1, mu_jk = { 126 = mu_id(61) }, b_jk = {}}, 
+    125 = { r_j = rate, b_j = 1, mu_jk = { 126 = mu_id(62) }, b_jk = {}}, 
     126 = {  } }, 
   range = { from = 85, to = 0 }, 
   boundaryvalues = { 0 = 0, 1 = 0 }, 
@@ -197,21 +190,21 @@ calculation = {
     rate(t) = interestrate, 
     GM_f(t) = constrain(0.0005 + 10 ^ (5.728 - 10 + 0.038 * (age + t))), 
     GM_m(t) = constrain(0.0005 + 10 ^ (5.88 - 10 + 0.038 * (age + t))), 
-    mu_ai = \diff.\t.GM_f(t+age) * (gp(t+age) * (h(t+age+diff)(t+age))), 
-    mu_id = \diff.\t.GM_m(t + age + diff) 
+    mu_ai = \diff.\t.GM_f(t) * gp(t+age) * (h(t+age+diff)(t+age)), 
+    mu_id = \diff.\t.GM_m(t + diff) 
   }
 }
 \end{lstlisting}
 
-To optimize this process, functionality was added to transform the CalcSpec AST based on the various variables of the GF820 plan.
-See code sample \ref{gf820simplifiedcs} for an example of this.
+To optimize this process, functionality was added to transform the CalcSpec AST based on the variability of the GF810 plan.
+See code sample \ref{gf810simplifiedcs} for an example of this which is converted back to the code in code sample \ref{gf810cs}.
 
-\begin{lstlisting}[language=calcspec, caption=GF820 CalcSpec, label=gf820simplifiedcs]
+\begin{lstlisting}[language=calcspec, caption=GF810 simplified CalcSpec, label=gf810simplifiedcs]
 calculation = { 
-  name = "GF820 - Collective artificial spouse pension", 
+  name = "GF810 - Collective spouse pension", 
   algorithm = { type="Runge Kutta 4", parameters={ stepsize = 0.01 }}, 
   equations = { 
-    GF820 = { age=age, rate=rate, mu_insured=GM_f, mu_spouse=GM_m }
+    GF810 = { age=age, rate=rate, mu_insured=GM_f, mu_spouse=GM_m }
   }, 
   range = { from = 85, to = 0 }, 
   boundaryvalues = { 0 = 0, 1 = 0 }, 
@@ -236,11 +229,33 @@ They consisted of the following:
 \item Reducing the local memory used by moving the temporary arrays to shared memory.
 \end{itemize}
 
-At this point it is hard to say if the single-tier method actually works. 
-Comparing the results of the limited-state solution to the original solution, as can be seen in figure \ref{fig:gf820comparisongraph}, we see what could be a similar but distorted development, but without further states no conclusion can be reached.
-For the results of both the traditional solution and the parallelized Alea.cuBase solution, see appendix \ref{app:gf820results}.
+\subsubsection{Results}
+As the Alea.cuBase solution did not support the required number of states a CPU-version was implemented to test the validity of the new method.
+For age 35 it provided identical results down to the 7th decimal and as a bonus it completed in 1060 ms on average - an improvement of close to factor 150.
+Another interesting fact is that for age 35, the limited Alea.cuBase solution from intermediary states -24...+25 was also accurate down to the 7th decimal, and to the 10th decimal compared to the -62...+62 GPU version.
+The sum of the reserve at every year also only leaves a relative difference of about 0.02\%, while the relative difference of the final result (year zero) is only $9.733035931 \cdot 10^{-7}\%$.
+The relative difference of the sum of the reserves for the GPU version with all intermediary states stays under 0.09\% for tested ages up to 80, with the relative difference of the final result only reaching $6.107283993 \cdot 10^{-6}$\%.
+
+This is sadly not a feat the limited states can claim to achieve. 
+With age 15 there is a 9.45\% relative difference in the final result while at age 50 there is a 68.34\% relative difference.
+For a visualization of this, see figure \ref{fig:gf810ages}. 
+Note that many of the entries can not be seen as they are overlapping due to being practically identical.
 
 \begin{figure}[h!]\centering
-\includegraphics[scale=0.75]{gf820comparisongraph.png}
-\caption{GF820 original vs limited-state single-tier results\label{fig:gf820comparisongraph}}
+\includegraphics[scale=0.3]{GF810-ages.jpg}
+\caption{Comparison of reserve-output for ages 1, 15, 35, 50 and 80 using various implementations of GF810.\label{fig:gf810ages}}
 \end{figure}
+
+To conclude, the method definitely works in theory even if not currently on the GPU.
+It does require all the intermediary states unless certain ``sweet spots'' are hit, which can not be relied upon.
+
+Speed-wise, it is hard to compare running-times without being able to utilize all the required states.
+The required states would also require more memory than is possible to put in shared memory, meaning only a partial amount of local memory overspill could be prevented.
+If not using shared memory (or no more than 96 bytes per thread), 512 threads per block would still be an option.
+This would mean falling back on local memory which would decrease the benefit of the parallellized solution.
+A very optimistic estimation would still claim that similar relative increases as seen in simpler plans could be achieved, which would still be a massive performance increase.
+A pessimist would argue that the use of slow local memory and heavy use of memory would limit the results significantly, as well as the currently limited double results.
+No matter which camp you might be in, it is certain that given enough iterations there should still be a dramatical increase in performance when calculating a large number iterations.
+
+
+For comparison results, see appendix \ref{app:gf810ageresults}.

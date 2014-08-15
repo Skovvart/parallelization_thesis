@@ -1,6 +1,9 @@
 % !TeX root = ../thesis.tex
 \section{Introduction}
-As the exponential growth of the Central Processing Unit (CPU) clock-rate speeds have leveled off in recent times\cite{ross2008cpu}, parallelization is seen as one of primary techniques for increasing computational performance. % due partially to power inefficiency
+This thesis was written in the March-September period of 2014 at the IT University of Copenhagen (ITU) and was supervised by Peter Sestoft to which I owe many thanks. 
+The project is also done with material provided by the Actulus project.
+
+As the exponential growth of the Central Processing Unit (CPU) clock-rate speeds have leveled off in recent times\cite{ross2008cpu}, parallelization is seen as one of primary techniques for increasing computational performance. 
 
 While parallelization can be utilized by many mechanisms such as multiple machines or multi-core CPUs, General Purpose Graphics Processing Units (GPGPU's) in particular are used when computations on large amounts of data is needed. 
 Despite originating from the Graphics Processing Unit (GPU) designed for performing calculations in relation to computer graphics, the parallel computing architecture is very useful in other domains.
@@ -14,7 +17,6 @@ In this thesis a single-threaded C\# insurance reserve estimator will be transla
 First a base-line implementation will be done in CUDA C and later a solution will be implemented on the more modern .NET platform in the F\# language using the language-integrated compiler Alea.cuBase to explore the effect on performance.
 If there is no significant loss of performance, this could allow for all the benefits of modern languages while also allowing GPU code to be incorporated on the .NET platform.
 
-%utilizing GPGPU parallelization as well as allowing it to be incorporated in a .NET work-flow.
 
 The thesis will also cover how insurance plans specified in the Actulus Calculation Specification language (CalcSpec) will be automatically translated to code that will run on the GPU, and the performance ramifications of this will be analysed.
 
@@ -24,7 +26,6 @@ Some experience with programming, especially imperative, can be considered a req
 A general idea of overall computer architecture will also be very useful. 
 Uncommon concepts will be explained to the best of my ability. 
 Experience with a variant of C and a functional language (such as F\#, an ML variant or any other) should lead to little trouble following the paper.
-%I need to know how to refer to the report and project. Do I use paper for the report? Project for the... well, project? Do I call everything a thesis
 
 Subjects will be described in various levels of detail depending on their relevance to the main topics of the thesis.
 This means that certain technologies, languages and paradigms will be described in less detail than strictly required background information and solution descriptions.

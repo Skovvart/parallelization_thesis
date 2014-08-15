@@ -30,10 +30,10 @@ Note that this code uses the $floatP$ type alias to easily switch between single
 What may be of interest is the that the $pe$ object is copied to device memory and that a compile-time replaced $PESTATES$ macro is defined.
 The device-size object is then referenced in the plan-specific implementation of the Runge-Kutta 4 solver.
 The macro is due to C/C++ requiring constant values for array initialization.
-Dynamic memory allocation and deallocation of the temporary arrays could be used, but testing showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
+Dynamic memory allocation and deallocation of the temporary arrays could be used, but experimentation showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
 
 The single version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double version used too many registers and could only use 512 threads. 
-It is possible to limit the amount of registers during compilation and make the remaining registers spill to local (global) memory, but this is often not preferable as global memory is a lot slower than registers.
+It is possible to limit the number of registers during compilation making the remaining registers spill to local memory, but this is rarely ideal as global memory is significantly slower than registers.
 
 Running one iteration with single-precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
 The double-precision took \emph{124.48} ms making it about five times slower than the C\# equivalent.

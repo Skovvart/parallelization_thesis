@@ -1,15 +1,19 @@
 % !TeX root = ../thesis.tex
 \section{Actulus CalcSpec parsing and code generation}
-The previous implementations have been useful enough for comparisons, but can be considered tedious to implement especially when plans are identical but for different constants.
-Being able to generate specific insurance kernels from textual specifications such as Actulus CalcSpec (see section \ref{subsec:background:calcspec} for more information) would be much more convenient and efficient.
-The Actulus project provided lexer and parser definitions for Actulus CalcSpec for use with FsLex and FsYacc\cite{fslexfsyacc} which meant no work was spent on transforming the textual representation of CalcSpec to an abstract syntax tree (AST).
+The previous implementations have been useful enough for comparisons, but can be considered tedious to implement manually and more error prone.
+Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec (see section \ref{subsec:background:calcspec} or \url{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx} (requires login) for more information) would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
 
+Similar work transforming CalcSpec to Alea.cuBase kernels was also done in Christian Gehrs Kuhre bachelor thesis.
+See section \ref{sec:relatedwork} for more information.
+
+The Actulus project provided lexer and parser definitions for Actulus CalcSpec for use with FsLex and FsYacc\cite{fslexfsyacc} which meant no work was spent on transforming the textual representation of CalcSpec to an abstract syntax tree (AST).
 To generate a kernel given an abstract syntax tree, all that is required is to convert the Actulus AST to an F\# quotation AST.
 This is however not completely straightforward.
-CalcSpec focuses on specifying the various coefficients used in the differential equation where as the $dV$ and $bj\_ii$ methods need to explicitly insert the coefficients into Thiele's equation for all states and assign the result to the $res$ array.
+CalcSpec focuses on specifying the various coefficients used in the differential equation where as the $dV$ method needs to explicitly insert the coefficients into Thiele's equation for all states. 
+The $bj\_ii$ also needs to assign any lump sum payments, which CalcSpec specifies by using the Dirac delta function (see section \ref{subsec:delta}) in the $b\_j$ coefficient of the equations.
 
 To perform the transformation, a series of steps are performed.
-At first all of the \emph{expressions} of the CalcSpec are converted to a quotation expression with nested $Let$ definitions.
+At first all of the \emph{expressions} of the CalcSpec are converted to a quotation expression of nested $Let$ definitions.
 This is fairly straightforward as it deals strictly with method and lambda declarations (essentially the same thing), constant variables and algebraic expressions.
 
 
@@ -17,14 +21,14 @@ The $dV$ and $bj\_ii$ lambda-signatures are then added within the final Let-decl
 For the $dV$ method the signature added is \textit{(t:floatP)-\textgreater{}(V:deviceptr\textless{}floatP\textgreater{})-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})} and for $bj\_ii$ the signature is \textit{(t:floatP)-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})}.
 
 The Markov-model is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
-If any calls to a delta-function is spotted in $b\_j$, the entire factor is removed and instead added to the transition cost map from and to the state.
-This is necessary as the Dirac delta-function (see section \ref{subsec:background:calcspec}) is a mathematical concept that in this case is much more efficiently expressed in the $bj\_ii$ method.
+If any calls to a delta-function of the form \lstinline$factor * delta(expression)$ is spotted in $b\_j$ (the only place it is allowed), it is removed and instead added to the transition cost map from and to the state with the form \lstinline$if expression = 0 then factor else zero$.
+This is done as the Dirac delta-function (see section \ref{subsec:delta}) is in this case much more efficiently expressed in the $bj\_ii$ method.
 Thiele's differential equation is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
 Finally, the entire quotation AST is reduced using an expression reduction method that performs some arithmetic reductions.
 See section \ref{subsec:exprReduction} for more information on this method.
 
 The steps the CalcSpec goes through can be seen in code samples \ref{pe_cs} to \ref{pe_quote_format}.
-
+\clearpage
 \begin{lstlisting}[language=calcspec, caption=Pure endowment in CalcSpec, label=pe_cs]
 calculation = {
   name = 'Pure endowment',
@@ -58,7 +62,7 @@ calculation = {
     (Key.Id("expressions"), Value.Structured(
       (Key.Id("interestrate"), Value.Expr(Expr.Number(0.05)))::
       ...::
-      (Key.Function("r", "t"), Value.Expr(Expr.Id("interesterate")))::
+      (Key.Function("r", "t"), Value.Expr(Expr.Id("interestrate")))::
       ...::[]))
     ::[])
 )

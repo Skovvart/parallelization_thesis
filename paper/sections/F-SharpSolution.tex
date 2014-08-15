@@ -30,7 +30,7 @@ For the full implementation see appendix \ref{app:cubase_rk4_n}.
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which function very similarly to pointers in C.
 The temporary arrays $k_i$, $tmp$ and $v$ may also be of interest. 
 They are initiated using Alea.cuBase and then transformed into the generic $deviceptr$ type representations like $Va$ and $result$.
-
+\clearpage
 \begin{lstlisting}[language=FSharp, caption=The Runge-Kutta 4 solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
 let RK4_n dV bj_ii states = cuda {
 	let! kernel =
@@ -133,7 +133,7 @@ For more information on result comparison see section \ref{subsec:result_compari
 \caption{F\# Alea.cuBase calculations per ms with double precision\label{table:cubaseManualdoubletime}}
 \end{table}
 
-\subsection{Insurance plan parameterization}
+\subsection{Insurance plan parameterization}\label{sub:manual_parameterization}
 The parallelized versions have so far been running the same static plans over and over again which is not very useful in practical scenarios.
 To make parallellisation useful, the ability to make constants parameterized is required.
 These constants could for example be the interest rate or the age of the insured.
@@ -149,30 +149,55 @@ For a brief overview of the changes to the RK4\_n kernel, see code sample \ref{c
 
 \begin{lstlisting}[language=FSharp, caption=Parameterized pure endowment life insurance plan in F\# Alea.cuBase, label=cubase_pureendowmentparams]
 type PureEndowment (planParams, paramCount) =
-	inherit Plan<floatP>(40, 0, 1, planParams, paramCount) with
-		[<ReflectedDefinition>]
-		let b_0 t = conv 0
+  inherit Plan<floatP>(40, 0, 1, planParams, paramCount) with
+    [<ReflectedDefinition>]
+    let b_0 t = conv 0
     
-		[<ReflectedDefinition>]
-		let mu_01 t age = GM t age
+    [<ReflectedDefinition>]
+    let mu_01 t age = GM t age
     
-		[<ReflectedDefinition>]
-		let bj_00 t pensiontime bpension = if t = pensiontime then bpension else conv 0
+    [<ReflectedDefinition>]
+    let bj_00 t pensiontime bpension = if t = pensiontime then bpension else conv 0
 
-		[<ReflectedDefinition>]
-		let bj_01 t = conv 0
+    [<ReflectedDefinition>]
+    let bj_01 t = conv 0
 
-		override this.dV = <@ fun t (V:deviceptr<floatP>) (planParams:deviceptr<floatP>) (res:deviceptr<floatP>) -> 
-			let age = planParams.[0]
-			res.[0] <- (r t) * V.[0] - (b_0 t) - (mu_01 t age) * (conv 0 - V.[0] + (bj_01 t))
-			@>
-		override this.bj_ii = <@ fun t (planParams:deviceptr<floatP>) (res:deviceptr<floatP>) -> 
-			let bpension = planParams.[1]                
-			let pensiontime = planParams.[2]
-			res.[0] <- bj_00 t pensiontime bpension
-			@>
+    override this.dV = <@ fun t (V:deviceptr<floatP>) (planParams:deviceptr<floatP>) (res:deviceptr<floatP>) -> 
+      let age = planParams.[0]
+      res.[0] <- (r t) * V.[0] - (b_0 t) - (mu_01 t age) * (conv 0 - V.[0] + (bj_01 t))
+      @>
+    override this.bj_ii = <@ fun t (planParams:deviceptr<floatP>) (res:deviceptr<floatP>) -> 
+      let bpension = planParams.[1]                
+      let pensiontime = planParams.[2]
+      res.[0] <- bj_00 t pensiontime bpension
+      @>
 \end{lstlisting}
 
+\begin{lstlisting}[language=FSharp, caption=Parameterized RK4\_n kernel changes in F\# Alea.cuBase, label=cubase_rk4nparams]
+let RK4_n (plan:Plan<_>) = cuda {
+  let! kernel =
+    <@ fun (a:int) b steps (Va:deviceptr<floatP>) (d_params:deviceptr<floatP>) (result:deviceptr<floatP>) ->
+      if blockIdx.x * blockDim.x + threadIdx.x > plan.planParams.Length/plan.paramCount then () else
+
+      let localParams = d_params.Ptr ((threadIdx.x + blockIdx.x*blockDim.x)*plan.paramCount)
+      while y > b do
+        bj_ii (conv y) localParams v
+        for s = 0 to steps - 1 do
+          dV (if s = 0 then t - limit else t) v localParams k1
+          dV (t + h / conv 2) tmp localParams k2
+          dV (t + h / conv 2) tmp localParams k3
+          dV (if s = steps - 1 then t + h + limit else t + h) tmp localParams k4
+        y <- y - 1
+    @> |> Compiler.DefineKernel 
+
+  return Entry(fun program ->
+    fun a b steps blocks threadsPerBlock ->
+      use planParams = worker.Malloc<'T>(plan.planParams)
+      let msec, _ = time false "" (fun () -> kernel.Launch lp a b steps Va.Ptr planParams.Ptr result.Ptr)
+    )
+}
+\end{lstlisting}
+\clearpage
 The parameters were shaped so each thread would have its own unique set of parameters laid in sequence. 
 See figure \ref{fig:ParameterizationVisualization} for a visualized example of this.
 
@@ -184,7 +209,7 @@ See figure \ref{fig:ParameterizationVisualization} for a visualized example of t
 Results were slightly slower for floats with the highest number of calculations per second being \emph{95.26} calculations per ms, but almost twice as fast for doubles with \emph{54.53} calculations per ms. 
 For the remaining iterations per ms results see tables \ref{table:cubaseManualParamsfloattime} and \ref{table:cubaseManualParamsdoubletime} for single and double precision respectively.
 For the runtimes see appendix \ref{app:cuBase_manual_params_runtimes}.
-The performance increase in the double results are likely because less of the functions rely on constants defined outside the functions themselves, instead using parameter marshaling. %this explanation is still shit
+The performance increase in the double results are likely because less of the functions rely on constants defined outside the functions themselves, instead relying on passing the parameters to the function. %this explanation is still shit
 This is likely something that can be used for further projects. %test this
 
 The results of the test shows that parameters not only barely affect the running time and are therefore more than viable, it also shows that the double results in particular can be optimized a good bit which increases their viability significantly.
@@ -205,7 +230,7 @@ The results of the test shows that parameters not only barely affect the running
 512	&	6.37	&	45.93	&	94.01	&	93.44	&	95.28	&	94.93	&	95.38	\\ \hline
 1024&	6.64	&	92.45	&	94.76	&	95.06	&	95.22	&	95.26	&	95.24	\\ \hline
 \end{tabular}}}
-\caption{F\# Alea.cuBase calculations per ms with float precision and parameters\label{table:cubaseManualParamsfloattime}}
+\caption{F\# Alea.cuBase calculations per ms with single precision and parameters\label{table:cubaseManualParamsfloattime}}
 \end{table}
 
 \begin{table}[h!]
@@ -226,47 +251,6 @@ The results of the test shows that parameters not only barely affect the running
 \end{tabular}}}
 \caption{F\# Alea.cuBase calculations per ms with double precision and parameters\label{table:cubaseManualParamsdoubletime}}
 \end{table}
-
-\begin{lstlisting}[language=FSharp, caption=Parameterized RK4\_n kernel in F\# Alea.cuBase, label=cubase_rk4nparams]
-let RK4_n (plan:Plan<_>) = cuda {
-    let states = plan.states
-    let! kernel =
-        <@ fun (a:int) b steps (Va:deviceptr<floatP>) (d_params:deviceptr<floatP>) (result:deviceptr<floatP>) ->
-            let offset = (blockIdx.x * blockDim.x + threadIdx.x) * states * (a + 1)
-            if blockIdx.x * blockDim.x + threadIdx.x > plan.planParams.Length/plan.paramCount then () else
-
-            let localParams = d_params.Ptr ((threadIdx.x + blockIdx.x*blockDim.x)*plan.paramCount)
-            let dV = %plan.dV
-            let bj_ii = %plan.bj_ii
-            ...
-            while y > b do
-                bj_ii (conv y) localParams v
-                saxpy (conv 1) v (result.Ptr (offset + y * states)) v states
-                for s = 0 to steps - 1 do
-                    ....
-                    dV (if s = 0 then t - limit else t) v localParams k1
-                    ...
-                    dV (t + h / conv 2) tmp localParams k2
-                    ...
-                    dV (t + h / conv 2) tmp localParams k3
-                    ...
-                    dV (if s = steps - 1 then t + h + limit else t + h) tmp localParams k4
-                    ...
-                arrayCopy v (result.Ptr (offset + y*states - states)) states
-                y <- y - 1
-        @> |> Compiler.DefineKernel 
-
-    return Entry(fun program ->
-        ...
-        fun a b steps blocks threadsPerBlock ->
-            ...
-            use planParams = worker.Malloc<'T>(plan.planParams)
-            ...
-            let msec, _ = time false "" (fun () -> kernel.Launch lp a b steps Va.Ptr planParams.Ptr result.Ptr)
-            ...
-        )
-}
-\end{lstlisting}
 
 %todo:?
 %RK4 step image
