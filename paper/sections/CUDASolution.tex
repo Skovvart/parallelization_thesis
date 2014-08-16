@@ -1,7 +1,7 @@
 % !TeX root = ../thesis.tex
 \subsection{CUDA C Solution}
 A CUDA C solution was implemented to be used as a base-line comparison for the other CUDA-based solutions.
-It is intended to make full use of parallelization and it should be fairly efficient but little time has been spent optimizing it.
+It is intended to make full use of parallelization and it should be fairly efficient, but little time has been spent optimizing it.
 It is based on the initial C\# solution but features differences due to language-restrictions and the paradigm-switch to parallel computing.
 It features the same 6 life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta 4 kernel which is identical but for references to implementations of different $dV$ and $bj\_ii$ functions and the number of states used by the plan.
 This is due to the fact that CUDA C kernels do not allow references to objects or methods as parameters. %unless certain version of cuda?
@@ -32,8 +32,9 @@ The device-size object is then referenced in the plan-specific implementation of
 The macro is due to C/C++ requiring constant values for array initialization.
 Dynamic memory allocation and deallocation of the temporary arrays could be used, but experimentation showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
 
-The single version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double version used too many registers and could only use 512 threads. 
+The single precision version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double precision version used too many registers and could only use 512 threads. 
 It is possible to limit the number of registers during compilation making the remaining registers spill to local memory, but this is rarely ideal as global memory is significantly slower than registers.
+This can be seen in the 1024 forced registers row.
 
 Running one iteration with single-precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
 The double-precision took \emph{124.48} ms making it about five times slower than the C\# equivalent.

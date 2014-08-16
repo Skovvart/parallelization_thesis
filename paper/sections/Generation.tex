@@ -1,5 +1,5 @@
 % !TeX root = ../thesis.tex
-\section{Actulus CalcSpec parsing and code generation}
+\section{Actulus CalcSpec parsing and code generation}\label{sec:calcspecgeneration}
 The previous implementations have been useful enough for comparisons, but can be considered tedious to implement manually and more error prone.
 Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec (see section \ref{subsec:background:calcspec} or \url{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx} (requires login) for more information) would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
 
@@ -18,12 +18,12 @@ This is fairly straightforward as it deals strictly with method and lambda decla
 
 
 The $dV$ and $bj\_ii$ lambda-signatures are then added within the final Let-declaration of the expressions.
-For the $dV$ method the signature added is \textit{(t:floatP)-\textgreater{}(V:deviceptr\textless{}floatP\textgreater{})-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})} and for $bj\_ii$ the signature is \textit{(t:floatP)-\textgreater{}(result:deviceptr\textless{}floatP\textgreater{})}.
+For the $dV$ method the signature added is \lstinline$(t:floatP)-Z(V:deviceptr<floatP>)->(result:deviceptr<floatP>)$ and for $bj\_ii$ the signature is \lstinline$(t:floatP)->(result:deviceptr<floatP>)$.
 
-The Markov-model is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
-If any calls to a delta-function of the form \lstinline$factor * delta(expression)$ is spotted in $b\_j$ (the only place it is allowed), it is removed and instead added to the transition cost map from and to the state with the form \lstinline$if expression = 0 then factor else zero$.
-This is done as the Dirac delta-function (see section \ref{subsec:delta}) is in this case much more efficiently expressed in the $bj\_ii$ method.
-Thiele's differential equation is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
+The Markov-model (see section \ref{subsec:background:lifeinsurance}) is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
+If any calls to a delta-function (see section \ref{subsec:delta}) of the form \lstinline$factor * delta(expression)$ is spotted in $b\_j$ (the only place it is allowed), it is removed and instead added to the transition cost map from and to the state with the form \lstinline$if expression = 0 then factor else zero$.
+This is done as the Dirac delta-function is in this case much more efficiently expressed in the $bj\_ii$ method.
+Thiele's differential equation (see section \ref{subsec:background:thielerungekutta}) is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
 Finally, the entire quotation AST is reduced using an expression reduction method that performs some arithmetic reductions.
 See section \ref{subsec:exprReduction} for more information on this method.
 
@@ -119,9 +119,9 @@ let bj_ii =
 The generated kernels used up to 34 registers per thread making 1024 threads per block impossible. 
 It may be possible to optimize this at a later point.
 The highest number of calculation per ms in the single precision version for all plans was was \emph{98.32}.
-See table \ref{table:cubaseGeneratedfloattime} for the full single-precision results. 
+See table \ref{table:cubaseGeneratedfloattime} for the full single precision results. 
 The highest number of calculations per ms for double precision was \emph{25.56}.
-See table \ref{table:cubaseGenerateddoubletime} for the full double-precision results. 
+See table \ref{table:cubaseGenerateddoubletime} for the full double precision results. 
 For the full generated results see appendix \ref{app:cuBase_calcspec_runtimes}.
 
 \begin{table}[h!]
@@ -163,15 +163,15 @@ For the full generated results see appendix \ref{app:cuBase_calcspec_runtimes}.
 \caption{CalcSpec generated F\# Alea.cuBase calculations per ms with double precision\label{table:cubaseGenerateddoubletime}}
 \end{table}
 
-The single-precision results are very similar to the manual implementation.
-The double-precision results are a negligible amount better than the manual implementation without parameters, but significantly worse than the manual solution with parameters.
+The single precision results are very similar to the manual implementation.
+The double precision results are a negligible amount better than the manual implementation without parameters, but significantly worse than the manual solution with parameters.
 This makes sense as the generated $dV$ and $bj\_ii$ methods end up being very similar to the manual implementations without parameters.
 
 \subsection{Parameterization}
-To parameterize the kernels generated from CalcSpec, the lambda signatures have to re-add the parameter array.
+To parameterize the kernels generated from CalcSpec, the lambda signatures have to re-add the parameter array as in section \ref{sub:manual_parameterization}.
 The \emph{expression} $Let$ bindings are then moved inside the lambda-declaration, and based on a parameter specification, named constants are replaced with positions in the parameter array.
 
-Singles could perform up to \emph{98.23} calculations per ms while doubles could perform up to \emph{25.91}.
+Single precision could perform up to \emph{98.23} calculations per ms while double precision could perform up to \emph{25.91} calculations per ms.
 See tables \ref{table:cubaseGeneratedParamfloattime} and \ref{table:cubaseGeneratedParamdoubletime} for the remaining results.
 For the full generated parameterized results see appendix \ref{app:cuBase_calcspec_params_runtimes}.
 
@@ -191,7 +191,7 @@ For the full generated parameterized results see appendix \ref{app:cuBase_calcsp
 256	&	5.28	&	45.44	&	89.98	&	92.04	&	96.83	&	94.90	&	97.53	\\ \hline
 512	&	6.61	&	62.37	&	97.11	&	97.82	&	98.12	&	98.15	&	98.23	\\ \hline
 \end{tabular}}}
-\caption{CalcSpec generated F\# Alea.cuBase calculations per ms with single precision and parameters\label{table:cubaseGeneratedParamfloattime}}
+\caption{Parameterized CalcSpec calculations per ms with single precision\label{table:cubaseGeneratedParamfloattime}}
 \end{table}
 
 \begin{table}[h!]
@@ -210,9 +210,9 @@ For the full generated parameterized results see appendix \ref{app:cuBase_calcsp
 256	&	1.60	&	12.78	&	25.26	&	25.93	&	25.98	&	25.97	&	26.00	\\ \hline
 512	&	1.83	&	25.54	&	25.84	&	25.88	&	25.90	&	25.91	&	25.91	\\ \hline
 \end{tabular}}}
-\caption{CalcSpec generated F\# Alea.cuBase calculations per ms with double precision and parameters\label{table:cubaseGeneratedParamdoubletime}}
+\caption{Parameterized CalcSpec calculations per ms with double precision\label{table:cubaseGeneratedParamdoubletime}}
 \end{table}
-
+%\clearpage
 \subsubsection{Parameter generation}
 A helper method was written to generate the parameter arrays for the parameterized solutions.
 As input it takes a parameter specification consisting of a list of tuples containing the constant variable to be parameterized, a start and end value as well as the step size of the parameters.
@@ -221,10 +221,10 @@ To generate the final parameter array the cartesian product of all these lists i
 A map from variable name to relative position in the parameter array based on the list-position in the parameter specification is also returned.
 For an example of the generation, see code sample \ref{gen_params}.
 
-\begin{lstlisting}[language=fsharp, caption=Parameter generation with the age variable ranging from 40 to 43 and the interest rate variable ranging from 8\% to 10\%, label=gen_params]
-mkParams (("age", 40.0, 43.0, 1.0)::("interestrate", 0.08, 0.10, 0.01)::[]);;
-//returns parameter array [40.0; 0.08; 40.0; 0.09; 40.0; 0.1; 41.0; 0.08; 41.0; 0.09; 41.0; 0.1; 42.0; 0.08; 42.0; 0.09; 42.0; 0.1; 43.0; 0.08; 43.0; 0.09; 43.0; 0.1]
-//total of 24 values with 2 parameters equals 12 iterations needed
+\begin{lstlisting}[language=fsharp, caption=Parameter generation with the age variable ranging from 40 to 42 and the interest rate variable ranging from 8\% to 10\%, label=gen_params]
+mkParams(("age",40.0, 42.0, 1.0)::[("interestrate",0.08, 0.10, 0.01)])
+//returns [40.0; 0.08; 40.0; 0.09; 40.0; 0.1; 41.0; 0.08; 41.0; 0.09; 41.0; 0.1; 42.0; 0.08; 42.0; 0.09; 42.0; 0.1]
+//total of 18 values with 2 parameters = 9 iterations
 \end{lstlisting}
 
 Finally, a runtime configuration (number of blocks and number of threads per block) is suggested based on the total number of iterations.
@@ -238,4 +238,4 @@ If this is still not enough, the number of blocks will be increased until it can
 Further work could very well improve this by viewing it as as an optimization problem.
 
 This will still potentially leave us in the situation than the total number of iterations is less than the number of threads per block times blocks.
-This is fairly unavoidable, so the RK4\_n kernel was altered to skip thread-IDs greater than the total number of parameterized iterations.
+This is somewhat unavoidable, so the RK4\_n kernel was altered to skip thread-IDs greater than the total number of parameterized iterations.

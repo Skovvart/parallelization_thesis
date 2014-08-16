@@ -267,6 +267,7 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxr.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplr.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txtt.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cpugpu.jpg
@@ -281,10 +282,7 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thr
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxi.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxi.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txtt.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txbtt.tfm
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omlpxr.fd
-INPUT C:/Program Files (x86)/MiKTeX 2.9/tex/latex/pxfonts/omlpxr.fd
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cuBase_compilation_phases.png
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cuBase_compilation_phases.png
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cuBase_compilation_phases.png
@@ -504,7 +502,6 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/latxfont/lin
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/pxex.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/pxsy.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxb.pfb
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxi.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxmi.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/pxfonts/rpxr.pfb
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/txfonts/tcxtt.pfb
