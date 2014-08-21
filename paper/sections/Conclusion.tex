@@ -2,17 +2,20 @@
 \section{Future Work}
 There is much potential future work that could be done, some of which has been mentioned briefly already.
 For example, the manual parameterized implementation of the life insurance plans seen in section \ref{sub:manual_parameterization} showed almost a doubling of performing with double precision floats compared to CUDA C and subsequently the parameterized CalcSpec-generated life insurance plans.
-The main difference is the fact that parameters such as age and interest rate where passed down as method parameters and it was speculated that the difference in speed is due to this, but as of yet it is untested.
+The main difference is the fact that parameters such as age and interest rate were passed down as method parameters and it was speculated that the difference in speed was due to this, but as of yet it is untested.
 
 There are also minor improvements that could be made for CalcSpec such as variables being made usable in the \lstinline$range$ section of CalcSpec and respecting the values in \lstinline$output$ and \lstinline$boundaryvalues$.
 The current type system used during conversion of CalcSpec to quotations is also too simplistic and does not natively support multi-parameter methods requiring hacks to support methods such as $\mu_{ai}$ and $\mu_{id}$ seen in section \ref{subsubsec:gf810parallelized}.
 The limitations of the current type systems also makes implementing the parameter passing difficult.
-There are also many limitations on how the \lstinline$delta$ method (see section \ref{subsec:delta}) can be used which are not all currently being checked, nor are the requirements communicated very well.
+There are also many limitations on how the \lstinline$delta$ method (see section \ref{subsec:delta}) can be used.
+These are not all currently being checked, nor are the requirements communicated very well.
 
 The expression reduction seen in section \ref{subsec:exprReduction} was also shown to have a small impact on performance but is still very simplistic, and more work could likely be done to even greater effect.
 
-If not fixed by the authors of Alea.cuBase QuantAlea, more work should be done to allow for more states to allow plans such as the GF810 plan mentioned in section \ref{sub:gf810}.
+If not fixed by the authors of Alea.cuBase QuantAlea, work should be done to allow for more states, ensuring that complex plans such as the GF810 plan mentioned in section \ref{sub:gf810} can be used.
 When possible, performance implications of various types of memory should also be tested.
+Alternatively, the intermediary states can be skewed so rather than going from -24...+24 it could go from -38...10 to prioritize the ``expensive´´ spouses that account for the majority of the reserve.
+This should also take into account the age of the insured, so that no intermediary states are ``wasted''.
 
 Variable shared memory also looks interesting. For low-register plans shared memory seems to be a detriment to the performance, but as an alternative to local memory it is much preferable.
 Shared memory is however a limited resource and it is especially limited by the number of states in the life insurance model.
@@ -32,7 +35,7 @@ For double precision floats an improvement of factor 1335 was measured in the ma
 
 Alea.cuBase, F\# and .NET as platforms have had little or no negative performance impact (seemingly quite the contrary) and has allowed for significantly more flexible GPU kernels by utilizing runtime-compilation of kernels.
 This means that it is more than viable and a good alternative to CUDA C for life insurance policy parallelization.
-The kernels are highly optimized but did show improvements from being optimized locally using expression reduction.
+The kernels are highly optimized by Alea.cuBase but did show improvements from being optimized locally using expression reduction.
 There are however some as of yet unsolved problems with Alea.cuBase as the provided methods for limiting registers in kernels did not work, and working with larger state models such as the GF810 collective spouse pension threw a stack overflow exception during kernel compilation for unknown reasons.
 
 \clearpage

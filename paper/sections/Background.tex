@@ -6,11 +6,12 @@ In section \ref{subsec:background:thielerungekutta} the mathematics employed in 
 This consists of Thiele's differential equation and the fourth-order Runge-Kutta method for solving differential equations.
 Following this is a brief description of Diracs delta function.
 
-After the mathematics is covered, the technologies utilized will be presented.
+After the mathematics is described, the technologies utilized will be presented.
 General information on parallelization and the potential benefits of using the GPU compared to the CPU will be explained in section \ref{subsec:background:parallelization}.
 The CUDA platform and CUDA C will then be presented in section \ref{subsec:background:cudac}.
 In section \ref{subsec:background:codequotations} F\#'s meta-programming model Code Quotations is introduced.
 Quotations are used to generate CPU code by the language-integrated compiler Alea.cuBase which will be presented in section \ref{subsec:background:fsharpcubase}.
+Section \ref{subsec:background:fsharpcubase} will then briefly mention some approaches to CUDA optimization, namely occupancy and Instruction Level Parallelism.
 Section \ref{subsec:background:calcspec} will briefly introduce the syntax of the Actulus Calculation Specification (CalcSpec).
 In section \ref{subsec:background:hardware} the hardware the project has been tested on will be presented.
 
@@ -109,7 +110,7 @@ The fourth-order version of the Runge-Kutta method can be seen below in equation
 \subsection{Dirac Delta Function}\label{subsec:delta}
 The Dirac delta function, or $\delta$ function, is not strictly a function but is a distribution on the real number line that is zero everywhere except at zero with an integral of one over the entire real line.
 It is used in actuary science to model ``sudden shocks'', or lump sum payments, but is not very commonly seen in computing.
-The method has many restrictions that apply and should primarily be of the form \lstinline$factor * delta(constant - variable)$ where $factor$ is the ``sudden shock'' that should happen when \lstinline$constant - variable = 0$.
+The method has many restrictions that apply and should primarily be of the form \lstinline$factor * delta(constant - variable)$ where $factor$ is constant and represents the ``sudden shock'' that should occur when \lstinline$constant - variable = 0$.
 %Insert graphics showing step
 
 \subsection{Parallelization and the GPU}\label{subsec:background:parallelization}
@@ -125,7 +126,7 @@ As only independent computation parallelization is utilized, other forms will no
 
 In computing, parallelization utilizing constructs such as processes and threads can be performed on multi-core CPUs, but can especially be used by GPUs that were designed for compute-intensive and highly parallel computations which is what graphics rendering is all about.
 This is because unlike the CPU which is a general-purpose machine with a focus on data-caching and flow control, the GPU is specialized for high arithmetic processing with more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. 
-The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange) such as a memory cache and dynamic random-access memory (DRAM).
+The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange), such as a memory cache and dynamic random-access memory (DRAM).
 
 \begin{figure}[H]
 \includegraphics{cpugpu.jpg}
@@ -248,7 +249,7 @@ If no specifiers are explicitly stated the \textbf{\_\_host\_\_} specifier is us
 Variables also have the \textbf{\_\_device\_\_} specifier, as well as the \textbf{\_\_constant\_\_} specifier to indicate that they are to be stored in constant memory and the \textbf{\_\_shared\_\_} specifier for shared memory.
 
 As it is based on C, dynamic memory must be allocated using $malloc$ and subsequently de-allocated by $free$.
-This operation also has to be done for the device memory using the equivalent $cudaMalloc$ and $cudaFree$.
+This operation also has to be performed for the device memory using the equivalent $cudaMalloc$ and $cudaFree$.
 One of the many benefits of using a modern language is avoiding tedious memory management like this, but at the cost of control that could potentially decrease performance.
 
 \subsection{F\# and Code Quotations}\label{subsec:background:codequotations}
@@ -322,10 +323,10 @@ In this example is it simply printed to the console.
 \subsubsection{Occupancy}\label{subsubsec:occupancy}
 Occupancy is a term used to describe the ratio between the active and maximum active warps for a kernel.
 It is a useful concept as in order to hide latency from context switches on the GPU the memory bus needs to be saturated by having enough transactions in flight.
-To increase the number of transactions either the occupancy or the instruction level parallelism (see section \ref{subsubsec:ilp}) should be increased.
+To increase the number of transactions either the occupancy or the instruction level parallelism (see next section) should be increased.
 
 Things that potentially limit occupancy is register usage, shared memory usage and the number of threads per blocks.
-To calculate thread occupancy NVIDIA has provided a spreadsheet that takes the following parameters:
+To calculate thread occupancy NVIDIA has provided a spreadsheet that takes the following parameters and calculates the occupancy percentage:
 \begin{itemize}
 \item Compute Capability - which determines the following options
 \item Total shared memory in bytes available
@@ -333,6 +334,9 @@ To calculate thread occupancy NVIDIA has provided a spreadsheet that takes the f
 \item The number of registers per thread
 \item Shared memory used per block in bytes
 \end{itemize}
+
+It is often not beneficial to have 100\% occupancy as long as enough transactions are in flight.
+Anecdotal evidence suggests around 66\% to be adequate for many situations (\cite{cudacoccupancy} section 10.4).
 
 
 \subsubsection{Instruction Level Parallelism}\label{subsubsec:ilp}
@@ -382,7 +386,7 @@ An explanation of each element follows:
 An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. 
 Note that it utilizes the Dirac $delta$ function\cite{hassani2009dirac} (see section \ref{subsec:delta}) which is used to express a discontinuity point in which a lump sum is to be paid.
 %confirm this isn't bullshit
-\clearpage
+%\clearpage
 
 
 \begin{lstlisting}[caption=The pure endowment insurance plan expressed in CalcSpec, label=pe_calcspec, language=calcspec]

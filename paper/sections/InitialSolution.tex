@@ -33,5 +33,5 @@ class PureEndowment{
 
 Using floating point numbers with single precision (32-bit) it could do one iteration of all six plans in approximately \emph{25.3} milliseconds (ms), and with double precision (64-bit) it took approximately \emph{24.5} ms on the test machine.
 It may come as a surprise that the single-precision-version was actually slower than the double-version despite using twice the bits.
-This is in part due to the fact that the exponential function $Exp$ from System.Math uses double-precision floats for both input and output (which requires type-casting in the single-precision version), but is mainly because double operations are optimized by the hardware\cite{northrup2008mcts}.
-The single version should have an edge if the application was to become memory-bound but this was not the case with these example plans.
+This is in part due to the fact that the exponential function $Exp$ from the System.Math namespace uses double-precision floats for both input and output which requires type-casting in the single precision implementation, but is mainly because double operations are optimized by the hardware\cite{northrup2008mcts}.
+The single precision implementation should have an edge if the application was to become memory-bound but this was not the case with these example plans.

@@ -2,7 +2,7 @@
 \section{Related Work}\label{sec:relatedwork}
 Much of this work is inspired by other projects done in collaboration with Peter Sestoft.
 
-Earlier work done by Nicolai Dahl Blicher-Pedersen and Christian Harrington.
+This includes earlier work done by Nicolai Dahl Blicher-Pedersen and Christian Harrington.
 In their bachelor thesis on \emph{The CUDA Life Insurance Reserve Estimator} (CLIRE)\cite{dahlharrington} they worked on the same example life insurance plans and among other things implemented them in CUDA C.
 Rather than working in F\# with Alea.cuBase, they instead resort to extending their CLIRE Generator to work within a Scala implementation of the Actulus Modeling Language (AML) that produces optimized CUDA C code.
 Where they experience a loss in performance when switching to generated code, this project only experienced an increase.
@@ -16,8 +16,8 @@ It also contained work using parameter arrays much like mine, but in his case wa
 
 S\o{}ren S\o{}nderby Nielsen and Thorkild Burup did work on Using ``GPGPU for computing pension scenarios''\cite{nielsenburup}. 
 Among other things they experimented with adaptive rather than static step-sizes for the Runge-Kutta solver (Runge-Kutta-Fehlberg).
-They also worked on interest rate generation rather than having this statically defined, and much like Blicher-Pedersen \& Harrington they also worked with a ``super kernel'' containing all method parameters.
+They also worked on interest rate generation rather than having this statically defined by the insurance plans, and much like Blicher-Pedersen \& Harrington they also worked with a ``super kernel'' containing all life insurance products.
 They also did interesting work using structures to define variability in F\#, though the actual GPU code was written in CUDA C.
 
 Niklas Schalck Johansson, Nikolaj Aaes and Hildur Uffe Flemberg worked on ``GPU Optimization of Base Form 820 Collective Artificial Spouse Pension Plan''\cite{aaesjohanssonflemberg} (``grundform 820'' or GF820 in Danish) which is very similar to the GF810 plan (see section \ref{sub:gf810}) but for the fact that the annuity is potentially deferred. 
-Rather than working with the suggested model by Klaus Grue which may not work for GF820, they instead attempted parallelizing aspects of the original model of computation using CUDA C and achieved a performance increase of up to factor 680.
+Rather than working with the suggested model by Klaus Grue, which may not be applicable for the GF820 plan, they instead attempted parallelizing aspects of the original model of computation using CUDA C and achieved a performance increase of up to factor 680.

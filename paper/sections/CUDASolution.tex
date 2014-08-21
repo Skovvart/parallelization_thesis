@@ -36,8 +36,8 @@ The single precision version of the kernels all used less than 32 registers and 
 It is possible to limit the number of registers during compilation making the remaining registers spill to local memory, but this is rarely ideal as global memory is significantly slower than registers.
 This can be seen in the 1024 forced registers row.
 
-Running one iteration with single-precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
-The double-precision took \emph{124.48} ms making it about five times slower than the C\# equivalent.
+Running one iteration with single precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
+The double precision floats took \emph{124.48} ms making it about five times slower than the C\# equivalent.
 The key factor to consider is the fact that the parallelized version was never intended to be faster with a single iteration.
 Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales greatly until the resources of all the multiprocessors are used and then linearly at a much higher rate than the single-threaded version afterwards.
 

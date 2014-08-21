@@ -1,19 +1,19 @@
 % !TeX root = ../thesis.tex
 \begin{abstract}
 Parallelization can provide great performance boosts for large-scale independent numerical computations, for example in the field of insurance reserve estimation.
-NVIDIA's CUDA platform allows for utilization of the parallelization power of the Graphic Processing Unit (GPU), but development is typically done using the CUDA C language which is based on the somewhat archaic C and C++ languages.
-Industry would also benefit from being able to utilize the power of the GPU on modern platforms such as Microsoft's .NET.
+NVIDIA's CUDA platform allows for utilization of the parallelization power of the General Purpose Graphic Processing Unit, but development is typically done using the CUDA C language which is based on the somewhat archaic C and C++ languages.
+The language integrated compiler Alea.cuBase by QuantAlea allows for CUDA development in F\#, a modern language on the .NET platform, which could be much preferable and beneficial to industry.
 
-This thesis investigates the benefits of transforming a single-threaded insurance reserve estimator to utilize parallelization on the GPU on the CUDA platform.
-A base-line implementation is done in CUDA C and is then ported to the newer F\# language with the aid of the language integrated compiler Alea.cuBase and the performance implications are explored.
-The F\# solution is further enhanced with the capability of parsing insurance plans written in Actulus CalcSpec that are automatically transformed into GPU code using F\# Alea.cuBase. 
+This thesis investigates the benefits of transforming a single-threaded life insurance reserve estimator to utilize parallelization on the GPU on the CUDA platform.
+A base-line implementation is done in CUDA C and is then ported to the newer F\# language with the aid of the Alea.cuBase, and the performance implications are explored.
+The F\# solution is further enhanced with the capability of parsing life insurance plans, written in Actulus CalcSpec, that are automatically transformed into GPU code using Alea.cuBase. 
 The performance implications of this is also explored.
-Work is also done optimizing more advanced life insurance models such as the collective spouse pension.
+Moreover, work is done optimizing advanced life insurance models such as the collective spouse pension GF810.
 
 The thesis concludes that software such as insurance reserve estimators can greatly benefit from parallelization on the GPU and that the benefits of developing on a modern platform such as F\# far outweigh the costs.
-The parallelized version is up to 2487 times faster than the single-threaded version allowing for vastly more variations of the insurance plans in the same amount of time.
-It is also discovered that GPU code automatically transformed from calculation specifications has no noticeable loss of performance or expressiveness.
-The new method used for the collective spouse pension was confirmed to work and provided a performance increase of factor 150, but was unable to work with Alea.cuBase for reasons yet unknown.
+The parallelized version is up to 2487 times faster than the single-threaded version allowing for vastly more variations of the lfie insurance plans in the same amount of time.
+It is also concluded that GPU code automatically transformed from calculation specifications has no noticeable loss of performance or expressiveness.
+A new method used for the collective spouse pension was confirmed to work and provided a performance increase of factor 150, but was unable to work with Alea.cuBase.
 
 \keywords{GPU Parallelization, Language Transformation, Insurance Reserve Estimation, F\# Alea.cuBase, Actulus CalcSpec, CUDA C}
 \end{abstract}

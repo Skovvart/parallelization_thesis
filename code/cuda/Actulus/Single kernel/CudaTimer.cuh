@@ -1,2 +1,0 @@
-void timerstart();
-float timerstop();

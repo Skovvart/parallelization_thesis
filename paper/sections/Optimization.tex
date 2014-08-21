@@ -1,6 +1,6 @@
 % !TeX root = ../thesis.tex
 \section{Performance explorations}
-\subsection{Shared Memory}
+\subsection{Shared Memory}\label{subsec:sharedmem}
 Reducing use of register could open up for higher thread-configuration for some plans and may make kernels execute faster even if 32 or less registers were used (see section \ref{subsubsec:occupancy}).
 As the fastest general purpose alternative to registers, shared memory is the only real alternative type of memory.
 As shared memory requires array-allocation for the entire block of threads, it does require the kernel to know how many threads per block there will be during kernel compilation.
@@ -74,12 +74,12 @@ Testing showed that lower thread configurations often had low occupancy (not sur
 
 \subsection{Expression reduction}\label{subsec:exprReduction}
 Alea.cuBase claims to generate highly optimized CUDA code so simple kernel optimization might be a futile effort.
-Nonetheless an optimization method $optimize$ was written that performs fairly simple arithmetic reductions.
+Nonetheless an optimization method $optimize$ was written which performs fairly simple arithmetic reductions.
 
 It is based on recursive pattern matching that performs the following operations:
 \begin{itemize}
 \item If working with a non-arithmetic expressions such as a $Let$ or $Lambda$-expressions, call $optimize$ on its components
-\item If working with a binary arithmetic expression reduce it based on the following rules:
+\item If working with a binary arithmetic expression, call $optimize$ on its components and reduce based on the following rules:
 	\begin{itemize}
 	\item If working with an expression where both components evaluate to numbers, simply evaluate and return the number. This applies to both addition, subtraction, multiplication and division.
 	\item If working with addition where one of the components is zero, return the non-zero component.
@@ -124,10 +124,10 @@ The Markov-model contains the active state for the insured, 125 intermediary sta
 \includegraphics[scale=0.5]{gf810.png}
 \caption{Markov-model for the parallelized GF810 Artificial Collective Spouse Pension plan.\label{fig:gf810}}
 \end{figure}
-
-The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the ensured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + diff$ year old where $diff$ is the age difference of the spouse and the ensured as well as the number of the state.
+\newcommand*{\diff}{\ensuremath{\mathit{diff}}}
+The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the ensured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + \diff$ year old where $\diff$ is the age difference of the spouse and the ensured as well as the number of the state.
 The ensured to final state $\mu_{ad}$ probability is the mortality intensity of the ensured at time $t + age$ times the probability that the ensured is not married at time $t + age$ (1 minus the marriage probability at the time).
-The intermediary to final state $\mu_{id}$ probability is the mortality intensity of the spouse at the time (assuming the sexuality of the ensured does not change) of age $t + age + diff$.
+The intermediary to final state $\mu_{id}$ probability is the mortality intensity of the spouse at the time (assuming the sexuality of the ensured does not change) of age $t + age + \diff$.
 
 This does potentially lead to a lot of cases where the ensured will either be married to someone yet to be born or someone significantly older than the oldest person alive today, which can be a problem for the Gompertz-Makeham mortality intensity methods.
 To lessen the impact of this, the result of these functions is constrained to be no higher than two by adding a constraint method.
@@ -143,7 +143,8 @@ calculation = {
   algorithm = { type="Runge Kutta 4", parameters={ stepsize = 0.01 }}, 
   equations = { 
     0 = { r_j = rate, b_j = 0, mu_jk = { 
-        1 = mu_ai(-62), 2 = mu_ai(-61), ...,
+        1 = mu_ai(-62), 2 = mu_ai(-61),
+        ...,
         124 = mu_ai(61), 125 = mu_ai(62), 
         126 = \t.(GM_f(t)) * (1 - gp(t + age))
       }, b_jk = {  } }, 
@@ -203,14 +204,17 @@ They consisted of the following:
 \subsubsection{Results}
 As the Alea.cuBase solution did not support the required number of states a CPU-version was implemented to test the validity of the new method.
 For age 35 it provided identical results down to the 7th decimal and as a bonus it completed in 1060 ms on average - an improvement of close to factor 150.
-Another interesting fact is that for age 35, the limited Alea.cuBase solution from intermediary states -24...+24 was also identical down to the 7th decimal, and to the 10th decimal compared to the -62...+62 CPU version.
+Another interesting fact is that for age 35, the limited 50-states Alea.cuBase solution with intermediary states from -24...+24 was also identical down to the 7th decimal, and to the 10th decimal compared to the -62...+62 CPU version.
 The sum of the reserve at every year also only leaves a relative difference of about 0.02\%, while the relative difference of the final result (year zero) is only $9.733035931 \cdot 10^{-7}\%$.
 The relative difference of the sum of the reserves for the GPU version with all intermediary states stays under 0.09\% for tested ages up to 80, with the relative difference of the final result only reaching $6.107283993 \cdot 10^{-6}$\%.
 
-This is sadly not a feat the limited states can claim to achieve. 
+This is sadly not a feat the limited 50-states implementation can claim to achieve. 
 With age 15 there is a 9.45\% relative difference in the final result while at age 50 there is a 68.34\% relative difference.
 For a visualization of this, see figure \ref{fig:gf810ages}. 
 Note that many of the entries can not be seen as they are overlapping due to being practically identical.
+The cause of the results getting progressively worse as the age increases is due to the fact that the marriage-probability in the early years is incredibly small.
+It is also because as the insured grows older, the younger spouses account for a lot more of the reserve than older spouses that die earlier.
+Since there is not enough intermediary states to reach these young spouses, the results are skewed.
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.3]{GF810-ages.jpg}
@@ -221,12 +225,24 @@ To conclude, the method definitely works in theory even if not currently on the 
 It does require all the intermediary states unless certain ``sweet spots'' are hit, which can not be relied upon.
 
 Speed-wise, it is hard to compare running-times without being able to utilize all the required states.
-The required states would also require more memory than is possible to put in shared memory, meaning only a partial amount of local memory overspill could be prevented.
-If not using shared memory (or no more than 96 bytes per thread), 512 threads per block would still be an option.
-This would mean falling back on local memory which would decrease the benefit of the parallellized solution.
-A very optimistic estimation would still claim that similar relative increases as seen in simpler plans could be achieved, which would still be a massive performance increase.
-A pessimist would argue that the use of slow local memory and heavy use of memory would limit the results significantly, as well as the currently limited double results.
-No matter which camp you might be in, it is certain that given enough iterations there should still be a dramatical increase in performance when calculating a large number iterations.
+For the limited 50-states version with intermediary states from -24...+24, tests were performed in section \ref{subsec:sharedmem} which resulted in runtimes of 5.52 seconds using global memory, 3.97 seconds using volatile shared memory and 4.30 second using non-volatile shared memory, but especially the shared memory results are inaccurate for the full solution as there is simply not enough shared memory available for all states.
+If not using shared memory (or at least no more than 96 bytes per thread), 512 threads per block would still be an option.
+This would result in the remaining registers spilling to local memory which would decrease performance.
+An optimist could claim that similar relative increases as seen in simpler plans could be achieved, which would still be a massive performance increase.
+A pessimist could argue that the use of slow local memory and overall complexity would limit the performance significantly.
+No matter which camp you might be in, it is very likely that given enough iterations there should still be a significant increase in performance when calculating a large enough number of iterations.
 
+For double precision comparison results, see appendix \ref{app:gf810ageresults}.
 
-For comparison results, see appendix \ref{app:gf810ageresults}.
+\subsubsection{Step-size experimentation}
+A straight-forward way to increase performance is to reduce the number of steps used by the Runge-Kutta solver at the cost of increased error.
+This was tested on the CPU-implementation of the new GF810 method with 16, 32 and 64 as the number of steps compared to the original 100 steps, and tested for ages 10 to 100 in 5 year intervals.
+
+Results showed that with just 16 steps an average relative error compared to 100 steps was no more than $6.18318 * 10^{-11}$ with an increase in performance of factor 6.24.
+For 32 as the number of steps the error was reduced to $6.3476 * 10^{-12}$ with an increase in performance of factor 3.13, and for 64 as the number of steps, the error was reduced to $1.626 * 10^{-12}$ with an increase in performance by factor 1.57.
+
+One important trend to note is the fact that as age increases, and as a result the years calculated decreases, the rate of error increases.
+As the high-age calculations already require less computation it would be ideal to use larger step-sizes for these computations.
+
+For the results of the various step-sizes, see appendix \ref{app:gf810stepsizes}.
+

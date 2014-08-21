@@ -3,10 +3,10 @@
 The F\# Alea.cuBase solution has many similarities to the CUDA C implementation.
 One key factor is that the Runge-Kutta 4 kernel is implemented using Code Quotations (see section \ref{subsec:background:codequotations}), as are the plan-specific $dV$ and $bj\_ii$ methods.
 As the plan-specific $dV$ and $bj\_ii$ typically include references to helper-methods, they could be defined in terms of Quotations and referenced using the splicing operators.
-Another option is to use use the \lstinline$[<ReflectedDefinition>]$ F\# attribute on methods which makes most regular methods accessible in Quotations.
+Another option is to use use the \lstinline$[<ReflectedDefinition>]$ F\# attribute on methods which make most regular methods accessible in Quotations.
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
 The various plans are in this case not implemented using classes (though they could have been), so each method name is prepended with a plan acronym ($pe\_$).
-It also refers to come common constants and methods not defined in the class much like the previous implementations.
+It also refers to some common constants and methods not defined in the class much like the previous implementations.
 \clearpage
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
 [<ReflectedDefinition>] 
@@ -90,7 +90,7 @@ For the full single-precision results table \ref{table:cubaseManualfloattime} an
 For the entire results, see appendix \ref{app:cuBase_manual_runtimes}.
 This is a slight improvement over the CUDA C single precision version while being nearly identical for double precision.
 %Unlike the CUDA C version, I was not able to limit the maximum amount of registers used, making it impossible to test configurations with more than 512 threads.
-The documented way to limit the maximum number of registers in Alea.cuBase did not work, so it was impossible to run double-precision configurations with more than 512 threads.
+The documented way to limit the maximum number of registers in Alea.cuBase did not work, so it was impossible to run double precision configurations with 1024 threads.
 
 For more information on result comparison see section \ref{subsec:result_comparison}.
 
@@ -139,12 +139,12 @@ To make parallellisation useful, the ability to make constants parameterized is 
 These constants could for example be the interest rate or the age of the insured.
 
 To add this parameterization, the $dV$ and $bj\_ii$ method signatures were changed to include an additional array containing parameters for the insurance plan.
-The plans were then made responsible for knowing how many variables there were and which variables mapped to which position in the parameter array. 
+The life insurance plan implementations were then made responsible for knowing how many variables there were and which variables mapped to which position in the parameter array. 
 They also had to pass the parameters to the methods that required them, for example the age to the mortality functions.
 This iteration of the code also switched to using classes eliminating the need for prepending prefixes to the various plan methods.
 For an example of this, see code sample \ref{cubase_pureendowmentparams}.
 The RK4\_n kernel was also altered to provide the thread-specific pointer to the plan parameter array and pass this to the updated $dV$ and $bj\_ii$ methods.
-This position would be the position of the thread times the number of plan parameters.
+This position would be the position of the thread multiplied by the number of plan parameters.
 For a brief overview of the changes to the RK4\_n kernel, see code sample \ref{cubase_rk4nparams}.
 
 \begin{lstlisting}[language=FSharp, caption=Parameterized pure endowment life insurance plan in F\# Alea.cuBase, label=cubase_pureendowmentparams]
