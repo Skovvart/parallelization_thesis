@@ -6,7 +6,7 @@ As the plan-specific $dV$ and $bj\_ii$ typically include references to helper-me
 Another option is to use use the \lstinline$[<ReflectedDefinition>]$ F\# attribute on methods which make most regular methods accessible in Quotations.
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
 The various plans are in this case not implemented using classes (though they could have been), so each method name is prepended with a plan acronym ($pe\_$).
-It also refers to some common constants and methods not defined in the class much like the previous implementations.
+It also refers to some common constants and methods not defined in the class much like previous implementations.
 %\clearpage
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
 [<ReflectedDefinition>] 
@@ -27,10 +27,10 @@ let pe_bj_ii =
 
 To run the plan there is one Runge-Kutta four kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. 
 For the full implementation see appendix \ref{app:cubase_rk4_n}. 
-What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which works very similarly to pointers in C.
+What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which works very similarly to pointers in C and C++.
 The temporary arrays $k_i$, $tmp$ and $v$ may also be of interest. 
 They are initiated using Alea.cuBase and then transformed into the generic $deviceptr$ type representations like $Va$ and $result$.
-\clearpage
+%\clearpage
 \begin{lstlisting}[language=FSharp, caption=The Runge-Kutta four solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
 let RK4_n dV bj_ii states = cuda {
 	let! kernel =
@@ -134,7 +134,7 @@ For more information on result comparison see section \ref{subsec:result_compari
 \end{table}
 
 \subsection{Insurance plan parameterization}\label{sub:manual_parameterization}
-The parallelized versions have so far been running the same static plans over and over again which is not very useful in practical scenarios.
+The parallelized versions have so far been running the same static plans repeatedly which is not very useful in practical scenarios.
 To make parallellisation useful, the ability to make constants parameterized is required.
 These constants could for example be the interest rate or the age of the insured.
 
@@ -209,7 +209,7 @@ See figure \ref{fig:ParameterizationVisualization} for a visualized example of t
 Results were slightly slower for floats with the highest number of calculations per second being \emph{95.26} calculations per ms, but almost twice as fast for doubles with \emph{54.53} calculations per ms. 
 For the remaining iterations per ms results see tables \ref{table:cubaseManualParamsfloattime} and \ref{table:cubaseManualParamsdoubletime} for single and double precision respectively.
 For the runtimes see appendix \ref{app:cuBase_manual_params_runtimes}.
-The performance increase in the double results are likely because less of the functions rely on constants defined outside the functions themselves, instead relying on passing the parameters to the function. %this explanation is still shit
+The performance increase in the double precision results are likely because less of the functions rely on constants defined outside the functions themselves, instead relying on passing the parameters to the function. %this explanation is still shit
 This is likely something that can be used for further projects. %test this
 
 The results of the test shows that parameters not only barely affect the running time and are therefore more than viable, it also shows that the double results in particular can be optimized a good bit which increases their viability significantly.

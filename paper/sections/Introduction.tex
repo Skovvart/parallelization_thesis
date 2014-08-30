@@ -1,6 +1,7 @@
 % !TeX root = ../thesis.tex
 \section{Introduction}
 This thesis was written in the March-September period of 2014 at the IT University of Copenhagen (ITU) and was supervised by Peter Sestoft to whom I owe many thanks. 
+I would further also like to thank all the people who have helped proof-read this thesis.
 The project was performed using documentation and code provided by the Actulus project\cite{actulus}.
 
 As the exponential growth of the Central Processing Unit (CPU) clock-rate speeds have leveled off in recent times\cite{ross2008cpu}, parallelization is seen as one of the primary techniques for increasing computational performance. 
@@ -11,14 +12,15 @@ Despite originating from the Graphics Processing Unit (GPU) designed for perform
 Parallelization is especially useful for large amounts of independent calculations that can be found in financial fields such as banking or insurance.
 
 One approach to GPGPU programming is using the Compute Unified Device Architecture (CUDA) platform by NVIDIA, which is available to most platforms, but does require an NVIDIA graphics card.
-The CUDA platform supports multiple languages, including Python and Fortran, but one of the most popular languages used is NVIDIA's CUDA C which is based on the somewhat archaic C and C++ languages.
+The CUDA platform supports multiple languages, including Python and Fortran, but the official and one of the most popular languages used is NVIDIA's CUDA C which is based on the somewhat archaic C and C++ languages.
 
 In this thesis a single-threaded C\# insurance reserve estimator will be translated to the CUDA platform and parallelized and the performance ramifications will be investigated.
 First a base-line implementation will be implemented in CUDA C followed by a solution implemented on the more modern .NET platform in the F\# language using the language-integrated compiler Alea.cuBase to explore the effects on performance.
 If there is no significant loss of performance, this could allow for all the benefits of modern languages while also allowing GPU code to be incorporated on the .NET platform.
 
-
 The thesis will also cover how insurance plans specified in the Actulus Calculation Specification language (CalcSpec) will be automatically translated to code that will run on the GPU, and the performance ramifications of this will be analysed.
+
+Advanced life insurance plans, such as the collective spouse pension, and their relative performance impact on the GPU will also be explored.
 
 \subsection{Reading guide}
 This thesis paper is targeted at people interested in high performance and parallel computing as well as people interested in language transformation. 
@@ -30,7 +32,7 @@ Experience with a variant of C and a functional language (such as F\#, an ML var
 Subjects will be described in various levels of detail depending on their relevance to the main topics of the thesis.
 This means that certain technologies, languages and paradigms will be described in less detail than strictly required background information and solution descriptions.
 
-The thesis is structured into the following chapters.
+The thesis is structured into the following sections.
 The first section will introduce the thesis, including the motivation, scope, approach and methods used.
 
 The second section will cover the required background information including life insurance policies, the math used, the technologies utilized and the hardware the code has been tested on.
@@ -41,6 +43,6 @@ This is in turn followed by a solution manually written in F\# using the languag
 The fourth section will describe how life insurance plan specifications written in Actulus CalcSpec are parsed and transformed to GPU code using F\# with Alea.cuBase and the performance ramifications of this.
 
 The fifth section will discuss how various alterations to the project affected performance and their viability. 
-These alterations include testing memory types, expression reduction and large state insurance plan models.
+These alterations include testing memory types, GPU code expression reduction and large state insurance plan models such as the collective spouse pension.
 
 The remaining sections six through eight will discuss similarities and differences to related work, possible future work and ending with the conclusion of the thesis.

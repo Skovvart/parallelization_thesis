@@ -11,11 +11,11 @@ It has the following signature: \\
 \\
 The $dV$ function implements an arbitrary amount of derivatives.
 The $bj\_ii$ function is used for lump-sum payments.
-$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta four and \textit{Va} is the initial reserve (at time $a$).
+$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the amount of steps to use in the Runge-Kutta four solver and \textit{Va} is the initial reserve (at time $a$).
 
-An example implementation of the pure endowment life insurance plan can be seen below in code sample \ref{csharp_pureendowment}. 
-Note that it does refer to some shared constants and methods defined outside the class itself, for example the $GM$ (Gompertz-Makeham) mortality-probability function which is referenced in all of the examples.
-\clearpage
+An example implementation of the pure endowment life insurance plan can be seen in code sample \ref{csharp_pureendowment}. 
+Note that it does refer to shared constants and methods defined outside the class itself, for example the $GM$ (Gompertz-Makeham) mortality-probability function which is referenced in all the examples.
+%\clearpage
 \begin{lstlisting}[language=CSharp, caption=The pure endowment insurance plan expressed in C\#, label=csharp_pureendowment]
 class PureEndowment{
     static double b_0(double t){ return 0.0;}
@@ -34,6 +34,6 @@ class PureEndowment{
 \end{lstlisting}
 
 Using floating point numbers with single precision (32-bit) it could do one iteration of all six plans in approximately \emph{25.3} milliseconds (ms), and with double precision (64-bit) it took approximately \emph{24.5} ms on the test machine.
-It may come as a surprise that the single-precision version was actually slower than the double-precision version despite using twice the bits.
+It may come as a surprise that the single-precision version was actually slower than the double-precision version despite using half the bits.
 This is partly due to the fact that the exponential function $Exp$ from the System.Math namespace uses double-precision floats for both input and output which requires type-casting in the single precision implementation, but is mainly because \lstinline$double$ operations are optimized by the hardware\cite{northrup2008mcts}.
 The single precision implementation should have an edge if the application was to become memory-bound but this was not the case with these example plans.

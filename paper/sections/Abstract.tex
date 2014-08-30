@@ -8,12 +8,12 @@ This thesis investigates the benefits of transforming a single-threaded life ins
 A base-line implementation is done in CUDA C and is then ported to the newer F\# language with the aid of the Alea.cuBase, and the performance implications are explored.
 The F\# solution is further enhanced with the capability of parsing life insurance plans, written in Actulus CalcSpec, that are automatically transformed into GPU code using Alea.cuBase. 
 The performance implications of this is also explored.
-Moreover, work is done optimizing advanced life insurance models such as the collective spouse pension GF810.
+Work is also done testing and optimizing complex life insurance models such as the collective spouse pension GF810.
 
-The thesis concludes that software such as insurance reserve estimators can greatly benefit from parallelization on the GPU and that the benefits of developing on a modern platform such as F\# far outweigh the costs.
+The thesis concludes that software such as insurance reserve estimators can greatly benefit from parallelization on the GPU and that the benefits of developing on a modern platform such as .NET far outweigh the costs.
 The parallelized version is up to 2485 times faster than the single-threaded version allowing for vastly more variations of the life insurance plans in the same amount of time.
 It is also concluded that GPU code automatically transformed from calculation specifications has no noticeable loss of performance or expressiveness.
-A new method used for the collective spouse pension was confirmed to work and provided a performance increase of factor 150, but was unable to work with Alea.cuBase.
+A new method for calculating the collective spouse pension was confirmed to work and provided a performance increase of factor 150 with no more than 0.1\% variation in the result compared to the original method of computation, but the complexity of the model only allowed for a limited version to run on the GPU due to Alea.cuBase.
 
 \keywords{GPU Parallelization, Language Transformation, Insurance Reserve Estimation, F\# Alea.cuBase, Actulus CalcSpec, CUDA C}
 \end{abstract}

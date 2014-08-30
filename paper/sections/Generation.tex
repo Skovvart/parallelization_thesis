@@ -1,7 +1,7 @@
 % !TeX root = ../thesis.tex
 \section{Actulus CalcSpec parsing and code generation}\label{sec:calcspecgeneration}
-The previous implementations have been useful enough for comparisons, but can be considered more error prone and tedious to implement manually.
-Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec, mentioned in section \ref{subsec:background:calcspec} or \url{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx} (requires login) for more information, would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
+The previous implementations have been useful enough for performance and result comparisons, but can be considered error prone and tedious to implement manually.
+Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec, mentioned in section \ref{subsec:background:calcspec} or \\\url{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx} (requires login) for more information, would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
 
 Similar work transforming CalcSpec to Alea.cuBase kernels was also done in Christian Gehrs Kuhre bachelor thesis\cite{christiangk}.
 See section \ref{sec:relatedwork} for more information.
@@ -18,10 +18,10 @@ This is fairly straightforward as it deals strictly with method and lambda decla
 
 
 The $dV$ and $bj\_ii$ lambda-signatures are then added within the final Let-declaration of the expressions.
-For the $dV$ method the signature added is \lstinline$(t:floatP)->(V:deviceptr<floatP>)->(result:deviceptr<floatP>)$ and for $bj\_ii$ the signature is \lstinline$(t:floatP)->(result:deviceptr<floatP>)$.
+For the $dV$ method the signature added is \\\lstinline$(t:floatP)->(V:deviceptr<floatP>)->(result:deviceptr<floatP>)$ and for $bj\_ii$ the signature is \lstinline$(t:floatP)->(result:deviceptr<floatP>)$ where $floatP$ is either single or double floating point precision.
 
 The Markov-model (see section \ref{subsec:background:lifeinsurance}) is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
-If any call to a delta-function (see section \ref{subsec:delta}) of the form \lstinline$factor * delta(expression)$ is spotted in $b\_j$ (the only place it is allowed), it is removed and instead added to the transition cost map from and to the state with the form \lstinline$if expression = 0 then factor else zero$.
+If any call to a delta-function (see section \ref{subsec:delta}) of the form \\\lstinline$factor * delta(expression)$ is spotted in $b\_j$ (the only place it is allowed), it is removed and instead added to the transition cost map from and to the state with the form \lstinline$if expression = 0 then factor else zero$.
 This is done as the Dirac delta-function is in this case much more efficiently expressed in the $bj\_ii$ method.
 Thiele's differential equation (see section \ref{subsec:background:thielerungekutta}) is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
 Finally, the entire quotation AST is reduced using an expression reduction method that performs some arithmetic reductions.
@@ -116,7 +116,7 @@ let bj_ii =
 \end{lstlisting}
 
 
-The generated kernels used up to 34 registers per thread making 1024 threads per block impossible. 
+The generated kernels used up to 34 registers per thread with double precision floats making 1024 threads per block impossible. 
 %It may be possible to optimize this at a later point.
 The highest number of calculation per ms in the single precision version for all plans was was \emph{98.32}.
 See table \ref{table:cubaseGeneratedfloattime} for the full single precision results. 
@@ -168,10 +168,12 @@ The double precision results are a negligible amount better than the manual impl
 This makes sense as the generated $dV$ and $bj\_ii$ methods end up being very similar to the manual implementations without parameters.
 
 \subsection{Parameterization}
-To parameterize the kernels generated from CalcSpec, the lambda signatures have to re-add the parameter array as in section \ref{sub:manual_parameterization}.
-The \emph{expression} $Let$ bindings are then moved inside the lambda-declaration, and based on a parameter specification, named constants are replaced entries in the parameter array.
+To parameterize the kernels generated from CalcSpec, the lambda signatures have to add the parameter array as in section \ref{sub:manual_parameterization}.
+The \emph{expression} $Let$ bindings are moved inside the lambda-declaration of the $dV$ and $bj\_ii$ quotation expressions.
+This allows for overriding of the constants with entries in the parameter array based on a parameter specification (see section \ref{subsubsec:paramgen}) which maps constant-names to positions in the parameter array.
+This would not be possible otherwise as the parameter array is part of the lambda parameters.
 
-Single precision could perform up to \emph{98.23} calculations per ms while double precision could perform up to \emph{25.91} calculations per ms.
+Single precision floating point numbers could perform up to \emph{98.23} calculations per ms while double precision could perform up to \emph{25.91} calculations per ms.
 See tables \ref{table:cubaseGeneratedParamfloattime} and \ref{table:cubaseGeneratedParamdoubletime} for the remaining results.
 For the full test results see appendix \ref{app:cuBase_calcspec_params_runtimes}.
 
@@ -213,7 +215,7 @@ For the full test results see appendix \ref{app:cuBase_calcspec_params_runtimes}
 \caption{Parameterized CalcSpec calculations per ms with double precision\label{table:cubaseGeneratedParamdoubletime}}
 \end{table}
 %\clearpage
-\subsubsection{Parameter generation}
+\subsubsection{Parameter generation}\label{subsubsec:paramgen}
 A helper method was written to generate the parameter arrays for the parameterized solutions.
 As input it takes a parameter specification consisting of a list of tuples containing the constant variable to be parameterized, a start and end value as well as the step size of the parameters.
 For every parameter in the specification, a list of numbers going from the start to the end value in intervals of the step size is generated.
@@ -236,7 +238,7 @@ If higher than a warp but less than a warp times the number of SMs, the rounded 
 In case the number of iterations is higher than this, it will try continually increasing the number of threads per block by 32 until it reaches 512 or the iterations are less than or equal to the found number of threads times the number of SMs.
 If this is still not enough, the number of blocks will be increased until it can satisfy iterations enough for all the parameters.
 The implemented code can be seen in appendix \ref{app:launchparameter}.
-Further work could very well improve this by viewing it as as an optimization problem.
+Further work could very well improve this by viewing it as as an optimization problem that takes into account more parameters such as memory usage.
 
 This will still potentially result in the situation that the total number of iterations is less than the number of threads per block multiplied by the number of blocks.
 This is somewhat unavoidable, so the RK4\_n kernel was altered to skip thread-IDs greater than the total number of parameterized iterations.

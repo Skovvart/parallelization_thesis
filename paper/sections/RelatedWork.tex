@@ -1,9 +1,9 @@
 % !TeX root = ../thesis.tex
 \section{Related Work}\label{sec:relatedwork}
-Much of this work is inspired by other projects done in collaboration with Peter Sestoft.
+Much of this work is inspired by other projects done in collaboration with Peter Sestoft of the IT University of Copenhagen and the Actulus project\cite{actulus}.
 
 This includes earlier work done by Nicolai Dahl Blicher-Pedersen and Christian Harrington.
-In their bachelor thesis on \emph{The CUDA Life Insurance Reserve Estimator} (CLIRE)\cite{dahlharrington} they worked on the same example life insurance plans and among other things implemented them in CUDA C.
+In their bachelor thesis on \emph{The CUDA Life Insurance Reserve Estimator} (CLIRE)\cite{dahlharrington} they worked on the same six example life insurance plans, though not the GF810 collective spouse pension, and among other things implemented them in CUDA C.
 Rather than working in F\# with Alea.cuBase, they instead resort to extending their CLIRE Generator to work within a Scala implementation of the Actulus Modeling Language (AML) that produces optimized CUDA C code.
 Where they experience a loss in performance when switching to generated code, this project only experienced an increase.
 They do however claim to reach much larger performance increases compared to the original single-threaded C\# solution.
@@ -11,7 +11,7 @@ Rather than generating kernels for each plan they also use a ``super-kernel'' co
 They do conclude in their future improvements section that it was most likely a mistake, which was one factor when it was decided not to attempt creating any ``super kernels'' in this thesis.
 
 Christian Gerhs Kuhre\cite{christiangk} did his bachelor thesis around the same time as this masters thesis.
-His bachelor thesis contains work on both F\# Alea.cuBase as well as CalcSpec transformation and was very similar in approach if not quite in scope.
+His thesis contains work on both F\# Alea.cuBase as well as CalcSpec transformation and was very similar in approach if not quite in scope.
 It also contained work using parameter arrays much like mine, but in his case this was at least partially implemented using F\# unions.
 
 S\o{}ren S\o{}nderby Nielsen and Thorkild Burup did work on ``Using GPGPU for computing pension scenarios''\cite{nielsenburup}. 

@@ -11,7 +11,7 @@ General information on parallelization and the potential benefits of using the G
 The CUDA platform and CUDA C will then be presented in section \ref{subsec:background:cudac}.
 In section \ref{subsec:background:codequotations} F\#'s meta-programming model Code Quotations is introduced.
 Quotations are used to generate CPU code by the language-integrated compiler Alea.cuBase which will be presented in section \ref{subsec:background:fsharpcubase}.
-Section \ref{subsec:background:fsharpcubase} will then briefly mention some approaches to CUDA optimization, namely occupancy and Instruction Level Parallelism.
+Section \ref{subsec:cudaoptimization} will then briefly mention some approaches to CUDA optimization, namely occupancy and Instruction Level Parallelism.
 Section \ref{subsec:background:calcspec} will briefly introduce the syntax of the Actulus Calculation Specification (CalcSpec).
 In section \ref{subsec:background:hardware} the hardware the project has been tested on will be presented.
 
@@ -78,7 +78,7 @@ The equation is expressed below in equation \ref{eq:thiele}. It assumes continui
 \frac{d}{dt}V_s(t) = r_s(t) V_s(t) - b_s(t) - \sum_{ts \in T_{s}} \mu_{s,ts}(t) (V_{ts}(t) - V_s(t) + b_{s,ts})
 \end{equation}
 
-To shortly summarize it, the change in reserve at time $t$ in state $s$ is the current reserve times the interest-rate minus the benefit paid by the ensurer in the state minus the weighted transitioning costs to all linked states. 
+To shortly summarize it, the change in reserve at time $t$ in state $s$ is the current reserve times the interest-rate minus the benefit paid by the ensurer in the state minus the weighted transitioning costs to all connected states. 
 The weighted transitioning cost to a state is the intensity of the transition (probability of the transition occurring) times the difference in reserves plus the transitioning cost.
 This results in the expected reserve of a state at time $t$.
 
@@ -182,10 +182,10 @@ An example with the unique thread-IDs can be seen in figure \ref{thread_hierarch
 
 
 \subsubsection{Memory model}
-A GPU program (kernel from here) has access to various types of memory.
+A GPU program (referred to as a kernel from here) has access to various types of memory.
 There is \emph{local} memory only available to the thread itself.
-This is facilitated by 32 kibibyte (KiB, which is 1024 bytes) per block of fast registers while available and falling back on relatively slow local memory afterwards (stored in global memory but only accessed by the thread).
-Each register holds four bytes.
+This is facilitated by 32 kibibyte (KiB, which is 1024 bytes) per block of fast registers while available and falling back on relatively slow local memory afterwards which is stored in global memory but only accessed by the thread.
+Each register holds up to four bytes.
 Each CUDA thread can at most use 63 registers making the highest warp-sized number of threads per SM 512.
 If the kernel uses no more than 32 registers up to 1024 threads per SM can be used.
 
@@ -244,17 +244,17 @@ int main(){
 }
 \end{lstlisting}
 
-One thing to note is the kernel launch-parameters of Add-method in $main$ which specify the number of blocks and the number of threads per block on which the kernel should be executed. 
+One thing to note is the kernel launch-parameters of the Add-method in $main$ which specify the number of blocks and the number of threads per block on which the kernel should be executed. 
 
 CUDA C also has other declaration specifiers. 
-The \textbf{\_\_device\_\_} specifier indicates that a method will only be compiled for the GPU (which can be referenced by kernels), the \textbf{\_\_host\_\_} specifier indicates that a method will be available for the CPU.
+The \textbf{\_\_device\_\_} specifier indicates that a method will only be compiled for the GPU which can be referenced by kernels, the \textbf{\_\_host\_\_} specifier indicates that a method will be available for the CPU.
 These two specifiers can also be used together for compilation to both platforms.
 If no specifiers are explicitly stated the \textbf{\_\_host\_\_} specifier is used.
-Variables also have the \textbf{\_\_device\_\_} specifier, as well as the \textbf{\_\_constant\_\_} specifier to indicate that they are to be stored in constant memory and the \textbf{\_\_shared\_\_} specifier for shared memory.
+Variables also have the \textbf{\_\_device\_\_} specifier indicating they should be stored on the device typically in global memory, as well as the \textbf{\_\_constant\_\_} specifier to indicate that they are to be stored in constant memory and the \textbf{\_\_shared\_\_} specifier for shared memory.
 
 As it is based on C, dynamic memory must be allocated using $malloc$ and subsequently de-allocated by $free$.
-This operation also has to be performed for the device memory using the equivalent $cudaMalloc$ and $cudaFree$.
-One of the many benefits of using a modern language is avoiding tedious memory management like this, but at the cost of control that could potentially decrease performance.
+These operations also have to be performed for the device memory using the equivalent $cudaMalloc$ and $cudaFree$.
+One of the many benefits of using a modern language is avoiding tedious memory management like this, but at the loss of control that could potentially decrease performance.
 
 \subsection{F\# and Code Quotations}\label{subsec:background:codequotations}
 F\#\cite{fsharp} is an open source, cross-platform functional programming language originating from Microsoft that runs on the .NET platform.
@@ -263,18 +263,18 @@ It is used in particular to transform F\# to other languages such as SQL automat
 It can also be used to generate F\# code that can be evaluated. 
 Code Quotations support both typed and untyped expressions using \lstinline$<@ ... @>$ and \lstinline$<@@ ... @@>$ respectively. 
 
-For example, the expression \lstinline$<@ let plusfive number = number + 5 in plusfive @>$ is automatically translated into the abstract syntax tree in code sample \ref{quotationast}. 
+For example, the expression \lstinline$<@ let plus5 n = n + 5 in plus5 @>$ is automatically translated into the abstract syntax tree in code sample \ref{quotationast}. 
 As Quotations only support expressions, a let declaration can not exist on its own, hence returning the function at the end (in the $in$ part of the Quotation).
 %\clearpage
 \begin{lstlisting}[language=FSharp, caption=Abstract syntax tree for the example Quotation expression, label=quotationast]
-Let (plusfive, Lambda (number, Call (None, op_Addition, [number, Value (5)])), plusfive)
+Let(plus5, Lambda(n, Call(None, op_Addition, [n, Value(5)])), plus5)
 \end{lstlisting}
 
 Code Quotations also allow for the mixing of Quotation expressions using the splicing operators $\%$ for typed and $\%\%$ for untyped expressions as can be seen in code sample \ref{quotationsmixin}.
 
 \begin{lstlisting}[caption=Quotation mixing, label=quotationsmixin, language=FSharp]
-let plus5:Expr<int->int> = <@ let plusfive number = number + 5 in plusfive @>
-let plus10:Expr<int->int> = <@ let plusten number = number |> %plus5 |> %plus5 in plusten @>
+let plus5:Expr<int->int> = <@ let plusfive n = n + 5 in plusfive @>
+let plus10:Expr<int->int> = <@ let plusten n = n |> %plus5 |> %plus5 in plusten @>
 let untypedplus10:Expr = <@@ %plus10 @@>
 \end{lstlisting}
 
@@ -324,11 +324,11 @@ Following this, the compiled kernel is run using the parameters defined in the k
 In this example is it simply printed to the console. 
 
 
-\subsection{CUDA Optimization}
+\subsection{CUDA Optimization}\label{subsec:cudaoptimization}
 \subsubsection{Occupancy}\label{subsubsec:occupancy}
 Occupancy is a term used to describe the ratio between the active and maximum active warps for a kernel.
 It is a useful concept as in order to hide latency from context switches on the GPU the memory bus needs to be saturated by having enough transactions in flight.
-To increase the number of transactions either the occupancy or the instruction level parallelism (see next section) should be increased.
+To increase the number of transactions either the occupancy or the instruction level parallelism (see section \ref{subsubsec:ilp}) should be increased.
 
 Things that potentially limit occupancy is register usage, shared memory usage and the number of threads per blocks.
 To calculate thread occupancy NVIDIA has provided a spreadsheet\cite{occupancycalculator} that takes the following parameters and calculates the occupancy percentage:
@@ -341,7 +341,7 @@ To calculate thread occupancy NVIDIA has provided a spreadsheet\cite{occupancyca
 \end{itemize}
 
 It is often not beneficial to have 100\% occupancy as long as enough transactions are in flight\cite{volkovoccupancy}.
-Anecdotal evidence suggests around 66\% to be adequate for many situations (section 10.4 of the CUDA C Best Practices Guide\cite{cudacoccupancy}).
+Anecdotal evidence suggests around 66\% occupancy to be adequate for many situations (section 10.4 of the CUDA C Best Practices Guide\cite{cudacoccupancy}).
 
 
 \subsubsection{Instruction Level Parallelism}\label{subsubsec:ilp}
@@ -357,16 +357,26 @@ g = a * d
 \end{lstlisting}
 
 It is no trivial task to increase ILP generally nor for the Runge-Kutta four solver and no particular work has been done to increase ILP for any of the solutions in this project.
-Further work could ideally focus on increasing the ILP, as it could have a greater effect than increasing occupancy.
-It is questionable that the bandwidth is not saturated at higher configurations, so assuming that the typical use case includes hundreds of thousands of iterations it may be for naught.
+Further work could ideally focus on increasing the ILP, as it could have a greater effect than increasing occupancy\cite{volkovoccupancy}.
+It is unlikely that the memory bandwidth is not saturated at higher kernel launch parameter configurations, so assuming that the typical use case includes hundreds of thousands of iterations per kernel launch, optimizing ILP may be a futile effort.
 
 \subsection{Actulus Calculation Specification language}\label{subsec:background:calcspec}
-The Actulus project is a collaboration between Mogens Steffensen of the University of Copenhagen, Peter Sestoft of the IT University of Copenhagen and the Danish insurance and pension software house Edlund.
+The Actulus project\cite{actulus} is a collaboration between Mogens Steffensen of the University of Copenhagen, Peter Sestoft of the IT University of Copenhagen and the Danish insurance and pension software house Edlund.
 
 The Actulus Calculation Specification language (CalcSpec) is a domain-specific language for defining the differential equations that make up an insurance plan.
 The main purpose of the language is to define various coefficients used in the Markov-model defining the life insurance policy.
 The overall structure of the language can be seen in code sample \ref{calcspecstructure}.
 %\clearpage
+
+An explanation of each element of the CalcSpec structure follows:
+\begin{itemize}
+\item The \lstinline$<Algorithm>$ includes the name of the algorithm (for example ``Runge Kutta 4'') and the parameters for the algorithm (for example the step-size for Runge Kutta four).
+\item The \lstinline$<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in \lstinline$<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If the coefficients are constant, they can also be described by constants (typically 0) or as an empty block for multi-part coefficients in which case all sub-coefficients are 0.
+\item The \lstinline$<Range>$ and \lstinline$<Boundary values>$ are related to the differential equation described in \lstinline$<Equations>$ and describes the interval in which the algorithm should solve the equation subject to the boundary conditions. The boundary values are not currently respected as they are zero in all examples.
+\item \lstinline$<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
+\item \lstinline$<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
+\end{itemize}
+
 \begin{lstlisting}[caption=CalcSpec structure, label=calcspecstructure, language=calcspec]
 calculation = {
   name = <Name of calculation>,
@@ -378,15 +388,6 @@ calculation = {
   expressions = { <Expressions> }
 }
 \end{lstlisting}
-
-An explanation of each element follows:
-\begin{itemize}
-\item The \lstinline$<Algorithm>$ includes the name of the algorithm (for example ``Runge Kutta 4'') and the parameters for the algorithm (for example the step-size for Runge Kutta four).
-\item The \lstinline$<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in \lstinline$<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If the coefficients are constant, they can also be described by constants (typically 0) or as an empty block for multi-part coefficients in which case all sub-coefficients are 0.
-\item The \lstinline$<Range>$ and \lstinline$<Boundary values>$ are related to the differential equation described in \lstinline$<Equations>$ and describes the interval in which the algorithm should solve the equation subject to the boundary conditions. The boundary values are not currently respected as they are zero in all examples.
-\item \lstinline$<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
-\item \lstinline$<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
-\end{itemize}
 
 An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. 
 Note that it utilizes the Dirac $delta$ function\cite{hassani2009dirac} (see section \ref{subsec:delta}) which is used to express a discontinuity point in which a lump sum is to be paid.

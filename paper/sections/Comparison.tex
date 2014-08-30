@@ -46,7 +46,7 @@ cuBase 32 versus CUDA C 32	&			&			&			&			&	103		&	34		&	0		&	0		\\ \hline
 \end{table}
 
 \subsubsection{Timing}
-All of the previous timing results are based on a 100-iteration average of the execution time.
+All of the previous timing results are based on a 100-iteration average of the kernel execution time.
 They are however only measuring the time the kernel took to execute.
 This does not include initialization and copying of memory from and to the device, nor the time it takes to do runtime compilation of the kernels.
 The memory aspect seems to be fairly negligible, as the highest recorded time was 779.5 ms for a parameterized kernel execution with 1024 threads and 350 blocks.
@@ -54,11 +54,11 @@ For the full memory copying timing results, see appendix \ref{app:cuBase_manual_
 
 The compilation of kernels also takes some time, though it is a one-time operation that leads to a reusable kernel.
 Compilation of the parameterized kernels takes about 1560 ms.
-As compilation is a one-time operation, this result is not based on a 100 iteration average, but should be fairly reflective of the time required.
+As compilation is a one-time operation, this result is not based on a 100 iteration average, but should be fairly reflective of the time required at least for insurance plans with a low number of states.
 
 The last aspect that is not timed is the generation of parameters.
 As this is something that can be expected to be provided rather than generated, and would take the same time to generate even if not provided, this has not been timed.
 
 \subsubsection{Parameterization}
-Parameterization was tested by altering constants in the original C\# solution and comparing the output to the output of a parameterized kernel. 
-No deviations were detected.
+Parameterization was tested by manually altering constants in the original C\# solution and comparing the output to the output of a parameterized kernel. 
+Ignoring similar error rates as reported previously, the results were identical indicating that parameterization works as intended.

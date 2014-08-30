@@ -1,7 +1,7 @@
 % !TeX root = ../thesis.tex
 \section{Performance explorations}
 \subsection{Shared Memory}\label{subsec:sharedmem}
-Reducing use of registers could open up for higher thread-configuration for some plans and may make kernels execute faster even if 32 or less registers were used (see section \ref{subsubsec:occupancy}).
+Reducing use of registers could open up for higher threads per block-configuration for some plans and may make kernels execute faster even if 32 or less registers were used (see section \ref{subsubsec:occupancy}).
 As the fastest general purpose alternative to registers, shared memory is the only real alternative type of memory.
 As shared memory requires array-allocation for the entire block of threads, it does require the kernel to know how many threads per block there will be during kernel compilation.
 This is no big sacrifice as this was indirectly a requirement for the parameterized solutions already.
@@ -10,15 +10,15 @@ Another limitation is the total size of the shared memory which is 48KiB per SM.
 The elements that could be moved to shared memory are the parameter arrays and the temporary arrays used by the Runge-Kutta four solver.
 A working copy of the result array could also potentially be moved to shared memory, but it would still require the result array to be copied back to global memory at some point.
 It is unlikely that this would lead to an increase in performance.
-The $Va$ array is also only read from once and is unlikely to be a good candidate to copy to shared memory.
+The $Va$ array is also only read from once per thread and is unlikely to be a good candidate to copy to shared memory.
 
-As a big source of local memory used was the temporary arrays $k1$, $k2$, $k3$, $k4$, $tmp$ and $v$ with the number of states in the plan as the size, these were moved to shared memory.
+As a big source of local memory used was the temporary arrays $k1$, $k2$, $k3$, $k4$, $tmp$ and $v$ with the number of states in the plan as their size, these were moved to shared memory.
 It is worth noting some properties of the kernels for the various plans before and after.
-The number of registers can be seen in table \ref{table:tempArraysSharedMemory}.
+The number of registers used can be seen in table \ref{table:tempArraysSharedMemory}.
 It is interesting to see that the storing the temporary arrays in local memory actually uses the least registers for single precision floats, considering that the temporary arrays should no longer be stored in them.
 It is possible that it uses the added registers as a cache for accessing the shared memory.
 It is also interesting that marking the memory as volatile - meaning that the compiler should not optimize reads and writes for the array - reduces the register usage slightly for single precision floats.
-It also reduces the number of registers a more significant number for doubles, almost to the point that 1024 threads per block can be used.
+It also reduces the number of registers a more significant number for double precisiont floats, almost to the point that 1024 threads per block can be used.
 
 \begin{table}[h!]
 \centering
@@ -56,14 +56,14 @@ All in all not very impressive for the simple example life insurance plans.
 
 If instead we turn to a more advanced life insurance plan such as the limited implementation of the GF810 collective spouse pension, which uses 50 states, the results look a bit different.
 As there are nowhere near enough registers for 50 states, the remaining states need to be stored in local (global) memory which is slow.
-For double precision floats it ends up using all 63 available registers per thread and spills 8568 bytes to local memory.
-With 50 states, only up to 20 threads per block (less than a warp) worth of shared memory is available, regardless the results seem positive.
-Where execution using local memory takes about 5.52 seconds, using volatile shared memory takes only 3.97 seconds making it 27.66\% faster.
-Non-volatile memory is slightly slower at 4.30 seconds, but still with an improvement of 21.53\% compared to local memory.
-It is somewhat surprising that the volatile memory is faster, as the kernel claims to use more local memory and an identical amount of shared memory as the non-volatile.
-Why this is so is yet unknown.
-
-For all the shared memory results see appendix \ref{app:shared_memory}.
+For double precision floats it ends up using all 63 available registers per thread and spills 2696 bytes to local memory.
+With 50 states, the temporary arrays use $50*6*8=2400$ bytes of memory only allowing up to 20 threads per block (less than a warp) worth of shared memory. 
+Regardless, the results seem positive.
+Where execution using only local memory takes about 5.52 seconds, using volatile shared memory takes only 3.97 seconds making it 27.66\% faster.
+Non-volatile memory is slightly slower at 4.30 seconds, but still with an improvement of 21.53\% compared to only local memory.
+It is somewhat surprising that the volatile memory is faster, as the reads and writes should no longer be optimized by the compiler.
+The volatile version does use slightly less local memory, 1064 bytes to 1088 bytes, which may be the reason.
+For all shared memory test results see appendix \ref{app:shared_memory}.
 
 \subsubsection{Occupancy}\label{subsubsec:test:occupancy}
 Occupancy (see section \ref{subsubsec:occupancy}) is a term used to describe how optimally the GPU is utilized with regards to warps, and is affected by the number of threads per block, shared memory per block and registers per thread.
@@ -83,7 +83,7 @@ It is based on recursive pattern matching that performs the following operations
 \item If working with a binary arithmetic expression, call $optimize$ on its components and reduce based on the following rules:
 	\begin{itemize}
 	\item If working with an expression where both components evaluate to numbers, simply evaluate and return the number. This applies to both addition, subtraction, multiplication and division.
-	\item If working with addition where one of the components is zero, return the non-zero component.
+	\item If working with addition where either components is zero, return the other component.
 	\item If working with subtraction where the first component is zero, return a negation expression of the second component.
 	\item If working with subtraction where the second component is zero, return the first component.
 	\item If working with multiplication where either component is one, return the other component.
@@ -97,10 +97,10 @@ It does one additional reduction which removes empty ($() : unit$) elements of a
 Comparing an optimized version to a non-optimized version shows an overall runtime reduction of about 2.39\% for single precision floats and 1.46\% for double precision.
 See appendix \ref{app:optimization_performance} for all the timing results.
 
-The fact that these simple reductions reductions improve the runtime of reasonable efficient kernels makes the reduction seem worthwhile.
+The fact that these simple reductions reductions improve the runtime of reasonable efficient kernels makes the reduction seem worthwhile, especially as many of the optimizations are not used in the example life insurance plans.
 As life insurance plans in CalcSpec can both be more advanced and unoptimized, this becomes particularly relevant.
 
-Further possible reductions could include removing unreferenced let-declarations as well as more numerical and arithmetic reductions.
+Further possible reductions could include removing unreferenced $let$ declarations as well as more numerical and arithmetic reductions.
 There are also more possible numerical reductions, as the first rule only works for the end of an expression ($... 5 - 10$) and otherwise not ($... 5 - 10 + t$).
 
 \subsection{Collective Spouse Pension}\label{sub:gf810}
@@ -110,9 +110,9 @@ The collective spouse pension (``grundform 810'' or GF810 in Danish) is a life i
 GF810 is traditionally calculated as a three-tier process with an outer, middle and inner model.
 
 The \emph{outer model} can be seen as a two-state (active-dead) Markov-model where the transition cost to the death state is the \emph{middle model}, solved from 120 minus the age of the ensured to 0.
-The \emph{middle model} can be seen as another two-state Markov-model, but rather than using Thiele's equation it calculates \lstinline$-gp(tau) * h(eta, tau) * Inner(eta, k, t)$ where $gp$ is the marriage-probability of a $tau$-aged individual and $h$ is the probability that a $tau$-aged individual is married to an $eta$-aged individual given that the first individual is married.
+The \emph{middle model} can be seen as another two-state Markov-model, but rather than using Thiele's equation it calculates \\\lstinline$-gp(tau) * h(eta, tau) * Inner(eta, k, t)$ where $gp$ is the marriage-probability of a $tau$-aged individual and $h$ is the probability that a $tau$-aged individual is married to an $eta$-aged individual given that the first individual is married.
 This is solved from 120 to 1. The middle model can also be solved using numerical integration.
-The \emph{inner model} is another two-state Markov-model with benefit paid being $indicator(s >= k)$ (indicator returns one if true, otherwise zero) and transition intensity being the spouse death mortality intensity, solved from 120 minus $eta$ to 0.
+The \emph{inner model} is another two-state Markov-model with benefit paid being $indicator(s >= k)$ (indicator returns one if true, otherwise zero) and transition intensity being the death mortality intensity of the spouse , solved from 120 minus $eta$ to 0.
 
 It is a fairly complex method of computation as is also apparent in its execution time which takes up to two and a half minutes on the CPU.
 While the traditional method of computation can be run on the GPU as-is, it is not particularly suited for it due to the long time it takes to execute and as there is a lot of code branching making threads finish at very different times making them less efficient to execute in parallel.
@@ -126,7 +126,7 @@ The Markov-model contains the active state for the insured, 125 intermediary sta
 \caption{Markov-model for the parallelized GF810 Artificial Collective Spouse Pension plan.\label{fig:gf810}}
 \end{figure}
 \newcommand*{\diff}{\ensuremath{\mathit{diff}}}
-The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the ensured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + \diff$ year old where $\diff$ is the age difference of the spouse and the ensured as well as the number of the state.
+The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the ensured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + \diff$ year old with $\diff$ being the age difference between the spouse and the ensured, as well as the number of the state.
 The ensured to final state $\mu_{ad}$ probability is the mortality intensity of the ensured at time $t + age$ times the probability that the ensured is not married at time $t + age$ (1 minus the marriage probability at the time).
 The intermediary to final state $\mu_{id}$ probability is the mortality intensity of the spouse at the time (assuming the sexuality of the ensured does not change) of age $t + age + \diff$.
 
@@ -203,11 +203,11 @@ They consisted of the following:
 \end{itemize}
 
 \subsubsection{Results}
-As the Alea.cuBase solution did not support the required number of states a CPU-version was implemented to test the validity of the new method.
+As the Alea.cuBase solution did not support the required number of states, a CPU-version was implemented to test the validity of the new method.
 For age 35 it provided identical results down to the 7th decimal and as a bonus it completed in 1060 ms on average - an improvement of close to factor 150.
 Another interesting fact is that for age 35, the limited 50-states Alea.cuBase solution with intermediary states from -24...+24 was also identical down to the 7th decimal, and to the 10th decimal compared to the -62...+62 CPU version.
-The sum of the reserve at every year also only leaves a relative difference of about 0.02\%, while the final result (year zero) only has an error of $1.08794 \cdot 10^{-8}$, a relative error of factor $9.733 \cdot 10^{-9}$.
-The relative difference of the sum of the reserves for the CPU version with all intermediary states stays under 0.09\% for tested ages up to 80, with the final result error not exceeding $1.2535 \cdot 10^{-7}$ and the relative error not exceeding $6.107 \cdot 10^{-8}$.
+The sum of the reserve at every year also only leaves a relative difference of about 0.02\%, while the final result (year zero) only has an difference in results of $1.08794 \cdot 10^{-8}$ which is a relative error of no more than factor $9.733 \cdot 10^{-9}$.
+The relative difference of the sum of the reserves for the CPU version with all intermediary states stays under 0.09\% for tested ages up to 80, with the final result difference not exceeding $1.2535 \cdot 10^{-7}$ which is a relative error not exceeding factor $6.107 \cdot 10^{-8}$.
 
 This is sadly not a feat the limited 50-states implementation can claim to achieve. 
 With age 15 there is a 9.45\% relative difference in the final result while at age 50 there is a 68.34\% relative difference.
@@ -241,7 +241,7 @@ When only using local memory, up to 512 threads per block remains an option.
 This however requires a significant amount of memory and may not be efficient.
 
 The current limited GPU version uses 50 states and not the ideal 126.
-For age 35, where the calculation range of the Runge-Kutta four solver (see section \ref{subsec:background:thielerungekutta}) is from year 85 (120-age) to 0, with double precision floats it has a memory usage of 63 registers and 2696 bytes local memory per thread.
+For age 35, where the calculation range of the Runge-Kutta four solver (see section \ref{subsec:background:thielerungekutta}) is from year 85 (120-age) to 0, with double precision floats it has a memory usage of 63 registers and 2696 bytes of local memory per thread.
 Increasing the number of states by one should in theory only affect the temporary arrays of the Runge-Kutta four solver, leading to an increase in local memory usage by 40 bytes for double precision floats (one more state in six temporary arrays times eight bytes for double precision floats).
 This would result in the total amount of memory used for age 35 with double precision $(126 - 50) * 40 + 2696 = 5736$ bytes per thread, or at most $5736 * 512 * 14 = 41115648$ bytes (39.21 MiB) concurrent memory usage with 512 threads and all SMs running a block.
 Testing showed that increasing the number of states by one increased the memory usage by more than 40, ranging from 40 to 57.5 bytes per state, but this might increase further for higher numbers of states.
@@ -250,7 +250,7 @@ Other sources of memory usage include the result array stored in global memory w
 Assuming a practical minimum of 14 blocks, this leads to a total concurrent GPU memory usage of 613.8MiB, a significant amount less than the 4GiB available global memory.
 
 Working with large amount of memory can also lead to potential problems for the CPU.
-While compilation to x64 should allow for array sizes of up to 2,147,483,647 as arrays use an integer for indexing, and while the result array is still using significantly less than the 2GiB x64 single object restriction of the .NET Common Language Runtime, out of memory-errors were encountered on the test machine when allocating device memory and gathering the results from the GPU, potentially because of the relatively small amount of CPU RAM (4GiB).
+While compilation to x64 should allow for array sizes of up to 2,147,483,647 as arrays use an integer for indexing, and while the result array is still using significantly less memory than the 2GiB x64 single object restriction of the .NET Common Language Runtime, out of memory-errors were encountered on the test machine when allocating device memory and gathering the results from the GPU, potentially because of the relatively small amount of CPU RAM (4GiB).
 This limited the range of the following performance tests.
 
 The high memory throughput of the GF810 plan potentially gives it other properties than the simpler life insurance plans.
@@ -289,6 +289,7 @@ Launch parameters	&	Kernel time	&	Iterations per second	\\ \hline
 \subsubsection{Step-size experimentation}
 A straight-forward way to increase performance is to reduce the number of steps used by the Runge-Kutta solver at the cost of increased error.
 This was tested on the CPU-implementation of the new GF810 method with 16, 32 and 64 as the number of steps compared to the original 100 steps, and tested for ages 10 to 100 in 5 year intervals.
+Similar relative performance impacts should be seen on the GPU.
 
 Results showed that with just 16 steps an average relative error compared to 100 steps was no more than $6.18318 * 10^{-11}$ with an increase in performance of factor 6.24.
 When using 32 steps, the error was reduced to $6.3476 * 10^{-12}$ with an increase in performance of factor 3.13, and with 64 as the number of steps, the error was reduced to $1.626 * 10^{-12}$ with an increase in performance by factor 1.57.

@@ -1,6 +1,6 @@
 % !TeX root = ../thesis.tex
 \subsection{CUDA C Solution}
-A CUDA C solution was implemented to be used as a base-line comparison for the other CUDA-based solutions.
+A CUDA C solution was implemented to be used as a base-line comparison for other CUDA-based solutions.
 It is intended to make full use of parallelization and it should be fairly efficient, but little time has been spent optimizing it.
 It is based on the initial C\# solution but features differences due to language-restrictions and the paradigm-switch to parallel computing.
 It features the same six life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta four kernel which is identical but for references to implementations of different $dV$ and $bj\_ii$ functions and the number of states used by the plan.
@@ -28,15 +28,15 @@ public:
 
 Note that this code uses the $floatP$ type alias to easily switch between single and double precision.
 What may be of interest is the that the $pe$ object is copied to device memory and that a compile-time replaced $PESTATES$ macro is defined.
-The device-size object is then referenced in the plan-specific implementation of the Runge-Kutta four solver.
-The macro is used because C/C++ requires constant values for array initialization.
-Dynamic memory allocation and deallocation of the temporary arrays could be used, but experimentation showed that it had a significant negative implication on the runtime, especially at higher thread and block configurations.
+The device-side object is then referenced in the plan-specific implementation of the Runge-Kutta four solver.
+The macro is used because C and C++ require constant values for array initialization.
+Dynamic memory allocation and deallocation of the temporary arrays could be used, but experimentation showed that it had a significant negative impact on the performance, especially at higher threads per block and block configurations.
 
-The single precision version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double precision version used too many registers and could only use 512 threads. 
+The single precision version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double precision version used too many registers and could only use up to 512 threads. 
 It is possible to limit the number of registers during compilation making the remaining registers spill to local memory, but this is rarely ideal as global memory is significantly slower than registers.
-This can be seen in the last row of table \ref{table:cudacdoubletime}.
+This can be observed in the last row of table \ref{table:cudacdoubletime}.
 
-Running one iteration with single precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
+Running one iteration of all six plans with single precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
 The double precision floats took \emph{124.48} ms making it about five times slower than the C\# equivalent.
 The key factor to consider is the fact that the parallelized version was never intended to be faster with a single iteration.
 Where the single-threaded version scales linearly with the amount of iterations, the parallelized version scales greatly until the resources of all the multiprocessors are used and then linearly at a much higher rate than the single-threaded version afterwards.
@@ -46,8 +46,8 @@ The highest performance with double precision was \emph{25.97} iterations per mi
 %The double precision version, while respectable, was a good bit slower than could be expected and could most likely be optimized to a rate where it would be about half as fast as the float precision equivalent.
 
 For the full single-precision results see table \ref{table:cudacfloattime} and for double-precision results see table \ref{table:cudacdoubletime}.
-Looking at the full CUDA C performance comparisons available in appendix \ref{app:cuda_runtimes}, it is quite clear that there is little point in using configuration with less than 14 blocks (the number of SMs) and 32 threads (the size of a warp).
-What may also be of special interest is the diagonals where the total thread amount ($blocks \cdot threads$) is the same.
+Looking at the full CUDA C performance comparisons available in appendix \ref{app:cuda_runtimes}, it is quite clear that there is little point in using configuration with less than 14 blocks (the number of SMs) and 32 threads per block (the size of a warp).
+What may also be of special interest is the diagonals where the total thread amount ($blocks \cdot threads$) is identical.
 Here a trend can be spotted where doubling the number of threads appears to be preferable to doubling the number of blocks, though not by a large factor.
 
 For the full CUDA C performance comparisons, see appendix \ref{app:cuda_runtimes}.
