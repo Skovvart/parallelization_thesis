@@ -3,7 +3,7 @@
 The previous implementations have been useful enough for comparisons, but can be considered more error prone and tedious to implement manually.
 Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec, mentioned in section \ref{subsec:background:calcspec} or \url{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx} (requires login) for more information, would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
 
-Similar work transforming CalcSpec to Alea.cuBase kernels was also done in Christian Gehrs Kuhre bachelor thesis.
+Similar work transforming CalcSpec to Alea.cuBase kernels was also done in Christian Gehrs Kuhre bachelor thesis\cite{christiangk}.
 See section \ref{sec:relatedwork} for more information.
 
 The Actulus project provided lexer and parser definitions for Actulus CalcSpec for use with FsLex and FsYacc\cite{fslexfsyacc} which meant no work was spent on transforming the textual representation of CalcSpec to an abstract syntax tree (AST).
@@ -117,7 +117,7 @@ let bj_ii =
 
 
 The generated kernels used up to 34 registers per thread making 1024 threads per block impossible. 
-It may be possible to optimize this at a later point.
+%It may be possible to optimize this at a later point.
 The highest number of calculation per ms in the single precision version for all plans was was \emph{98.32}.
 See table \ref{table:cubaseGeneratedfloattime} for the full single precision results. 
 The highest number of calculations per ms for double precision was \emph{25.56}.
@@ -169,11 +169,11 @@ This makes sense as the generated $dV$ and $bj\_ii$ methods end up being very si
 
 \subsection{Parameterization}
 To parameterize the kernels generated from CalcSpec, the lambda signatures have to re-add the parameter array as in section \ref{sub:manual_parameterization}.
-The \emph{expression} $Let$ bindings are then moved inside the lambda-declaration, and based on a parameter specification, named constants are replaced with positions in the parameter array.
+The \emph{expression} $Let$ bindings are then moved inside the lambda-declaration, and based on a parameter specification, named constants are replaced entries in the parameter array.
 
 Single precision could perform up to \emph{98.23} calculations per ms while double precision could perform up to \emph{25.91} calculations per ms.
 See tables \ref{table:cubaseGeneratedParamfloattime} and \ref{table:cubaseGeneratedParamdoubletime} for the remaining results.
-For the full generated parameterized results see appendix \ref{app:cuBase_calcspec_params_runtimes}.
+For the full test results see appendix \ref{app:cuBase_calcspec_params_runtimes}.
 
 \begin{table}[h!]
 \centering
@@ -235,6 +235,7 @@ First it is checked if the number of iterations is less than a warp in which cas
 If higher than a warp but less than a warp times the number of SMs, the rounded up number of the iterations divided by 32 as blocks and 32 threads per block.
 In case the number of iterations is higher than this, it will try continually increasing the number of threads per block by 32 until it reaches 512 or the iterations are less than or equal to the found number of threads times the number of SMs.
 If this is still not enough, the number of blocks will be increased until it can satisfy iterations enough for all the parameters.
+The implemented code can be seen in appendix \ref{app:launchparameter}.
 Further work could very well improve this by viewing it as as an optimization problem.
 
 This will still potentially result in the situation that the total number of iterations is less than the number of threads per block multiplied by the number of blocks.

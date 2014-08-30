@@ -19,9 +19,9 @@ In section \ref{subsec:background:hardware} the hardware the project has been te
 A life insurance policy is a contract stating the obligations an insuring party has to an insured party in and transitioning between a finite set of states over many years.
 Such states can include being alive and well (active), disabled, dead and more.
 Transitions between states will have a certain probability, for example mortality rates for transitions between the active and dead state.
-A state model such as this is also known as a continuous-time Markov-model which is used for both its expressiveness and its analyzability.
+A state model such as this is also known as a continuous-time Markov-model\cite{norberg2000basic} which is used for both its expressiveness and its analyzability.
 
-Figure \ref{fig:markovexample} shows an example of such a model with 3 states and 3 transitions between states. 
+Figure \ref{fig:markovexample} shows an example of such a model with three states and three transitions between states. 
 The labels between the states each have a $\mu$-function that states the probability of the transition occurring at time $t$. 
 This is also known as the transition intensity.
 Not all transition intensities will change over time while others such as mortality rate will.
@@ -51,17 +51,17 @@ For each change in time there may be associated costs whether there is a state t
 \subsubsection{Example life insurance policies}\label{subsubsec:background:insuranceplans}
 The following six life insurance plan examples are used throughout the project.
 \begin{itemize}
-\item Pure Endowment : Ensurer pays a lump sum if the ensured dies before age of retirement. 
+\item Pure Endowment : The ensurer pays a lump sum if the ensured dies before age of retirement. 
 \item $m$-year Deferred $n$-year Temporary Life Annuity : After $m$ years, ensurer makes yearly payments to the ensured for $n$ years given the ensured is alive.
 \item $n$-year Temporary Life Annuity Premium : The ensured is paid yearly for $n$ years if alive.
-\item $n$-year Term Insurance : Ensurer pays a lump sum if the ensured dies before $n$ years.
+\item $n$-year Term Insurance : The ensurer pays a lump sum if the ensured dies before $n$ years.
 \item Disability Annuity : The ensured is paid yearly for $n$ years if disabled.
-\item Disability Term Insurance : Ensurer pays lump sum upon disability of ensured if it happens within $n$ years.
+\item Disability Term Insurance : The ensurer pays a lump sum upon disability of ensured if it happens within $n$ years.
 \end{itemize}
 
 \subsection{Thiele's differential equation and the Runge-Kutta Method}\label{subsec:background:thielerungekutta}
 The goal of the computations performed in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given life insurance plan.
-Thiele's differential equation called ``the foundation of modern life insurance mathematics''\cite{bergermathematik} is a tool for determining conditional expected values in Markov models and it can be used to express a variety of life insurance policies.
+Thiele's differential equation called ``\emph{the foundation of modern life insurance mathematics}''\cite{bergermathematik} is a tool for determining conditional expected values in Markov models and it can be used to express a variety of life insurance policies.
 The equation is expressed below in equation \ref{eq:thiele}. It assumes continuity for $V_s$, $b_s$, $\mu$ for every $t$ and consists of the following parts:
 
 \begin{itemize}
@@ -80,15 +80,16 @@ The equation is expressed below in equation \ref{eq:thiele}. It assumes continui
 
 To shortly summarize it, the change in reserve at time $t$ in state $s$ is the current reserve times the interest-rate minus the benefit paid by the ensurer in the state minus the weighted transitioning costs to all linked states. 
 The weighted transitioning cost to a state is the intensity of the transition (probability of the transition occurring) times the difference in reserves plus the transitioning cost.
+This results in the expected reserve of a state at time $t$.
 
-With a differential equation such as this, one way to solve it is to approximate the result numerically using the Runge-Kutta method.
-The Runge-Kutta method\cite{press2007numerical} is a method for integrating ordinary differential equations (ODEs) by using a trial step at the midpoint of an interval to cancel out lower-order error terms.
+With a differential equation such as this, one way to solve it is to approximate the result numerically using the Runge-Kutta method\cite{press2007numerical}.
+The Runge-Kutta method is a method for integrating ordinary differential equations (ODEs) by using a trial step at the midpoint of an interval to cancel out lower-order error terms.
 It works within boundaries set by a starting and end point. 
 If the starting point is greater than the end point, the algorithm works backwards with negative step-sizes.
 The basic implementation uses a fixed number of steps to reduce the inaccuracy of the method. 
 By increasing the number of steps, the inaccuracy of the method is reduced at the cost of increased computational costs.
 The most common step size seen in this project is 100 steps by advice of Peter Sestoft and by calculation specification definitions.
-The fourth-order version of the Runge-Kutta method can be seen below in equation \ref{eq:rk4} approximating $y$ in the step from $t$ to $t+h$. It consists of the following parts:
+The fourth-order version of the Runge-Kutta method can be seen below in equation \ref{eq:rk4} approximating the equation-result $y$ in the step from $t$ to $t+h$. It consists of the following parts:
 
 \begin{itemize}
 \item $h$ is the size of the step. With 100 steps, the step-size would be 0.01, or -0.01 if the start point is greater than the end point.
@@ -110,12 +111,12 @@ The fourth-order version of the Runge-Kutta method can be seen below in equation
 \subsection{Dirac Delta Function}\label{subsec:delta}
 The Dirac delta function, or $\delta$ function, is not strictly a function but is a distribution on the real number line that is zero everywhere except at zero with an integral of one over the entire real line.
 It is used in actuary science to model ``sudden shocks'', or lump sum payments, but is not very commonly seen in computing.
-The method has many restrictions that apply and should primarily be of the form \lstinline$factor * delta(constant - variable)$ where $factor$ is constant and represents the ``sudden shock'' that should occur when \lstinline$constant - variable = 0$.
+The method has many restrictions that apply and should primarily be of the form \lstinline$factor * delta(constant - variable)$ where $factor$ is constant and represents the ``sudden shock'' that should occur when \\\lstinline$constant - variable = 0$.
 %Insert graphics showing step
 
 \subsection{Parallelization and the GPU}\label{subsec:background:parallelization}
 Parallelization is the act of taking one large task and splitting it into smaller tasks that run concurrently (``in parallel'').
-This could for example be cooking 10 different pies, where rather than using 1 baker you now use 10 bakers creating 10 pies at the speed of one.
+This could for example be cooking ten different pies, where rather than using one baker you now use ten bakers creating ten pies at the speed of one.
 Algorithmically this could be an algorithm that initially does some computation that loops $n$ times where each iteration is independent and takes $w$ time to complete, but is altered to instead utilize $n$ tasks that each execute one iteration worth of work.
 Instead of taking $w \cdot n$ time to complete, it can now be done in just $w$ time plus whatever overhead is associated with creating the tasks and dividing the work.
 This is reliant on each iteration being independent, as if the iterations are dependent on each other then it can not be executed before the previous iteration completes.
@@ -130,11 +131,12 @@ The figure contains Arithmetic Logic Units (ALU's, in green) responsible for log
 
 \begin{figure}[H]
 \includegraphics{cpugpu.jpg}
-\caption{Structural comparison of the CPU and GPU. From the CUDA C Programming Guide, page 3 \cite{nvidia2014programming}\label{cpugpu}}
+\caption{Structural comparison of the CPU and GPU.\label{cpugpu}}
+\caption*{From the CUDA C Programming Guide, page 3 \cite{nvidia2014programming}}
 \end{figure}
 
 \subsection{The CUDA platform and CUDA C}\label{subsec:background:cudac}
-CUDA is NVIDIAs parallel computing platform and programming model for the GPU.
+CUDA is NVIDIA's parallel computing platform and programming model for the GPU.
 It is available on multiple platforms but does require an NVIDIA graphics card. 
 An NVIDIA graphics card will have a certain Compute Capability (CC) that determines availability of certain attributes and features.
 
@@ -155,33 +157,36 @@ Assuming that blocks will generally finish at the same time, this also means tha
 
 \begin{figure}[H]\centering
 \includegraphics[scale=0.6]{cuda_architecture.jpg}
-\caption{The CUDA SM/block architecture. From the CUDA C Programming Guide, page 7 \cite{nvidia2014programming}\label{cuda_architecture}}
+\caption{The CUDA SM/block architecture.\label{cuda_architecture}}
+\caption*{From the CUDA C Programming Guide, page 7 \cite{nvidia2014programming}}
 \end{figure}
 
 \subsubsection{Thread Hierarchy}
-Blocks can be organized in a grid of multiple dimensions (up to 3 on the latest version of NVIDIA cards). 
+Blocks can be organized in a grid of multiple dimensions (up to three on the latest version of NVIDIA cards). 
 The same applies to the threads within a block.
 An example of can be seen in figure \ref{thread_distribution}.
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.75]{thread_distribution.jpg}
-\caption{The CUDA thread hierarchy. From the CUDA C Programming Guide, page 11 \cite{nvidia2014programming}\label{thread_distribution}}
+\caption{The CUDA thread hierarchy.\label{thread_distribution}}
+\caption*{From the CUDA C Programming Guide, page 11 \cite{nvidia2014programming}}
 \end{figure}
 
-As this project only utilizes 1-dimensional grids and blocks, the resulting thread hierarchy is a two-dimensional matrix. 
+As this project only utilizes one-dimensional grids and blocks, the resulting thread hierarchy is a two-dimensional matrix. 
 An example with the unique thread-IDs can be seen in figure \ref{thread_hierarchy}.
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.75]{thread_hierarchy.jpg}
-\caption{CUDA thread hierarchy with 1-dimensional blocks and threads.\label{thread_hierarchy}}
+\caption{CUDA thread hierarchy with one-dimensional blocks and threads.\label{thread_hierarchy}}
 \end{figure}
 
 
 \subsubsection{Memory model}
 A GPU program (kernel from here) has access to various types of memory.
 There is \emph{local} memory only available to the thread itself.
-This is facilitated by 32KiB per block of fast registers while available and falling back on relatively slow local memory afterwards (stored in global memory but only accessed by the thread).
-Each kernel can at most use 63 registers making the highest warp-sized number of threads per SM 512.
+This is facilitated by 32 kibibyte (KiB, which is 1024 bytes) per block of fast registers while available and falling back on relatively slow local memory afterwards (stored in global memory but only accessed by the thread).
+Each register holds four bytes.
+Each CUDA thread can at most use 63 registers making the highest warp-sized number of threads per SM 512.
 If the kernel uses no more than 32 registers up to 1024 threads per SM can be used.
 
 Beyond that, it has access to up to 48KiB per block low-latency \emph{shared} on-chip memory physically residing on the GPU that is available to all threads in the same block. 
@@ -198,7 +203,6 @@ Another immutable memory type is \emph{texture} memory which can be used for var
 Data loaded from local or global memory is cached in the on-chip \emph{L1} cache for each SM and a shared \emph{L2} cache for all SMs.
 The L1 cache will typically contain up to 16KiB of data, but this limit can be increased by up to 48KiB by sacrificing shared memory size.
 The L2 cache will on newer graphics cards contain up to 768KiB of data.
-
 A summary of the properties of the various memory types can be seen in table \ref{table:memorytypes}.
 
 \begin{table}[H]
@@ -259,7 +263,7 @@ It is used in particular to transform F\# to other languages such as SQL automat
 It can also be used to generate F\# code that can be evaluated. 
 Code Quotations support both typed and untyped expressions using \lstinline$<@ ... @>$ and \lstinline$<@@ ... @@>$ respectively. 
 
-For example, the expression \lstinline$<@ let plusfive number = number + 5 in plusfive @>$ is automatically translated into the abstract syntax tree in figure \ref{quotationast}. 
+For example, the expression \lstinline$<@ let plusfive number = number + 5 in plusfive @>$ is automatically translated into the abstract syntax tree in code sample \ref{quotationast}. 
 As Quotations only support expressions, a let declaration can not exist on its own, hence returning the function at the end (in the $in$ part of the Quotation).
 %\clearpage
 \begin{lstlisting}[language=FSharp, caption=Abstract syntax tree for the example Quotation expression, label=quotationast]
@@ -277,14 +281,15 @@ let untypedplus10:Expr = <@@ %plus10 @@>
 
 \subsection{F\# and Alea.cuBase}\label{subsec:background:fsharpcubase}
 Alea.cuBase by QuantAlea\cite{quantalea} is a commercial language-integrated compiler for F\# that allows for CUDA development on the .NET platform.
-By relying on runtime code generation it allows for extremely extensible kernels to an extent not easily possible in CUDA C.
+By relying on runtime code generation it allows for very extensible kernels to an extent not easily possible in CUDA C.
 
-It utilizes F\#'s meta-programming support Code Quotations for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
+It utilizes F\#'s meta-programming feature Code Quotations for automatic run-time generation of abstract syntax-trees that are then compiled into CUDA's Instruction Set Architecture (ISA) Parallel Thread Execution (PTX) code using Alea.cuBase's compilation API.
 See figure \ref{fig:alea_cuBase_compilation} for an overview of the entire compilation process. %explain better
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.6]{cuBase_compilation_phases.png}
-\caption{Phases of Alea.cuBase kernel compilation. From the Alea.cuBase Manual 1.2.692\cite{quantalea}\label{fig:alea_cuBase_compilation}}
+\caption{Phases of Alea.cuBase kernel compilation.\label{fig:alea_cuBase_compilation}}
+\caption*{From the Alea.cuBase Manual 1.2.692\cite{quantalea}}
 \end{figure}
 
 Code sample \ref{cubase_add} shows what a simple vector squaring-kernel could look like in F\# using Alea.cuBase.
@@ -312,8 +317,8 @@ let main argv =
   0 //program success exit code
 \end{lstlisting}
 
-The $cuda$ workflow/computation expression (or monad for the so inclined) contains the kernel defined in a Code Quotation and compiled to an actual kernel, and it returns a host-side execution method that will handle allocation and de-allocation of device-side memory. 
-As we are using F\#, the deallocation is handled automatically by using the $use$-keyword that automatically frees up resources once the variables referencing them are out of scope. 
+The $cuda$ workflow/computation expression (or monad) contains the kernel defined in a Code Quotation and compiled to an actual kernel, and it returns a host-side execution method that will handle allocation and de-allocation of device-side memory. 
+As this thesis uses F\#, the deallocation is handled automatically by using the $use$-keyword that frees up resources once the variables referencing them are out of scope. 
 The kernel is loaded to a worker (a CUDA context and background-thread) in the main method compiling the PTX code to NVIDIA internal ISA code and producing a runnable $Program$. 
 Following this, the compiled kernel is run using the parameters defined in the kernel-invocation method of the $cuda$ workflow (in this case, just an integer array) and the result is returned to the CPU where it can be processed. 
 In this example is it simply printed to the console. 
@@ -326,7 +331,7 @@ It is a useful concept as in order to hide latency from context switches on the 
 To increase the number of transactions either the occupancy or the instruction level parallelism (see next section) should be increased.
 
 Things that potentially limit occupancy is register usage, shared memory usage and the number of threads per blocks.
-To calculate thread occupancy NVIDIA has provided a spreadsheet that takes the following parameters and calculates the occupancy percentage:
+To calculate thread occupancy NVIDIA has provided a spreadsheet\cite{occupancycalculator} that takes the following parameters and calculates the occupancy percentage:
 \begin{itemize}
 \item Compute Capability - which determines the following options
 \item Total shared memory in bytes available
@@ -335,15 +340,15 @@ To calculate thread occupancy NVIDIA has provided a spreadsheet that takes the f
 \item Shared memory used per block in bytes
 \end{itemize}
 
-It is often not beneficial to have 100\% occupancy as long as enough transactions are in flight.
-Anecdotal evidence suggests around 66\% to be adequate for many situations (\cite{cudacoccupancy} section 10.4).
+It is often not beneficial to have 100\% occupancy as long as enough transactions are in flight\cite{volkovoccupancy}.
+Anecdotal evidence suggests around 66\% to be adequate for many situations (section 10.4 of the CUDA C Best Practices Guide\cite{cudacoccupancy}).
 
 
 \subsubsection{Instruction Level Parallelism}\label{subsubsec:ilp}
 Instruction level parallelism (ILP) is a term that covers the number of instructions relative to the number of dependent instructions when using parallel execution.
 For example, consider the program seen in code sample \ref{ilpexample}.
 The first two instructions are not dependent on each other and can be executed simultaneously.
-If we assume that each operation can be completed in one unit of time, then these three instructions can be completed in two units of time for an ILP of 3/2.
+If each operation can be completed in one unit of time, then these three instructions can be completed in two units of time for an ILP of $\frac{3}{2}$.
 
 \begin{lstlisting}[caption=ILP example program, label=ilpexample]
 a = b + c
@@ -351,9 +356,9 @@ d = e + f
 g = a * d
 \end{lstlisting}
 
-It is no trivial task to increase ILP generally nor for the Runge-Kutta 4 solver and no particular work has been done to increase ILP for any of the solutions.
-Further work could ideally focus on increasing the ILP, as it can have a greater effect that increasing occupancy.
-It is questionably that the bandwidth is not saturated at higher configurations, so assuming that the typical use case includes hundreds of thousands of iterations it may be for naught.
+It is no trivial task to increase ILP generally nor for the Runge-Kutta four solver and no particular work has been done to increase ILP for any of the solutions in this project.
+Further work could ideally focus on increasing the ILP, as it could have a greater effect than increasing occupancy.
+It is questionable that the bandwidth is not saturated at higher configurations, so assuming that the typical use case includes hundreds of thousands of iterations it may be for naught.
 
 \subsection{Actulus Calculation Specification language}\label{subsec:background:calcspec}
 The Actulus project is a collaboration between Mogens Steffensen of the University of Copenhagen, Peter Sestoft of the IT University of Copenhagen and the Danish insurance and pension software house Edlund.
@@ -376,7 +381,7 @@ calculation = {
 
 An explanation of each element follows:
 \begin{itemize}
-\item The \lstinline$<Algorithm>$ includes the name of the algorithm (for example ``Runge Kutta 4'') and the parameters for the algorithm (for example the step-size for Runge Kutta 4).
+\item The \lstinline$<Algorithm>$ includes the name of the algorithm (for example ``Runge Kutta 4'') and the parameters for the algorithm (for example the step-size for Runge Kutta four).
 \item The \lstinline$<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in \lstinline$<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If the coefficients are constant, they can also be described by constants (typically 0) or as an empty block for multi-part coefficients in which case all sub-coefficients are 0.
 \item The \lstinline$<Range>$ and \lstinline$<Boundary values>$ are related to the differential equation described in \lstinline$<Equations>$ and describes the interval in which the algorithm should solve the equation subject to the boundary conditions. The boundary values are not currently respected as they are zero in all examples.
 \item \lstinline$<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
@@ -416,22 +421,43 @@ For CalcSpec specifications of all the six example plans mentioned in section \r
 \subsection{Hardware}\label{subsec:background:hardware}
 As the intended audience for this particular application of parallelization is fairly limited and can be expected to afford specific hardware, it has not been a concern that specific hardware may be required to run it.
 That being said, the minimal requirement to run the program is only an NVIDIA GPU of at least compute capability 2.0 as it is the minimal requirement to use Alea.cuBase and double precision floats for CUDA.
-The code was only tested on the NVIDIA Tesla C2075 GPU which has the following properties (see appendix \ref{app:deviceQuery} for full results of running NVIDIA's deviceQuery tool):
+The code was only tested on the NVIDIA Tesla C2075 GPU which has the properties seen in table \ref{table:hardwarespecs} (see appendix \ref{app:deviceQuery} for full results of running NVIDIA's deviceQuery tool).
+The CPU is a 2.53GHz Intel Xeon W3505 and the system has 4GiB ram.
 
-\begin{itemize}
-\item Compute capability: 2.0
-\item Multiprocessors: 14
-\item CUDA cores per Multiprocessor: 32
-\item GPU Clock rate: 1147 MHz (1.15 GHz)
-\item Memory clock rate: 1566 MHz
-\item Total global memory: 4GiB
-\item Total constant memory: 64KiB
-\item Total shared memory per block: 48KiB
-\item Total amount of registers per block: 32KiB
-\item Total amount of threads per multiprocessor: 1536
-\item Total amount of threads per block: 1024
-\item L2 Cache Size: 768KiB
-\item Run time limit on kernels: No
-\end{itemize}
+\begin{table}[H]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | l | l | }
+  \hline
+Compute capability								&	2.0					\\ \hline
+Multiprocessors									&	14					\\ \hline
+CUDA cores per Multiprocessor					&	32					\\ \hline
+GPU Clock rate									&	1147 MHz (1.15 GHz)	\\ \hline
+Memory clock rate								&	1566 MHz			\\ \hline
+Maximum global memory							&	4GiB				\\ \hline
+Maximum constant memory							&	64KiB				\\ \hline
+Maximum shared memory per block					&	48KiB				\\ \hline
+Maximum number of registers per block			&	32KiB				\\ \hline
+Maximum number of threads per multiprocessor	&	1536				\\ \hline
+Maximum number of threads per block				&	1024				\\ \hline
+L2 Cache Size									&	768KiB				\\ \hline
+Run time limit on kernels						&	No					\\ \hline
+\end{tabular}}}
+\caption{Hardware properties of test machine\label{table:hardwarespecs}}
+\end{table}
 
-The CPU is a 2.53GHz Intel Xeion W3505 and the system has 4GB ram.
+%\begin{itemize}
+%\item Compute capability: 2.0
+%\item Multiprocessors: 14
+%\item CUDA cores per Multiprocessor: 32
+%\item GPU Clock rate: 1147 MHz (1.15 GHz)
+%\item Memory clock rate: 1566 MHz
+%\item Total global memory: 4GiB
+%\item Total constant memory: 64KiB
+%\item Total shared memory per block: 48KiB
+%\item Total amount of registers per block: 32KiB
+%\item Total amount of threads per multiprocessor: 1536
+%\item Total amount of threads per block: 1024
+%\item L2 Cache Size: 768KiB
+%\item Run time limit on kernels: No
+%\end{itemize}

@@ -212,15 +212,15 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/pxb.tfm
 OUTPUT thesis.toc
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lol
-OUTPUT thesis.lol
-INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
-INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxb.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplb.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxb.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
+OUTPUT thesis.lol
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lof
 OUTPUT thesis.lof
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lot
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/thesis.lot
@@ -258,6 +258,8 @@ INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxr.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplr.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxr.tfm
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxi.vf
+INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxi.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxmi.vf
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxmi.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxpplri.tfm
@@ -280,8 +282,6 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thr
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/thread_hierarchy.jpg
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/vf/public/pxfonts/pxi.vf
-INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/pxfonts/rpxi.tfm
 INPUT C:/Program Files (x86)/MiKTeX 2.9/fonts/tfm/public/txfonts/txbtt.tfm
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cuBase_compilation_phases.png
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/images/cuBase_compilation_phases.png
@@ -393,6 +393,9 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/a
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Optimizer_performance.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Optimizer_performance.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Optimizer_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/launchparameters.fs
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/launchparameters.fs
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/launchparameters.fs
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Shared_memory.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Shared_memory.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/Shared_memory.pdf
@@ -496,6 +499,16 @@ INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/a
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810-80.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810-80.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810-80.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
+INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810_age_35_double_performance.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810Stepsizes.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810Stepsizes.pdf
 INPUT C:/Users/Skovvart/Documents/GitHub/parallelization_thesis/paper/sections/appendix/GF810Stepsizes.pdf

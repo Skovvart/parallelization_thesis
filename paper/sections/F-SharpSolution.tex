@@ -1,13 +1,13 @@
 % !TeX root = ../thesis.tex
 \subsection{F\# Alea.cuBase Solution}
 The F\# Alea.cuBase solution has many similarities to the CUDA C implementation.
-One key factor is that the Runge-Kutta 4 kernel is implemented using Code Quotations (see section \ref{subsec:background:codequotations}), as are the plan-specific $dV$ and $bj\_ii$ methods.
+One key factor is that the Runge-Kutta four kernel is implemented using Code Quotations (see section \ref{subsec:background:codequotations}), as are the plan-specific $dV$ and $bj\_ii$ methods.
 As the plan-specific $dV$ and $bj\_ii$ typically include references to helper-methods, they could be defined in terms of Quotations and referenced using the splicing operators.
 Another option is to use use the \lstinline$[<ReflectedDefinition>]$ F\# attribute on methods which make most regular methods accessible in Quotations.
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
 The various plans are in this case not implemented using classes (though they could have been), so each method name is prepended with a plan acronym ($pe\_$).
 It also refers to some common constants and methods not defined in the class much like the previous implementations.
-\clearpage
+%\clearpage
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
 [<ReflectedDefinition>] 
 let pe_b_0 t = zero
@@ -25,13 +25,13 @@ let pe_bj_ii =
       res.[0] <- pe_bj_00 t @>
 \end{lstlisting}
 
-To run the plan there is one Runge-Kutta 4 kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. 
+To run the plan there is one Runge-Kutta four kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. 
 For the full implementation see appendix \ref{app:cubase_rk4_n}. 
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which works very similarly to pointers in C.
 The temporary arrays $k_i$, $tmp$ and $v$ may also be of interest. 
 They are initiated using Alea.cuBase and then transformed into the generic $deviceptr$ type representations like $Va$ and $result$.
 \clearpage
-\begin{lstlisting}[language=FSharp, caption=The Runge-Kutta 4 solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
+\begin{lstlisting}[language=FSharp, caption=The Runge-Kutta four solver expressed in F\# Alea.cuBase, label=cubase_rk4_n_snippet]
 let RK4_n dV bj_ii states = cuda {
 	let! kernel =
 		<@ fun a b steps (Va:deviceptr<floatP>) (result:deviceptr<floatP>) ->
@@ -197,7 +197,7 @@ let RK4_n (plan:Plan<_>) = cuda {
     )
 }
 \end{lstlisting}
-\clearpage
+%\clearpage
 The parameters were shaped so each thread would have its own unique set of parameters laid in sequence. 
 See figure \ref{fig:ParameterizationVisualization} for a visualized example of this.
 

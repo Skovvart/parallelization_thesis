@@ -1,9 +1,9 @@
 % !TeX root = ../thesis.tex
 \subsection{Result discussion}\label{subsec:result_comparison}
-Results of running the 6 plans described in section \ref{subsubsec:background:insuranceplans} using the Runge-Kutta 4 solver were gathered for both single and double floating point precision using the initial C\# solution.
+Results of running the six plans described in section \ref{subsubsec:background:insuranceplans} using the Runge-Kutta four solver were gathered for both single and double floating point precision using the initial C\# solution.
 It was then the goal for further solutions to match these results with a low margin of error.
 
-The 6 plans in total output 398 numbers that are compared. 
+The six plans in total output 398 numbers that are compared. 
 Many of them are always zero, making the total number of actual comparisons 255.
 It is worth noting that all results are printed with a decimal component of 16 digits, though .NET single precision floats when printed will only show up to 7 decimal digits with trailing zeros for the remaining digits.
 The CUDA C solution however prints digits for all 16 decimal digits even for single precision floats.
@@ -41,7 +41,8 @@ C\# 32 versus CUDA C 32		&			&			&			&			&	118		&	34		&	0		&	0		\\ \hline
 C\# 32 versus cuBase 32		&			&			&			&			&	34		&	14		&	0		&	0		\\ \hline
 cuBase 32 versus CUDA C 32	&			&			&			&			&	103		&	34		&	0		&	0		\\ \hline
 \end{tabular}}}
-\caption{Number of unequal results with various error tolerances. 32 = single precision, 64 = double precision \label{table:errorComparison}}
+\caption{Number of unequal results with various error tolerances.\label{table:errorComparison}}
+\caption*{32 = single precision, 64 = double precision}
 \end{table}
 
 \subsubsection{Timing}

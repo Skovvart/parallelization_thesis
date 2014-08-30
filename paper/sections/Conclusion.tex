@@ -8,7 +8,7 @@ There are also minor improvements that could be made for CalcSpec such as variab
 The current type system used during conversion of CalcSpec to quotations is also too simplistic and does not natively support multi-parameter methods requiring hacks to support methods such as $\mu_{ai}$ and $\mu_{id}$ seen in section \ref{subsubsec:gf810parallelized}.
 The limitations of the current type systems also makes implementing the parameter passing difficult.
 There are also many limitations on how the \lstinline$delta$ method (see section \ref{subsec:delta}) can be used.
-These are not all currently being checked, nor are the requirements communicated very well.
+These are not all currently being checked, nor are the requirements communicated particularly well.
 
 The expression reduction seen in section \ref{subsec:exprReduction} was also shown to have a small impact on performance but is still very simplistic, and more work could likely be done to even greater effect.
 
@@ -16,24 +16,44 @@ If not fixed by the authors of Alea.cuBase QuantAlea, work should be done to all
 When possible, performance implications of various types of memory should also be tested.
 Alternatively, the intermediary states can be skewed so rather than going from -24...+24 it could go from -38...10 to prioritize the ``expensive´´ spouses that account for the majority of the reserve.
 This should also take into account the age of the insured, so that no intermediary states are ``wasted''.
+There are also combinations of many factors that should be tested.
+For some of these factors, see table \ref{table:gf810futurework}.
+
+\begin{table}[h!]
+\centering
+{\setlength{\extrarowheight}{2pt}{\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ | l | l |  }
+  \hline
+Description												&	Status			\\ \hline
+Effect of block and threads per block configurations	&	Some work done	\\ \hline
+Single precision float performance and precision		&	Some work done	\\ \hline
+Tests with various memory types							&	Some work done	\\ \hline
+Intermediary states interval width tests				&	No work done	\\ \hline
+Intermediary states skewing								&	No work done	\\ \hline
+
+\end{tabular}}}
+\caption{Possible future work dimensions for the GF810 pension.\label{table:gf810futurework}}
+\end{table}
 
 Variable shared memory also looks interesting. For low-register plans shared memory seems to be a detriment to the performance, but as an alternative to local memory it is much preferable.
 Shared memory is however a limited resource and it is especially limited by the number of states in the life insurance model.
-Intelligently selecting elements of the Runge-Kutta 4 solver to be moved to shared memory should provide a respectable increase in performance.
+Intelligently selecting elements of the Runge-Kutta four solver to be moved to shared memory should provide a respectable increase in performance.
 
 An interesting prospect would be moving the architecture to the cloud.
 This would allow for parallelization utilizing multiple virtualized GPUs on an on-demand basis lessening the capital investment needed for intense parallel computing.
 Whether the current cloud providers provide adequate virtualized GPU instances is the question and the performance impact is of great interest.
 
 \section{Conclusion}
-In this project a single-threaded C\# implementation of a Runge-Kutta 4 solver as well as six example life insurance plans (see section \ref{subsec:initialsolution}) has been transformed to utilize parallelization on the CUDA platform.
+In this project a single-threaded C\# implementation of a Runge-Kutta four solver as well as six example life insurance plans (see section \ref{subsec:initialsolution}) has been transformed to utilize parallelization on the CUDA platform.
 Furthermore, the Actulus Calculation Specification (CalcSpec, see section \ref{subsec:background:calcspec}) for life insurance products was made directly transformable into GPU code using F\# and Alea.cuBase (see section \ref{subsec:background:fsharpcubase} and \ref{sec:calcspecgeneration}).
 Finally, the collective spouse pension (GF810, see section \ref{sub:gf810}) was improved by using a new calculation method by Klaus Grue which resulted in a performance increase of factor 150.
 
-The performance for single precision floats was up to 2485 faster for the parameterized CalcSpec generated life insurance plans.
-For double precision floats an improvement of factor 1335 was measured in the manual parameterized implementation while the CalcSpec generated implementation managed an improvement of factor 634.
+The performance for single precision floats with 98.23 iterations per millisecond compared to the single-threaded version with $\frac{1}{25.3}$ iterations per millisecond was up to 2485 times faster for the parameterized CalcSpec-generated life insurance plans.
+For double precision floats, compared to the single-threaded version with $\frac{1}{24.5}$ iterations per millisecond, an improvement of factor 1335 was measured in the manual parameterized implementation with 54.53 iterations per millisecond. 
+The CalcSpec-generated implementation managed an improvement of factor 634 with 25.91 iterations per millisecond.
 
-Alea.cuBase, F\# and .NET as platforms have had little or no negative performance impact (seemingly quite the contrary) and has allowed for significantly more flexible GPU kernels by utilizing runtime-compilation of kernels.
+Alea.cuBase, F\# and .NET as platforms have had little or no negative performance impact (seemingly quite the contrary) compared to the CUDA C implementation.
+It has also allowed for significantly more flexible GPU kernels by utilizing runtime-compilation of kernels.
 This means that it is more than viable and a good alternative to CUDA C for life insurance policy parallelization.
 The kernels are highly optimized by Alea.cuBase but did show improvements from being optimized locally using expression reduction.
 There are however some as of yet unsolved problems with Alea.cuBase as the provided methods for limiting registers in kernels did not work, and working with larger state models such as the GF810 collective spouse pension threw a stack overflow exception during kernel compilation for unknown reasons.

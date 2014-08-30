@@ -1,19 +1,21 @@
 % !TeX root = ../thesis.tex
 %The required reserve will increase with age, and likelihood of death, until retirement is reached in which no reserve will be needed.
 \subsection{Initial C\# Solution}\label{subsec:initialsolution}
-The original solution was single-threaded and written in C\# by Peter Sestoft using various optimizations (such as for example using the exponential function rather than the power operator/function).
-It features the 6 life insurance plans described in section \ref{subsubsec:background:insuranceplans} and multiple implementation of Runge-Kutta solvers described in section \ref{subsec:background:thielerungekutta}.
+The original solution was single-threaded and written in C\# by Peter Sestoft using various optimizations, such as using the exponential function rather than the power operator or function to efficiently calculate exponentiation.
+It features the six life insurance plans described in section \ref{subsubsec:background:insuranceplans} and multiple implementation of Runge-Kutta solvers described in section \ref{subsec:background:thielerungekutta}.
 The plans are implemented using C\# classes without inheritance or the like, as they attempt to stay relatively similar to a potential C-solution.
 
-The Runge-Kutta 4 solver introduced last is the fastest and is an imperative version which reuses intermediary arrays.
-It has the following signature: \lstinline$static double[][] RK4_n(Action<double, double[], double[]> dV, Action<double, double[]> bj_ii, int a, int b, int steps, double[] Va)$.
+The Runge-Kutta four solver introduced last is the fastest and is an imperative version which reuses intermediary arrays.
+It has the following signature: \\
+\lstinline$static double[][] RK4_n(Action<double, double[], double[]> dV, Action<double, double[]> bj_ii, int a, int b, int steps, double[] Va)$
+\\
 The $dV$ function implements an arbitrary amount of derivatives.
 The $bj\_ii$ function is used for lump-sum payments.
-$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta 4 and \textit{Va} is the initial reserve (at time $a$).
+$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the amount of steps to use in Runge-Kutta four and \textit{Va} is the initial reserve (at time $a$).
 
-An example implementation of the Pure Endowment life insurance plan can be seen below in code sample \ref{csharp_pureendowment}. 
+An example implementation of the pure endowment life insurance plan can be seen below in code sample \ref{csharp_pureendowment}. 
 Note that it does refer to some shared constants and methods defined outside the class itself, for example the $GM$ (Gompertz-Makeham) mortality-probability function which is referenced in all of the examples.
-%\clearpage
+\clearpage
 \begin{lstlisting}[language=CSharp, caption=The pure endowment insurance plan expressed in C\#, label=csharp_pureendowment]
 class PureEndowment{
     static double b_0(double t){ return 0.0;}
@@ -32,6 +34,6 @@ class PureEndowment{
 \end{lstlisting}
 
 Using floating point numbers with single precision (32-bit) it could do one iteration of all six plans in approximately \emph{25.3} milliseconds (ms), and with double precision (64-bit) it took approximately \emph{24.5} ms on the test machine.
-It may come as a surprise that the single-precision-version was actually slower than the double-version despite using twice the bits.
-This is in part due to the fact that the exponential function $Exp$ from the System.Math namespace uses double-precision floats for both input and output which requires type-casting in the single precision implementation, but is mainly because double operations are optimized by the hardware\cite{northrup2008mcts}.
+It may come as a surprise that the single-precision version was actually slower than the double-precision version despite using twice the bits.
+This is partly due to the fact that the exponential function $Exp$ from the System.Math namespace uses double-precision floats for both input and output which requires type-casting in the single precision implementation, but is mainly because \lstinline$double$ operations are optimized by the hardware\cite{northrup2008mcts}.
 The single precision implementation should have an edge if the application was to become memory-bound but this was not the case with these example plans.
