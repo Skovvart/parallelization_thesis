@@ -1,9 +1,10 @@
 % !TeX root = ../thesis.tex
 \section{Actulus CalcSpec parsing and code generation}\label{sec:calcspecgeneration}
 The previous implementations have been useful enough for performance and result comparisons, but can be considered error prone and tedious to implement manually.
-Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec, mentioned in section \ref{subsec:background:calcspec} or \\\url{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx} (requires login) for more information, would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
+Being able to generate life insurance plan kernels from higher level specifications such as Actulus CalcSpec, mentioned in section \ref{subsec:background:calcspec} or 
+\href{https://wiki.actulus.dk/Documentation.CalculationPlatform-CalculationSpecification.ashx}{https://wiki.actulus.dk/Documentation.CalculationPlatform-\\CalculationSpecification.ashx} (requires login) for more information, would be much more convenient, efficient and less prone to errors while also potentially benefiting from future optimizations at no cost.
 
-Similar work transforming CalcSpec to Alea.cuBase kernels was also done in Christian Gehrs Kuhre bachelor thesis\cite{christiangk}.
+Similar work transforming CalcSpec to Alea.cuBase kernels was also done in Christian Gehrs Kuhre's bachelor thesis\cite{christiangk}.
 See section \ref{sec:relatedwork} for more information.
 
 The Actulus project provided lexer and parser definitions for Actulus CalcSpec for use with FsLex and FsYacc\cite{fslexfsyacc} which meant no work was spent on transforming the textual representation of CalcSpec to an abstract syntax tree (AST).
@@ -12,23 +13,23 @@ This is however not completely straightforward.
 CalcSpec focuses on specifying the various coefficients used in the differential equation where as the $dV$ method needs to explicitly insert the coefficients into Thiele's equation for all states. 
 The $bj\_ii$ also needs to assign any lump sum payments, which CalcSpec specifies by using the Dirac delta function (see section \ref{subsec:delta}) in the $b\_j$ coefficient of the equations.
 
-To perform the transformation, a series of steps are performed.
-At first all of the \emph{expressions} of the CalcSpec are converted to a quotation expression of nested $Let$ definitions.
+A series of steps are performed in order to apply the transformation.
+At first, all of the \emph{expressions} of the CalcSpec are converted to a quotation expression of nested $Let$ definitions.
 This is fairly straightforward as it deals strictly with method and lambda declarations (essentially the same thing), constant variables and algebraic expressions.
 
 
 The $dV$ and $bj\_ii$ lambda-signatures are then added within the final Let-declaration of the expressions.
-For the $dV$ method the signature added is \\\lstinline$(t:floatP)->(V:deviceptr<floatP>)->(result:deviceptr<floatP>)$ and for $bj\_ii$ the signature is \lstinline$(t:floatP)->(result:deviceptr<floatP>)$ where $floatP$ is either single or double floating point precision.
+For the $dV$ method the signature added is \\\lstinline$(t:floatP)->(V:deviceptr<floatP>)->(result:deviceptr<floatP>)->unit$ and for $bj\_ii$ the signature is \lstinline$(t:floatP)->(result:deviceptr<floatP>)->unit$ where $floatP$ is either single or double floating point precision.
 
 The Markov-model (see section \ref{subsec:background:lifeinsurance}) is then generated using maps extracted from the \emph{equations} describing the constant functions (interest rate ($r\_j$) and benefit paid ($b\_j$)) as well as transition probabilities and transition costs ($mu\_jk$ and $b\_jk$).
 If any call to a delta-function (see section \ref{subsec:delta}) of the form \\\lstinline$factor * delta(expression)$ is spotted in $b\_j$ (the only place it is allowed), it is removed and instead added to the transition cost map from and to the state with the form \lstinline$if expression = 0 then factor else zero$.
 This is done as the Dirac delta-function is in this case much more efficiently expressed in the $bj\_ii$ method.
-Thiele's differential equation (see section \ref{subsec:background:thielerungekutta}) is then assigned to all states using the value specified in the various maps in the $dV$ method, and bj\_jk values where j equals k is assigned to all states in the $bj\_ii$ method.
+Thiele's differential equation (see section \ref{subsec:background:thielerungekutta}) is then assigned to all states using the value specified in the various maps in the $dV$ method, and $bj\_jk$ values where $j$ equals $k$ is assigned to all states in the $bj\_ii$ method.
 Finally, the entire quotation AST is reduced using an expression reduction method that performs some arithmetic reductions.
 See section \ref{subsec:exprReduction} for more information on this method.
 
 The steps the CalcSpec goes through can be seen in code samples \ref{pe_cs} to \ref{pe_quote_format}.
-\clearpage
+%\clearpage
 \begin{lstlisting}[language=calcspec, caption=Pure endowment in CalcSpec, label=pe_cs]
 calculation = {
   name = 'Pure endowment',
@@ -164,7 +165,7 @@ For the full generated results see appendix \ref{app:cuBase_calcspec_runtimes}.
 \end{table}
 
 The single precision results are very similar to the manual implementation.
-The double precision results are a negligible amount better than the manual implementation without parameters, but significantly worse than the manual solution with parameters.
+The double precision results are a negligible amount better than the unparameterized manual implementation, but significantly worse than the parameterized manual solution.
 This makes sense as the generated $dV$ and $bj\_ii$ methods end up being very similar to the manual implementations without parameters.
 
 \subsection{Parameterization}
@@ -236,9 +237,9 @@ The suggestion is based off a few factors that attempt to make sure that at leas
 First it is checked if the number of iterations is less than a warp in which case one block and the number of iterations as the number of threads per block will be suggested.
 If higher than a warp but less than a warp times the number of SMs, the rounded up number of the iterations divided by 32 as blocks and 32 threads per block.
 In case the number of iterations is higher than this, it will try continually increasing the number of threads per block by 32 until it reaches 512 or the iterations are less than or equal to the found number of threads times the number of SMs.
-If this is still not enough, the number of blocks will be increased until it can satisfy iterations enough for all the parameters.
+If this is still not enough, the number of blocks will be increased until it can satisfy enough iterations necessary to contain all the parameters.
 The implemented code can be seen in appendix \ref{app:launchparameter}.
 Further work could very well improve this by viewing it as as an optimization problem that takes into account more parameters such as memory usage.
 
-This will still potentially result in the situation that the total number of iterations is less than the number of threads per block multiplied by the number of blocks.
+This will still potentially result in the situation where the total number of iterations is less than the number of threads per block multiplied by the number of blocks.
 This is somewhat unavoidable, so the RK4\_n kernel was altered to skip thread-IDs greater than the total number of parameterized iterations.

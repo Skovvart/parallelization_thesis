@@ -16,7 +16,7 @@ Section \ref{subsec:background:calcspec} will briefly introduce the syntax of th
 In section \ref{subsec:background:hardware} the hardware the project has been tested on will be presented.
 
 \subsection{Life Insurance Policies and the Markov-model}\label{subsec:background:lifeinsurance}
-A life insurance policy is a contract stating the obligations an insuring party has to an insured party in and transitioning between a finite set of states over many years.
+A life insurance policy is a contract stating the obligations an insuring party has to an insured party, in and transitioning between a finite set of states over many years.
 Such states can include being alive and well (active), disabled, dead and more.
 Transitions between states will have a certain probability, for example mortality rates for transitions between the active and dead state.
 A state model such as this is also known as a continuous-time Markov-model\cite{norberg2000basic} which is used for both its expressiveness and its analyzability.
@@ -119,14 +119,14 @@ Parallelization is the act of taking one large task and splitting it into smalle
 This could for example be cooking ten different pies, where rather than using one baker you now use ten bakers creating ten pies at the speed of one.
 Algorithmically this could be an algorithm that initially does some computation that loops $n$ times where each iteration is independent and takes $w$ time to complete, but is altered to instead utilize $n$ tasks that each execute one iteration worth of work.
 Instead of taking $w \cdot n$ time to complete, it can now be done in just $w$ time plus whatever overhead is associated with creating the tasks and dividing the work.
-This is reliant on each iteration being independent, as if the iterations are dependent on each other then it can not be executed before the previous iteration completes.
-To continue the pie example, if one baker is assigned to make all the pie-crusts, no pie will be baked before this tasks is done.
+This is reliant on each iteration being independent, as if the iterations are dependent on each other then an iteration can not be executed before the prior iteration completes.
+To continue the pie example, if one baker is assigned to make all the pie-crusts, no pie will be baked before this task is done.
 Loops are not the only thing that can be parallelized and all independent tasks can to some extend be parallelized. 
 With various synchronization techniques, partially dependent calculations can also harness the power of parallelization, though at the risk of increased complexity and errors such as deadlocks.
-As only independent computation parallelization is utilized, other forms will not be discussed further.
+As only parallelization of independent computations are utilized, other forms will not be discussed further.
 
-In computing, parallelization utilizing constructs such as processes and threads can be performed on multi-core CPUs, but can especially be used by GPUs that were designed for compute-intensive and highly parallel computations which is what graphics rendering is all about.
-This is because unlike the CPU which is a general-purpose machine with a focus on data-caching and flow control, the GPU is specialized for high arithmetic processing with more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. 
+In computing, parallelization utilizing constructs such as processes and threads can be executed on multi-core CPUs, but can especially be used by GPUs that were designed for compute-intensive and highly parallel computations which is what graphics rendering is all about.
+This is because unlike the CPU which is a general-purpose machine with a focus on data-caching and flow control, the GPU is specialized for powerful arithmetic processing with more transistors dedicated to data processing as illustrated in green by figure \ref{cpugpu}. 
 The figure contains Arithmetic Logic Units (ALU's, in green) responsible for logical operations and integer arithmetic, Control Units (in yellow) responsible for communication and coordination between input/output devices and various memory units (in orange), such as a memory cache and dynamic random-access memory (DRAM).
 
 \begin{figure}[H]
@@ -164,7 +164,7 @@ Assuming that blocks will generally finish at the same time, this also means tha
 \subsubsection{Thread Hierarchy}
 Blocks can be organized in a grid of multiple dimensions (up to three on the latest version of NVIDIA cards). 
 The same applies to the threads within a block.
-An example of can be seen in figure \ref{thread_distribution}.
+An example of a thread hierarchy can be seen in figure \ref{thread_distribution}.
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.75]{thread_distribution.jpg}
@@ -186,8 +186,8 @@ A GPU program (referred to as a kernel from here) has access to various types of
 There is \emph{local} memory only available to the thread itself.
 This is facilitated by 32 kibibyte (KiB, which is 1024 bytes) per block of fast registers while available and falling back on relatively slow local memory afterwards which is stored in global memory but only accessed by the thread.
 Each register holds up to four bytes.
-Each CUDA thread can at most use 63 registers making the highest warp-sized number of threads per SM 512.
-If the kernel uses no more than 32 registers up to 1024 threads per SM can be used.
+Each CUDA thread can use at most 63 registers making 512 the highest warp-sized number of threads per SM.
+If the kernel uses no more than 32 registers, up to 1024 threads per SM can be used.
 
 Beyond that, it has access to up to 48KiB per block low-latency \emph{shared} on-chip memory physically residing on the GPU that is available to all threads in the same block. 
 Because of these properties, shared memory can be used for communication between threads or as a software managed cache.
@@ -331,9 +331,9 @@ It is a useful concept as in order to hide latency from context switches on the 
 To increase the number of transactions either the occupancy or the instruction level parallelism (see section \ref{subsubsec:ilp}) should be increased.
 
 Things that potentially limit occupancy is register usage, shared memory usage and the number of threads per blocks.
-To calculate thread occupancy NVIDIA has provided a spreadsheet\cite{occupancycalculator} that takes the following parameters and calculates the occupancy percentage:
+To calculate thread occupancy, NVIDIA has provided a spreadsheet\cite{occupancycalculator} that calculates the occupancy percentage by taking the following parameters:
 \begin{itemize}
-\item Compute Capability - which determines the following options
+\item Compute capability - which determines the following options
 \item Total shared memory in bytes available
 \item The number of threads per block
 \item The number of registers per thread
@@ -358,7 +358,7 @@ g = a * d
 
 It is no trivial task to increase ILP generally nor for the Runge-Kutta four solver and no particular work has been done to increase ILP for any of the solutions in this project.
 Further work could ideally focus on increasing the ILP, as it could have a greater effect than increasing occupancy\cite{volkovoccupancy}.
-It is unlikely that the memory bandwidth is not saturated at higher kernel launch parameter configurations, so assuming that the typical use case includes hundreds of thousands of iterations per kernel launch, optimizing ILP may be a futile effort.
+It is likely that the memory bandwidth is saturated at higher kernel launch parameter configurations, so assuming that the typical use case includes hundreds of thousands of iterations per kernel launch, optimizing ILP may be a futile effort.
 
 \subsection{Actulus Calculation Specification language}\label{subsec:background:calcspec}
 The Actulus project\cite{actulus} is a collaboration between Mogens Steffensen of the University of Copenhagen, Peter Sestoft of the IT University of Copenhagen and the Danish insurance and pension software house Edlund.

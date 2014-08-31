@@ -7,7 +7,7 @@ Another option is to use use the \lstinline$[<ReflectedDefinition>]$ F\# attribu
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
 The various plans are in this case not implemented using classes (though they could have been), so each method name is prepended with a plan acronym ($pe\_$).
 It also refers to some common constants and methods not defined in the class much like previous implementations.
-%\clearpage
+\clearpage
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
 [<ReflectedDefinition>] 
 let pe_b_0 t = zero
@@ -25,7 +25,7 @@ let pe_bj_ii =
       res.[0] <- pe_bj_00 t @>
 \end{lstlisting}
 
-To run the plan there is one Runge-Kutta four kernel defined as can partially be seen in code sample \ref{cubase_rk4_n_snippet}. 
+To run the plan there is one Runge-Kutta four kernel defined which can be be seen partially in code sample \ref{cubase_rk4_n_snippet}. 
 For the full implementation see appendix \ref{app:cubase_rk4_n}. 
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which works very similarly to pointers in C and C++.
 The temporary arrays $k_i$, $tmp$ and $v$ may also be of interest. 
@@ -135,8 +135,8 @@ For more information on result comparison see section \ref{subsec:result_compari
 
 \subsection{Insurance plan parameterization}\label{sub:manual_parameterization}
 The parallelized versions have so far been running the same static plans repeatedly which is not very useful in practical scenarios.
-To make parallellisation useful, the ability to make constants parameterized is required.
-These constants could for example be the interest rate or the age of the insured.
+To make parallellisation useful, the ability to replace constants with parameters is required.
+For example, a constant could be the interest rate for the insurance plan or the age of the insured.
 
 To add this parameterization, the $dV$ and $bj\_ii$ method signatures were changed to include an additional array containing parameters for the insurance plan.
 The life insurance plan implementations were then made responsible for knowing how many variables there were and which variables mapped to which position in the parameter array. 
@@ -146,7 +146,7 @@ For an example of this, see code sample \ref{cubase_pureendowmentparams}.
 The RK4\_n kernel was also altered to provide the thread-specific pointer to the plan parameter array and pass this to the updated $dV$ and $bj\_ii$ methods.
 This position would be the position of the thread multiplied by the number of plan parameters.
 For a brief overview of the changes to the RK4\_n kernel, see code sample \ref{cubase_rk4nparams}.
-
+%\clearpage
 \begin{lstlisting}[language=FSharp, caption=Parameterized pure endowment life insurance plan in F\# Alea.cuBase, label=cubase_pureendowmentparams]
 type PureEndowment (planParams, paramCount) =
   inherit Plan<floatP>(40, 0, 1, planParams, paramCount) with

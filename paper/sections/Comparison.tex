@@ -8,7 +8,7 @@ Many of them are always zero, making the total number of actual comparisons 255.
 It is worth noting that all results are printed with a decimal component of 16 digits, though .NET single precision floats when printed will only show up to 7 decimal digits with trailing zeros for the remaining digits.
 The CUDA C solution however prints digits for all 16 decimal digits even for single precision floats.
 This means that the lowest error tolerance possible for comparisons where both results are doubles is 1e-16 (to the 16th digit) and 1e-7 if comparing single-precision results.
-It is also important to note that number of errors is often inflated as one error in a plan will typically propagate to the rest of the output of the plan.
+It is also important to note that number of errors is often inflated as a single error in a plan will typically propagate to the rest of the output of the plan.
 
 A tool was created to report the number of errors between two result-outputs with a certain error tolerance.
 See table \ref{table:errorComparison} for the results of running this tool.

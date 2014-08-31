@@ -9,8 +9,9 @@
 \usepackage{listings}
 \usepackage{upquote}
 \usepackage{pdfpages}
-\usepackage{url}
-\usepackage[hidelinks]{hyperref}
+\usepackage[hyphens]{url}
+\usepackage[breaklinks,hidelinks]{hyperref}
+%\usepackage{breakurl}
 \usepackage[titletoc]{appendix}
 %\usepackage{verbatim}
 \usepackage{fancyvrb}
@@ -93,7 +94,7 @@ delta,expressions,range,from,to,r_j,b_j,mu_jk,b_jk,type,parameters,stepsize},
 
 %Fix TOC
 % make a proper TOC despite llncs
-\setcounter{tocdepth}{3}
+\setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{3}
 \makeatletter
 \renewcommand*\l@author[2]{}

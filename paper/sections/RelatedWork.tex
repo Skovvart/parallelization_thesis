@@ -1,6 +1,6 @@
 % !TeX root = ../thesis.tex
 \section{Related Work}\label{sec:relatedwork}
-Much of this work is inspired by other projects done in collaboration with Peter Sestoft of the IT University of Copenhagen and the Actulus project\cite{actulus}.
+Much of this work is inspired by other projects also done in collaboration with Peter Sestoft of the IT University of Copenhagen and the Actulus project\cite{actulus}.
 
 This includes earlier work done by Nicolai Dahl Blicher-Pedersen and Christian Harrington.
 In their bachelor thesis on \emph{The CUDA Life Insurance Reserve Estimator} (CLIRE)\cite{dahlharrington} they worked on the same six example life insurance plans, though not the GF810 collective spouse pension, and among other things implemented them in CUDA C.
@@ -12,7 +12,9 @@ They do conclude in their future improvements section that it was most likely a 
 
 Christian Gerhs Kuhre\cite{christiangk} did his bachelor thesis around the same time as this masters thesis.
 His thesis contains work on both F\# Alea.cuBase as well as CalcSpec transformation and was very similar in approach if not quite in scope.
-It also contained work using parameter arrays much like mine, but in his case this was at least partially implemented using F\# unions.
+It also contained work using parameter arrays much like was done in this thesis, but in his case this was at least partially implemented using F\# unions.
+The performance tests performed in this thesis are however a lot more wide-ranging and extensive and the CalcSpec transformation is more mature.
+His thesis did also not cover any work on the GF810 collective spouse pension.
 
 S\o{}ren S\o{}nderby Nielsen and Thorkild Burup did work on ``Using GPGPU for computing pension scenarios''\cite{nielsenburup}. 
 Among other things they experimented with adaptive, rather than static, step-sizes for the Runge-Kutta solver (Runge-Kutta-Fehlberg).

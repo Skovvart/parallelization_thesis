@@ -2,7 +2,7 @@
 \section{Performance explorations}
 \subsection{Shared Memory}\label{subsec:sharedmem}
 Reducing use of registers could open up for higher threads per block-configuration for some plans and may make kernels execute faster even if 32 or less registers were used (see section \ref{subsubsec:occupancy}).
-As the fastest general purpose alternative to registers, shared memory is the only real alternative type of memory.
+As the fastest alternative general purpose memory, shared memory is the only real available option.
 As shared memory requires array-allocation for the entire block of threads, it does require the kernel to know how many threads per block there will be during kernel compilation.
 This is no big sacrifice as this was indirectly a requirement for the parameterized solutions already.
 Another limitation is the total size of the shared memory which is 48KiB per SM.
@@ -18,7 +18,7 @@ The number of registers used can be seen in table \ref{table:tempArraysSharedMem
 It is interesting to see that the storing the temporary arrays in local memory actually uses the least registers for single precision floats, considering that the temporary arrays should no longer be stored in them.
 It is possible that it uses the added registers as a cache for accessing the shared memory.
 It is also interesting that marking the memory as volatile - meaning that the compiler should not optimize reads and writes for the array - reduces the register usage slightly for single precision floats.
-It also reduces the number of registers a more significant number for double precisiont floats, almost to the point that 1024 threads per block can be used.
+It also reduces the number of registers a more significant number for double precision floats, almost to the point that 1024 threads per block can be used.
 
 \begin{table}[h!]
 \centering
@@ -92,7 +92,7 @@ It is based on recursive pattern matching that performs the following operations
 	\item If working with division where the second component is one, return the first component.
 	\end{itemize}
 \end{itemize}
-It does one additional reduction which removes empty ($() : unit$) elements of a $Sequence$ of Expressions.
+It does one additional dead code elimination reduction which removes empty ($() : unit$) elements of a $Sequence$ of Expressions.
 
 Comparing an optimized version to a non-optimized version shows an overall runtime reduction of about 2.39\% for single precision floats and 1.46\% for double precision.
 See appendix \ref{app:optimization_performance} for all the timing results.
@@ -104,12 +104,12 @@ Further possible reductions could include removing unreferenced $let$ declaratio
 There are also more possible numerical reductions, as the first rule only works for the end of an expression ($... 5 - 10$) and otherwise not ($... 5 - 10 + t$).
 
 \subsection{Collective Spouse Pension}\label{sub:gf810}
-The collective spouse pension (``grundform 810'' or GF810 in Danish) is a life insurance policy in which upon the death of the ensured, the spouse, if one such exists, receives a life annuity.
+The collective spouse pension (``grundform 810'' or GF810 in Danish) is a life insurance policy in which upon the death of the insured, the spouse, if one such exists, receives a life annuity.
 
 \subsubsection{Traditional method of computation}
 GF810 is traditionally calculated as a three-tier process with an outer, middle and inner model.
 
-The \emph{outer model} can be seen as a two-state (active-dead) Markov-model where the transition cost to the death state is the \emph{middle model}, solved from 120 minus the age of the ensured to 0.
+The \emph{outer model} can be seen as a two-state (active-dead) Markov-model where the transition cost to the death state is the \emph{middle model}, solved from 120 minus the age of the insured to 0.
 The \emph{middle model} can be seen as another two-state Markov-model, but rather than using Thiele's equation it calculates \\\lstinline$-gp(tau) * h(eta, tau) * Inner(eta, k, t)$ where $gp$ is the marriage-probability of a $tau$-aged individual and $h$ is the probability that a $tau$-aged individual is married to an $eta$-aged individual given that the first individual is married.
 This is solved from 120 to 1. The middle model can also be solved using numerical integration.
 The \emph{inner model} is another two-state Markov-model with benefit paid being $indicator(s >= k)$ (indicator returns one if true, otherwise zero) and transition intensity being the death mortality intensity of the spouse , solved from 120 minus $eta$ to 0.
@@ -119,25 +119,25 @@ While the traditional method of computation can be run on the GPU as-is, it is n
 
 \subsubsection{Parallelized method of computation}\label{subsubsec:gf810parallelized}
 An alternative approach was suggested by Klaus Grue of Edlund using a single-tier approach.
-The Markov-model contains the active state for the insured, 125 intermediary states signifying death of the insured when married to a spouse of an age difference from -62 to +62 and a final state signifying either death of the spouse or death of the ensured when unmarried, as depicted in figure \ref{fig:gf810}.
+The Markov-model contains the active state for the insured, 125 intermediary states signifying death of the insured when married to a spouse of an age difference from -62 to +62 and a final state signifying either death of the spouse or death of the insured when unmarried, as depicted in figure \ref{fig:gf810}.
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.5]{gf810.png}
 \caption{Markov-model for the parallelized GF810 Artificial Collective Spouse Pension plan.\label{fig:gf810}}
 \end{figure}
 \newcommand*{\diff}{\ensuremath{\mathit{diff}}}
-The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the ensured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + \diff$ year old with $\diff$ being the age difference between the spouse and the ensured, as well as the number of the state.
-The ensured to final state $\mu_{ad}$ probability is the mortality intensity of the ensured at time $t + age$ times the probability that the ensured is not married at time $t + age$ (1 minus the marriage probability at the time).
-The intermediary to final state $\mu_{id}$ probability is the mortality intensity of the spouse at the time (assuming the sexuality of the ensured does not change) of age $t + age + \diff$.
+The transition probability to one of the intermediary states $\mu_{ai}$ is the mortality intensity for the insured at time $t + age$ times the marriage probability that a $t + age$ year old is married to a $t + age + \diff$ year old with $\diff$ being the age difference between the spouse and the insured, as well as the number of the state.
+The insured to final state $\mu_{ad}$ probability is the mortality intensity of the insured at time $t + age$ times the probability that the insured is not married at time $t + age$ (1 minus the marriage probability at the time).
+The intermediary to final state $\mu_{id}$ probability is the mortality intensity of the spouse at the time (assuming the sexuality of the insured does not change) of age $t + age + \diff$.
 
-This does potentially lead to a lot of cases where the ensured will either be married to someone yet to be born or someone significantly older than the oldest person alive today, which can be a problem for the Gompertz-Makeham mortality intensity methods.
+This does potentially lead to a lot of cases where the insured will either be married to someone yet to be born or someone significantly older than the oldest person alive today, which can be a problem for the Gompertz-Makeham mortality intensity methods.
 To lessen the impact of this, the result of these functions is constrained to be no higher than two by adding a constraint method.
 
 This model of calculation can already be expressed in CalcSpec as is, but is somewhat cumbersome to write as there is little variability in the model.
 The final CalcSpec should resemble code sample \ref{gf810cs}.
 Note that the \lstinline$\var.expr$ is CalcSpec syntax for lambdas. 
 It is currently also required to update the $from$ value in the $range$ section to the value of 120-age, as this is currently not possible to have variable values for this in the current solution.
-
+%\clearpage
 \begin{lstlisting}[language=calcspec, caption=GF810 full CalcSpec, label=gf810cs]
 calculation = {
   name = "GF810 - Collective spouse pension", 
@@ -171,7 +171,7 @@ calculation = {
 
 To optimize this process, functionality was added to transform the CalcSpec AST based on the variability of the GF810 plan.
 See code sample \ref{gf810simplifiedcs} for an example of this which is converted back to the code in code sample \ref{gf810cs}.
-
+\clearpage
 \begin{lstlisting}[language=calcspec, caption=GF810 simplified CalcSpec, label=gf810simplifiedcs]
 calculation = { 
   name = "GF810 - Collective spouse pension", 
@@ -204,10 +204,10 @@ They consisted of the following:
 
 \subsubsection{Results}
 As the Alea.cuBase solution did not support the required number of states, a CPU-version was implemented to test the validity of the new method.
-For age 35 it provided identical results down to the 7th decimal and as a bonus it completed in 1060 ms on average - an improvement of close to factor 150.
+For age 35 it provided identical results down to the 7th decimal and as a bonus it completed in 1060 ms on average - an improvement of close to factor 150 compared to the original implementation.
 Another interesting fact is that for age 35, the limited 50-states Alea.cuBase solution with intermediary states from -24...+24 was also identical down to the 7th decimal, and to the 10th decimal compared to the -62...+62 CPU version.
 The sum of the reserve at every year also only leaves a relative difference of about 0.02\%, while the final result (year zero) only has an difference in results of $1.08794 \cdot 10^{-8}$ which is a relative error of no more than factor $9.733 \cdot 10^{-9}$.
-The relative difference of the sum of the reserves for the CPU version with all intermediary states stays under 0.09\% for tested ages up to 80, with the final result difference not exceeding $1.2535 \cdot 10^{-7}$ which is a relative error not exceeding factor $6.107 \cdot 10^{-8}$.
+The relative difference of the sum of the reserves for the CPU version with all intermediary states staying under 0.09\% for ages tested up to 80, with the final result difference not exceeding $1.2535 \cdot 10^{-7}$ which is a relative error not exceeding factor $6.107 \cdot 10^{-8}$.
 
 This is sadly not a feat the limited 50-states implementation can claim to achieve. 
 With age 15 there is a 9.45\% relative difference in the final result while at age 50 there is a 68.34\% relative difference.
@@ -215,7 +215,7 @@ For a visualization of this, see figure \ref{fig:gf810ages}.
 Note that many of the entries can not be seen as they are overlapping due to being practically identical.
 The cause of the results getting progressively worse as the age increases is due to the fact that the marriage-probability in the early years is incredibly small.
 It is also because as the insured grows older, the younger spouses account for a lot more of the reserve than older spouses that die earlier.
-Since there is not enough intermediary states to reach these young spouses, the results are skewed.
+Since there are not enough intermediary states to reach these young spouses, the results are skewed.
 
 \begin{figure}[h!]\centering
 \includegraphics[scale=0.3]{GF810-ages.jpg}
@@ -249,7 +249,7 @@ Assuming a worst case of 58 bytes per state, the total memory consumption per th
 Other sources of memory usage include the result array stored in global memory which for age 35 would use up to $86 * 126 * 512 * 8 = 44384256$ bytes (42.33 MiB) per block with 512 threads per block.
 Assuming a practical minimum of 14 blocks, this leads to a total concurrent GPU memory usage of 613.8MiB, a significant amount less than the 4GiB available global memory.
 
-Working with large amount of memory can also lead to potential problems for the CPU.
+Working with large amounts of memory can also lead to potential problems for the CPU.
 While compilation to x64 should allow for array sizes of up to 2,147,483,647 as arrays use an integer for indexing, and while the result array is still using significantly less memory than the 2GiB x64 single object restriction of the .NET Common Language Runtime, out of memory-errors were encountered on the test machine when allocating device memory and gathering the results from the GPU, potentially because of the relatively small amount of CPU RAM (4GiB).
 This limited the range of the following performance tests.
 

@@ -3,7 +3,7 @@
 A CUDA C solution was implemented to be used as a base-line comparison for other CUDA-based solutions.
 It is intended to make full use of parallelization and it should be fairly efficient, but little time has been spent optimizing it.
 It is based on the initial C\# solution but features differences due to language-restrictions and the paradigm-switch to parallel computing.
-It features the same six life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta four kernel which is identical but for references to implementations of different $dV$ and $bj\_ii$ functions and the number of states used by the plan.
+It features the same six life insurance plans as the C\# version, but a key difference is that every plan has its own implementation of a Runge-Kutta four kernel which is identical, but for references to different implementations of the $dV$ and $bj\_ii$ functions and the number of states used by the plan.
 This is due to the fact that CUDA C kernels do not allow references to objects or methods as parameters. %unless certain version of cuda?
 Unlike the C\# version, another difference is that all of the kernel code is required to be in the same file as no cross-referencing is possible.
 
@@ -33,7 +33,7 @@ The macro is used because C and C++ require constant values for array initializa
 Dynamic memory allocation and deallocation of the temporary arrays could be used, but experimentation showed that it had a significant negative impact on the performance, especially at higher threads per block and block configurations.
 
 The single precision version of the kernels all used less than 32 registers and could thus use all 1024 threads per block, but the double precision version used too many registers and could only use up to 512 threads. 
-It is possible to limit the number of registers during compilation making the remaining registers spill to local memory, but this is rarely ideal as global memory is significantly slower than registers.
+It is possible to limit the number of registers during compilation making the remaining registers spill to local memory (which is stored in global memory), but this is rarely ideal as global memory is significantly slower than registers.
 This can be observed in the last row of table \ref{table:cudacdoubletime}.
 
 Running one iteration of all six plans with single precision floats took \emph{42.0} ms making it about 65\% slower than the C\# equivalent.
