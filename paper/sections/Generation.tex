@@ -233,9 +233,9 @@ mkParams(("age",40.0, 42.0, 1.0)::[("interestrate",0.08, 0.10, 0.01)])
 Finally, a runtime configuration (number of blocks and number of threads per block) is suggested based on the total number of iterations.
 A runtime configuration should ideally have the number of threads be a multiple of the warp-size (32) and ideally at least the amount of SMs as the number of blocks.
 The generated parameters might require less than 448 iterations (14 SMs times 32 threads).
-The suggestion is based off a few factors that attempt to make sure that at least a warp and the number of SMs is used.
+The suggestion is based on a few factors that attempt to make sure that at least a warp and the number of SMs is used.
 First it is checked if the number of iterations is less than a warp in which case one block and the number of iterations as the number of threads per block will be suggested.
-If higher than a warp but less than a warp times the number of SMs, the rounded up number of the iterations divided by 32 as blocks and 32 threads per block.
+If higher than a warp but less than a warp multiplied by the number of SMs, the rounded up number of the iterations divided by 32 as blocks and 32 threads per block.
 In case the number of iterations is higher than this, it will try continually increasing the number of threads per block by 32 until it reaches 512 or the iterations are less than or equal to the found number of threads times the number of SMs.
 If this is still not enough, the number of blocks will be increased until it can satisfy enough iterations necessary to contain all the parameters.
 The implemented code can be seen in appendix \ref{app:launchparameter}.

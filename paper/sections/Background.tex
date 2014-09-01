@@ -13,7 +13,7 @@ In section \ref{subsec:background:codequotations} F\#'s meta-programming model C
 Quotations are used to generate CPU code by the language-integrated compiler Alea.cuBase which will be presented in section \ref{subsec:background:fsharpcubase}.
 Section \ref{subsec:cudaoptimization} will then briefly mention some approaches to CUDA optimization, namely occupancy and Instruction Level Parallelism.
 Section \ref{subsec:background:calcspec} will briefly introduce the syntax of the Actulus Calculation Specification (CalcSpec).
-In section \ref{subsec:background:hardware} the hardware the project has been tested on will be presented.
+In section \ref{subsec:background:hardware}, the hardware the project has been tested on will be presented.
 
 \subsection{Life Insurance Policies and the Markov-model}\label{subsec:background:lifeinsurance}
 A life insurance policy is a contract stating the obligations an insuring party has to an insured party, in and transitioning between a finite set of states over many years.
@@ -60,7 +60,7 @@ The following six life insurance plan examples are used throughout the project.
 \end{itemize}
 
 \subsection{Thiele's differential equation and the Runge-Kutta Method}\label{subsec:background:thielerungekutta}
-The goal of the computations performed in this thesis is to estimate the amount of money (reserve) required to be able to fulfil the obligations of a given life insurance plan.
+The goal of the computations performed in this thesis is to estimate the amount of money (the reserve) required to be able to fulfil the obligations of a given life insurance plan.
 Thiele's differential equation called ``\emph{the foundation of modern life insurance mathematics}''\cite{bergermathematik} is a tool for determining conditional expected values in Markov models and it can be used to express a variety of life insurance policies.
 The equation is expressed below in equation \ref{eq:thiele}. It assumes continuity for $V_s$, $b_s$, $\mu$ for every $t$ and consists of the following parts:
 
@@ -78,7 +78,7 @@ The equation is expressed below in equation \ref{eq:thiele}. It assumes continui
 \frac{d}{dt}V_s(t) = r_s(t) V_s(t) - b_s(t) - \sum_{ts \in T_{s}} \mu_{s,ts}(t) (V_{ts}(t) - V_s(t) + b_{s,ts})
 \end{equation}
 
-To shortly summarize it, the change in reserve at time $t$ in state $s$ is the current reserve times the interest-rate minus the benefit paid by the ensurer in the state minus the weighted transitioning costs to all connected states. 
+To shortly summarize it, the change in reserve at time $t$ in state $s$ is the current reserve multiplied by the interest-rate minus the benefit paid by the ensurer in the state minus the weighted transitioning costs to all connected states. 
 The weighted transitioning cost to a state is the intensity of the transition (probability of the transition occurring) times the difference in reserves plus the transitioning cost.
 This results in the expected reserve of a state at time $t$.
 
@@ -88,11 +88,11 @@ It works within boundaries set by a starting and end point.
 If the starting point is greater than the end point, the algorithm works backwards with negative step-sizes.
 The basic implementation uses a fixed number of steps to reduce the inaccuracy of the method. 
 By increasing the number of steps, the inaccuracy of the method is reduced at the cost of increased computational costs.
-The most common step size seen in this project is 100 steps by advice of Peter Sestoft and by calculation specification definitions.
+The most common step size seen in this project is 100 by advice of Peter Sestoft and by calculation specification definitions.
 The fourth-order version of the Runge-Kutta method can be seen below in equation \ref{eq:rk4} approximating the equation-result $y$ in the step from $t$ to $t+h$. It consists of the following parts:
 
 \begin{itemize}
-\item $h$ is the size of the step. With 100 steps, the step-size would be 0.01, or -0.01 if the start point is greater than the end point.
+\item $h$ is the size of the step. With 100 steps, the step-size would be 0.01, or -0.01 if the starting point is greater than the end point.
 \item $f(t, e)$  is the right hand side of the given differential equation evaluated at time $t$ in environment $e$
 \item $t$ is the initial time of the step
 \item $y_t$ approximated result at time t
@@ -121,7 +121,7 @@ Algorithmically this could be an algorithm that initially does some computation 
 Instead of taking $w \cdot n$ time to complete, it can now be done in just $w$ time plus whatever overhead is associated with creating the tasks and dividing the work.
 This is reliant on each iteration being independent, as if the iterations are dependent on each other then an iteration can not be executed before the prior iteration completes.
 To continue the pie example, if one baker is assigned to make all the pie-crusts, no pie will be baked before this task is done.
-Loops are not the only thing that can be parallelized and all independent tasks can to some extend be parallelized. 
+It is not only loops that can be parallelized, and all independent tasks can to some extend be parallelized. 
 With various synchronization techniques, partially dependent calculations can also harness the power of parallelization, though at the risk of increased complexity and errors such as deadlocks.
 As only parallelization of independent computations are utilized, other forms will not be discussed further.
 
@@ -184,7 +184,8 @@ An example with the unique thread-IDs can be seen in figure \ref{thread_hierarch
 \subsubsection{Memory model}
 A GPU program (referred to as a kernel from here) has access to various types of memory.
 There is \emph{local} memory only available to the thread itself.
-This is facilitated by 32 kibibyte (KiB, which is 1024 bytes) per block of fast registers while available and falling back on relatively slow local memory afterwards which is stored in global memory but only accessed by the thread.
+This is facilitated by 32 kibibyte (KiB, which is 1024 bytes) per block of fast registers while available and falling back on relatively slow local memory afterwards.
+This is stored in global memory but only accessed by the thread.
 Each register holds up to four bytes.
 Each CUDA thread can use at most 63 registers making 512 the highest warp-sized number of threads per SM.
 If the kernel uses no more than 32 registers, up to 1024 threads per SM can be used.
@@ -198,7 +199,7 @@ This has a higher latency, but caching can alleviate some of this.
 There is also 64KiB of immutable cached \emph{constant} memory which can be an alternative to unchanging global memory.
 It is especially fast when all threads in the warp need to read the same memory location.
 Constant memory will often be faster than global memory due to a higher likelihood of being cached on-chip, but the fact it is immutable and of a fixed size limits its applicability.
-Another immutable memory type is \emph{texture} memory which can be used for various purposes, but is ideally used for algorithms with memory access patterns where threads are likely to read from an address that is 2-dimension-spatially local (such as computer graphic shaders).
+Another immutable memory type is \emph{texture} memory which can be used for various purposes, but is ideally used for algorithms with memory access patterns where threads are likely to read from an address that is 2-dimension-spatially local such as computer graphic shaders.
 
 Data loaded from local or global memory is cached in the on-chip \emph{L1} cache for each SM and a shared \emph{L2} cache for all SMs.
 The L1 cache will typically contain up to 16KiB of data, but this limit can be increased by up to 48KiB by sacrificing shared memory size.
@@ -247,7 +248,8 @@ int main(){
 One thing to note is the kernel launch-parameters of the Add-method in $main$ which specify the number of blocks and the number of threads per block on which the kernel should be executed. 
 
 CUDA C also has other declaration specifiers. 
-The \textbf{\_\_device\_\_} specifier indicates that a method will only be compiled for the GPU which can be referenced by kernels, the \textbf{\_\_host\_\_} specifier indicates that a method will be available for the CPU.
+The \textbf{\_\_device\_\_} specifier indicates that a method will only be compiled for the GPU, making it available in kernels.
+The \textbf{\_\_host\_\_} specifier indicates that a method will be available for the CPU.
 These two specifiers can also be used together for compilation to both platforms.
 If no specifiers are explicitly stated the \textbf{\_\_host\_\_} specifier is used.
 Variables also have the \textbf{\_\_device\_\_} specifier indicating they should be stored on the device typically in global memory, as well as the \textbf{\_\_constant\_\_} specifier to indicate that they are to be stored in constant memory and the \textbf{\_\_shared\_\_} specifier for shared memory.

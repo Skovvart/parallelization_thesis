@@ -54,7 +54,7 @@ For double precision floats the situation is slightly different as it used a lot
 Marking the arrays as volatile turned this into a 7.72\% increase instead.
 All in all not very impressive for the simple example life insurance plans.
 
-If instead we turn to a more advanced life insurance plan such as the limited implementation of the GF810 collective spouse pension, which uses 50 states, the results look a bit different.
+If instead turning to a more advanced life insurance plan such as the limited implementation of the GF810 collective spouse pension, which uses 50 states, the results look a bit different.
 As there are nowhere near enough registers for 50 states, the remaining states need to be stored in local (global) memory which is slow.
 For double precision floats it ends up using all 63 available registers per thread and spills 2696 bytes to local memory.
 With 50 states, the temporary arrays use $50*6*8=2400$ bytes of memory only allowing up to 20 threads per block (less than a warp) worth of shared memory. 
@@ -97,7 +97,7 @@ It does one additional dead code elimination reduction which removes empty ($() 
 Comparing an optimized version to a non-optimized version shows an overall runtime reduction of about 2.39\% for single precision floats and 1.46\% for double precision.
 See appendix \ref{app:optimization_performance} for all the timing results.
 
-The fact that these simple reductions reductions improve the runtime of reasonable efficient kernels makes the reduction seem worthwhile, especially as many of the optimizations are not used in the example life insurance plans.
+The fact that these simple reductions improve the runtime of reasonable efficient kernels makes the reduction seem worthwhile, especially as many of the optimizations are not used in the example life insurance plans.
 As life insurance plans in CalcSpec can both be more advanced and unoptimized, this becomes particularly relevant.
 
 Further possible reductions could include removing unreferenced $let$ declarations as well as more numerical and arithmetic reductions.
@@ -263,7 +263,7 @@ The hypothesis that it is inefficient to use less than 14 blocks or 32 threads p
 See the rows of the table with launch parameters (7,512), (224, 16), (1, 32) and (1, 1) for examples of this.
 The majority of the remaining launch parameters used no more than 3584 iterations (for example the launch parameters with 112 blocks and 32 threads per block) due to previously mentioned memory problems, but with varying levels of performance.
 It seems that due to the high memory throughput it is preferable to increase the number of blocks over threads as long as at least 32 threads per block (a warp) is used.
-Knowing that it seems most efficient at just one warp, means that multiple launches of the kernel is a possibility that could limit the size of the result array.
+Knowing that it seems most efficient at just one warp means that multiple launches of the kernel is a possibility that could limit the size of the result array.
 That does mean that functionality to skew the scope of the launch would have to be added.
 Alternatively, as long as there is total faith in the results, only the final result of the first state in year 0 is typically required, eliminating memory issues when gathering the results from the GPU.
 

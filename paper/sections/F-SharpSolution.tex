@@ -25,7 +25,7 @@ let pe_bj_ii =
       res.[0] <- pe_bj_00 t @>
 \end{lstlisting}
 
-To run the plan there is one Runge-Kutta four kernel defined, which can be be seen partially in code sample \ref{cubase_rk4_n_snippet}. 
+To run the plan there is defined one Runge-Kutta four kernel, which can be be seen partially in code sample \ref{cubase_rk4_n_snippet}. 
 For the full implementation see appendix \ref{app:cubase_rk4_n}. 
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which works very similarly to pointers in C and C++.
 The temporary arrays $k_i$, $tmp$ and $v$ may also be of interest. 
