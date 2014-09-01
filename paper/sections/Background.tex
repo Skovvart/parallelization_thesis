@@ -327,7 +327,7 @@ In this example is it simply printed to the console.
 \subsection{CUDA Optimization}\label{subsec:cudaoptimization}
 \subsubsection{Occupancy}\label{subsubsec:occupancy}
 Occupancy is a term used to describe the ratio between the active and maximum active warps for a kernel.
-It is a useful concept as in order to hide latency from context switches on the GPU the memory bus needs to be saturated by having enough transactions in flight.
+It is a useful concept, as in order to hide latency from context switches on the GPU, the memory bus needs to be saturated by having enough transactions in flight.
 To increase the number of transactions either the occupancy or the instruction level parallelism (see section \ref{subsubsec:ilp}) should be increased.
 
 Things that potentially limit occupancy is register usage, shared memory usage and the number of threads per blocks.
@@ -374,7 +374,7 @@ An explanation of each element of the CalcSpec structure follows:
 \item The \lstinline$<Equations>$ describes the differential equations used by the algorithm. This is typically done by referencing functions defined in \lstinline$<Expressions>$. Every component of the differential equation must describe the coefficients of the component. If the coefficients are constant, they can also be described by constants (typically 0) or as an empty block for multi-part coefficients in which case all sub-coefficients are 0.
 \item The \lstinline$<Range>$ and \lstinline$<Boundary values>$ are related to the differential equation described in \lstinline$<Equations>$ and describes the interval in which the algorithm should solve the equation subject to the boundary conditions. The boundary values are not currently respected as they are zero in all examples.
 \item \lstinline$<Output>$ is an optional declaration that specifies which parts of the calculations that should be returned. It is currently not supported in this project. %Update if added
-\item \lstinline$<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables.
+\item \lstinline$<Expressions>$ is where constants and function are defined. Functions can only take one parameter but can reference other constants and variables. It is also possible to declare lambdas of the form \lstinline$\var.expr$.
 \end{itemize}
 
 \begin{lstlisting}[caption=CalcSpec structure, label=calcspecstructure, language=calcspec]
@@ -390,7 +390,7 @@ calculation = {
 \end{lstlisting}
 
 An example of the pure endowment insurance plan can be seen in code sample \ref{pe_calcspec}. 
-Note that it utilizes the Dirac $delta$ function\cite{hassani2009dirac} (see section \ref{subsec:delta}) which is used to express a discontinuity point in which a lump sum is to be paid.
+It utilizes the Dirac $delta$ function\cite{hassani2009dirac} (see section \ref{subsec:delta}) which is used to express a discontinuity point in which a lump sum is to be paid.
 %confirm this isn't bullshit
 %\clearpage
 

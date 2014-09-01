@@ -136,17 +136,19 @@ To lessen the impact of this, the result of these functions is constrained to be
 This model of calculation can already be expressed in CalcSpec as is, but is somewhat cumbersome to write as there is little variability in the model.
 The final CalcSpec should resemble code sample \ref{gf810cs}.
 Note that the \lstinline$\var.expr$ is CalcSpec syntax for lambdas. 
-It is currently also required to update the $from$ value in the $range$ section to the value of 120-age, as this is currently not possible to have variable values for this in the current solution.
-%\clearpage
+It is currently also required to update the $from$ value in the $range$ section to the value of 120-age, as it is not currently possible to use variable values such as this in the current solution.
+\clearpage
 \begin{lstlisting}[language=calcspec, caption=GF810 full CalcSpec, label=gf810cs]
 calculation = {
   name = "GF810 - Collective spouse pension", 
   algorithm = { type="Runge Kutta 4", parameters={ stepsize = 0.01 }}, 
   equations = { 
     0 = { r_j = rate, b_j = 0, mu_jk = { 
-        1 = mu_ai(-62), 2 = mu_ai(-61),
+        1 = mu_ai(-62),
+        2 = mu_ai(-61),
         ...,
-        124 = mu_ai(61), 125 = mu_ai(62), 
+        124 = mu_ai(61), 
+        125 = mu_ai(62), 
         126 = \t.(GM_f(t)) * (1 - gp(t + age))
       }, b_jk = {  } }, 
     1 = { r_j = rate, b_j = 1, mu_jk = { 126 = mu_id(-62) }, b_jk = {}}, 
@@ -171,7 +173,7 @@ calculation = {
 
 To optimize this process, functionality was added to transform the CalcSpec AST based on the variability of the GF810 plan.
 See code sample \ref{gf810simplifiedcs} for an example of this which is converted back to the code in code sample \ref{gf810cs}.
-\clearpage
+%\clearpage
 \begin{lstlisting}[language=calcspec, caption=GF810 simplified CalcSpec, label=gf810simplifiedcs]
 calculation = { 
   name = "GF810 - Collective spouse pension", 

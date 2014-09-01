@@ -1,9 +1,10 @@
 % !TeX root = ../thesis.tex
-\section{Introduction}
+\section*{Acknowledgements}
 This thesis was written in the March-September period of 2014 at the IT University of Copenhagen (ITU) and was supervised by Peter Sestoft to whom I owe many thanks. 
 I would further also like to thank Ahmad Salim Al-Sibahi, Michael Bo Magling and Nikolaj Aaes as well as my parents who have helped proof-read this thesis.
 The project was performed using documentation and code provided by the Actulus project\cite{actulus}.
 
+\section{Introduction}
 As the exponential growth of the Central Processing Unit (CPU) clock-rate speeds have leveled off in recent times\cite{ross2008cpu}, parallelization is seen as one of the primary techniques for increasing computational performance. 
 
 While parallelization can be utilized by many mechanisms such as multiple machines or multi-core CPUs, General Purpose computing on Graphics Processing Units (GPGPU) in particular is used when computations on large amounts of data is needed. 
@@ -15,9 +16,9 @@ One approach to GPGPU programming is using the Compute Unified Device Architectu
 The CUDA platform supports multiple languages, including Python and Fortran, but the official and one of the most popular languages used is NVIDIA's CUDA C which is based on the somewhat archaic C and C++ languages.
 
 In this thesis a single-threaded C\# insurance reserve estimator will be translated to the CUDA platform and parallelized and the performance ramifications will be investigated.
-First a base-line implementation will be implemented in CUDA C followed by a solution implemented on the more modern .NET platform in the F\# language using the language-integrated compiler Alea.cuBase to explore the effects on performance.
+First a base-line implementation will be implemented in CUDA C followed by a solution implemented on the more modern .NET platform in the F\# language using the language-integrated compiler Alea.cuBase, to explore the effects on performance.
 The effect on performance will be tested through use of benchmarking.
-If there is no significant loss of performance, this could allow for all the benefits of modern languages while also allowing GPU code to be incorporated on the .NET platform.
+If there is no significant loss of performance, this could allow for all the benefits of using modern programming languages while also allowing GPU code to be incorporated on the .NET platform.
 
 The thesis will also cover how insurance plans specified in the Actulus Calculation Specification language (CalcSpec) will be automatically translated to code that will run on the GPU, and the performance ramifications of this will be explored.
 

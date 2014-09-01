@@ -6,8 +6,8 @@ As the plan-specific $dV$ and $bj\_ii$ typically include references to helper-me
 Another option is to use use the \lstinline$[<ReflectedDefinition>]$ F\# attribute on methods which make most regular methods accessible in Quotations.
 An example of this can be seen in code sample \ref{cubase_pureendowment}. 
 The various plans are in this case not implemented using classes (though they could have been), so each method name is prepended with a plan acronym ($pe\_$).
-It also refers to some common constants and methods not defined in the class much like previous implementations.
-\clearpage
+It also refers to some constants and methods not defined in the class similar to previous implementations.
+%\clearpage
 \begin{lstlisting}[language=FSharp, caption=The pure endowment insurance plan expressed in F\# Alea.cuBase, label=cubase_pureendowment]
 [<ReflectedDefinition>] 
 let pe_b_0 t = zero
@@ -25,7 +25,7 @@ let pe_bj_ii =
       res.[0] <- pe_bj_00 t @>
 \end{lstlisting}
 
-To run the plan there is one Runge-Kutta four kernel defined which can be be seen partially in code sample \ref{cubase_rk4_n_snippet}. 
+To run the plan there is one Runge-Kutta four kernel defined, which can be be seen partially in code sample \ref{cubase_rk4_n_snippet}. 
 For the full implementation see appendix \ref{app:cubase_rk4_n}. 
 What may be of interest is the $deviceptr$ type used by $Va$ and $result$, which works very similarly to pointers in C and C++.
 The temporary arrays $k_i$, $tmp$ and $v$ may also be of interest. 
@@ -74,7 +74,7 @@ let RK4_n dV bj_ii states = cuda {
 
 As the GPU code is generated at runtime, a lot of the compile-time limitations of CUDA C disappear.
 While the kernels may not take all types of parameters at launch-time, during kernel-compilation they can often be used.
-The code is not making much use of the functional programming paradigm and memory-allocation for the device is still required.
+The code is not making use of the functional programming paradigm and memory-allocation for the device is still required.
 There are however many small changes like the $use$ keyword, and not having to provide the size of the allocated memory, still make it faster and safer to program in F\# as opposed to CUDA C.
 
 The solution also makes use of a method to compile the kernels for reuse and another to execute them, as can be seen in code sample \ref{cubase_compileandrun}. 

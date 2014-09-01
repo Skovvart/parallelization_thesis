@@ -2,7 +2,7 @@
 \section{Future Work}
 There is much potential future work that could be done, some of which has been mentioned briefly already.
 For example, the manual parameterized implementation of the life insurance plans seen in section \ref{sub:manual_parameterization} showed almost a doubling of performance with double precision floats compared to CUDA C and subsequently the parameterized CalcSpec-generated life insurance plans.
-The main difference is the fact that parameters such as age and interest rate were passed down as method parameters and it was speculated that the difference in speed was due to this, but as of yet it is untested.
+The main difference is the fact that parameters such as age and interest rate were passed down as method parameters and it was speculated that the difference in speed was due to this, but as of yet it is unconfirmed.
 
 There are also minor improvements that could be made for CalcSpec transformation such as variables being made usable in the \lstinline$range$ section of CalcSpec and respecting the values in \lstinline$output$ and \lstinline$boundaryvalues$.
 The current type system of variables used during conversion of CalcSpec to quotations is also too simplistic and does not natively support multi-parameter methods requiring hacks to support methods such as $\mu_{ai}$ and $\mu_{id}$ seen in section \ref{subsubsec:gf810parallelized}.

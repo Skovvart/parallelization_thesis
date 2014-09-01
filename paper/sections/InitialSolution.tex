@@ -11,7 +11,7 @@ It has the following signature: \\
 \\
 The $dV$ function implements an arbitrary amount of derivatives.
 The $bj\_ii$ function is used for lump-sum payments.
-$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the amount of steps to use in the Runge-Kutta four solver and \textit{Va} is the initial reserve (at time $a$).
+$a$ and $b$ mark the calculation start and end points respectively, $steps$ are the number of steps to use in the Runge-Kutta four solver and \textit{Va} is the initial reserve (at time $a$).
 
 An example implementation of the pure endowment life insurance plan can be seen in code sample \ref{csharp_pureendowment}. 
 Note that it does refer to shared constants and methods defined outside the class itself, for example the $GM$ (Gompertz-Makeham) mortality-probability function which is referenced in all the examples.

@@ -1,7 +1,7 @@
 % !TeX root = ../thesis.tex
 \begin{abstract}
 Parallelization can provide great performance boosts for large-scale independent numerical computations, for example in the field of insurance reserve estimation.
-NVIDIA's CUDA platform allows for utilization of the parallelization power of the Graphic Processing Unit, but development is traditionally done using the CUDA C language which is based on the somewhat archaic C and C++ languages.
+NVIDIA's CUDA platform allows for utilization of the parallelization power of the Graphic Processing Unit, but development is traditionally done using the CUDA C language, which is based on the somewhat archaic C and C++ languages.
 The language integrated compiler Alea.cuBase allows for CUDA development on the .NET platform using F\#, a much more modern language, which could have many advantages for industry.
 
 This thesis investigates the benefits of transforming a single-threaded life insurance reserve estimator to utilize GPU parallelization on the CUDA platform.
@@ -10,7 +10,7 @@ The F\# solution is further enhanced with the capability of parsing life insuran
 The performance implications of this is also explored.
 This thesis also presents work on optimizing complex life insurance models such as the collective spouse pension.
 
-The thesis concludes that software such as insurance reserve estimators can greatly benefit from parallelization on the GPU and that the benefits of developing on a modern platform such as .NET far outweigh the costs.
+The thesis concludes that software such as insurance reserve estimators can greatly benefit from parallelization on the GPU and that the benefits of developing on a modern platform such as .NET far outweigh the negatives.
 The parallelized version is up to 2485 times faster than the single-threaded version allowing for vastly more computations of life insurance plans in the same amount of time.
 It is also concluded that GPU code automatically transformed from calculation specifications has no noticeable loss of performance or expressiveness.
 A new method for calculating the collective spouse pension was confirmed to work and provided a performance increase of factor 150 with less than 0.1\% variation in the result compared to the original method of computation.
