@@ -11,4 +11,4 @@ This will allow for business to stick to a .NET workflow while using a modern la
 The generated F\# CUDA code will be evaluated to to both an existing single-threaded C\# application provided by Peter Sestoft, manually written F\# cuBase code and manually written CUDA code. 
 
 Through this project I hope to learn how to write high-performance GPGPU software for numerical problems, to demonstrate that I can design, implement, describe and critically evaluate the performance and other quality aspects of such software. 
-\keywords{CUDA, parallelization, F\# Alea.cuBase, pension reserve estimation, Actulus CalcSpech}
+\keywords{CUDA, parallelization, F\# Alea.cuBase, pension reserve estimation, Actulus CalcSpec}
